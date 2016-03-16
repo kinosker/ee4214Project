@@ -3,7 +3,7 @@
 
 
 #include <pthread.h>
-
+#include "semaphore.h"
 
 
 /*****************************************************************************
@@ -72,3 +72,5 @@ int myBarrier_init(struct barrier_t *barrier, unsigned int count);
  *
  *****************************************************************************/
 void myBarrier_wait(struct barrier_t *barrier);
+
+#endif

@@ -1,5 +1,5 @@
 #include "myBarrier.h"
-
+#include <pthread.h>
 
 int myBarrier_init(struct barrier_t *barrier, unsigned int count)
 {
@@ -17,13 +17,14 @@ int myBarrier_init(struct barrier_t *barrier, unsigned int count)
 void myBarrier_wait(struct barrier_t *barrier)
 {
 
+	int i;
     pthread_mutex_lock(&barrier->mutex);   
 
 	barrier->currentCount = barrier->currentCount - 1;
 
 	if(barrier->currentCount == 0)
 	{
-		for(int i = 0 ; i < barrier->maxCount ; i++)
+		for(i = 0 ; i < barrier->maxCount ; i++)
 		{
 			sem_post(&(barrier->sema));
 		}

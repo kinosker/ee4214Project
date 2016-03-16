@@ -11,6 +11,7 @@
 #include <sys/intr.h> //xilkernel api for interrupts
 #include <stdio.h>
 #include "TFT_Draw.h"
+#include "myBarrier.h"
 #define XST_SUCCESS                     0L
 #define XST_FAILURE                     1L
 // TO DO : read and understand the xilkernel system calls as well as the driver APIs used.
@@ -78,8 +79,7 @@ void main_prog(void *arg) {
 	int ret;
 
 	// initialize the semaphore
-	if (sem_init(&sem, 1, 2) ! = 0) 
-	{
+	if (sem_init(&sem, 1, 2) < 0) {
 		print("Error while initializing semaphore sem.\r\n");
 	}
 
