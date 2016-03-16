@@ -1,3 +1,4 @@
+
 #include "xmk.h"
 #include "xtft.h"
 #include "stdlib.h"
@@ -42,12 +43,14 @@ struct sched_param sched_par;
 /************************** Threading variables ****************************/
 
 pthread_attr_t attr;
+
 pthread_t tid_controller, tid_col_1, tid_col_2, tid_col_3, tid_col_4, tid_col_5,
 		tid_col_6, tid_col_7, tid_col_8, tid_col_9, tid_col_10;
 
+
 /************************** Thread Synchronisation variables ****************************/
-//pthread_barrier_t barrier_ball_loc;
 pthread_mutex_t mutex_col;
+sem_t sem_col_barrier;
 sem_t sem;
 
 volatile int taskrunning;
@@ -79,6 +82,12 @@ void main_prog(void *arg) {
 		print("Error while initializing semaphore sem.\r\n");
 	}
 
+	if (sem_init(&sem_col_barrier, 0, COL_BRICKS) < 0) {	// initialise semaphore to 10 resources (COL)
+		print("Error while initializing semaphore sem.\r\n");
+	}
+
+
+
 	// initialize mutex
 	ret = pthread_mutex_init(&mutex_col, NULL );
 	if (ret != 0) {
@@ -94,7 +103,8 @@ void main_prog(void *arg) {
 	tft_updateScore(&InstancePtr, 5);
 
 	pthread_attr_init(&attr);						// get attribute for thread.
-	//pthread_barrier_init(&barrier, NULL, barrier_ball_loc); // barrier of size 10, for 10 col threads
+
+	//pthread_barrier_init(&barrier, NULL, 11); // barrier of size 11, for 10 col threads + 1 update display
 
 	/************************** Controller Threads Init ****************************/
 
@@ -196,8 +206,31 @@ void* thread_func_controller() {
 
 	// mailbox
 	// semaphore release
+	u8 semVal = 0, i;
 
-	pthread_exit(0);
+	while(1)
+	{
+		sleep(3000);
+
+		//tft_fillRect(&InstancePtr, OUTER_COL_START_X, OUTER_COL_START_Y,OUTER_COL_END_X, OUTER_COL_END_Y, COLOR_GREEN);
+
+		if(sem_getvalue(&sem_col_barrier, &semVal))
+		{
+			// error
+		}
+		else
+		{
+			// success
+			if(semVal == 0)
+			{
+				// all completed updating column
+				for(i = 0 ; i < COL_BRICKS ; i++)
+					sem_post(&sem_col_barrier);
+			}
+		}
+
+	}
+	//pthread_exit(0);
 
 	//pthread_mutex_unlock(&mutex_col); // unlock all col for barrier....
 
@@ -219,6 +252,8 @@ void* thread_func_col(int col_x) {
 		// check if ball hit brick => update score, future brick
 		// check if picked randomly => update colour
 		// test print
+
+		sem_wait(&sem_col_barrier); // block here if not posted
 
 		pthread_mutex_lock (&mutex_col);
 		xil_printf ("\r\nThis is Col :  %d \r", col_x);

@@ -1,7 +1,7 @@
 #include "TFT_Draw.h"
 
-XGpio gpPB; //PB device instance.
-static XTft TftInstance;
+
+
 int barLeftPos = BAR_START_X, barRightPos = BAR_START_X + BAR_LENGTH;
 
 int tft_init(u32 TftDeviceId, XTft *InstancePtr) {
@@ -61,10 +61,11 @@ int tft_intialDraw(XTft *InstancePtr) {
 	int i, j, stor_X = COL_1_X;
 	// Outer green box
 
-	tft_drawRect(InstancePtr, OUTER_COL_START_X, OUTER_COL_START_Y,
-			OUTER_COL_END_X, OUTER_COL_END_Y, COLOR_BLACK);
 	tft_fillRect(InstancePtr, OUTER_COL_START_X, OUTER_COL_START_Y,
 			OUTER_COL_END_X, OUTER_COL_END_Y, COLOR_GREEN);
+	tft_drawRect(InstancePtr, OUTER_COL_START_X, OUTER_COL_START_Y,
+			OUTER_COL_END_X, OUTER_COL_END_Y, COLOR_BLACK);
+
 
 	// Inner 80 Small boxes
 
