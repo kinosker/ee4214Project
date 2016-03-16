@@ -26,7 +26,7 @@
 
 #define SEM_SUCCESS			0
 #define UPDATE_COLOUR_SCORE	10
-#define MAX_RAND_SLEEP		10 	// for snatching colour sema
+#define MAX_RAND_SLEEP		100 	// for snatching colour sema
 
 /************************** Function Prototypes *****************************/
 
@@ -232,9 +232,9 @@ void* thread_func_controller() {
 
 		myBarrier_wait(&barrier_col); // "fire" all col threads
 
-		sleep(1000);
+		sleep(100);
 
-		changeBrickColour(score++);
+		changeBrickColour(++score);
 
 
 	}
@@ -279,8 +279,11 @@ void* thread_func_col(int col_x) {
 // Simple Description : Release 2 semaphore resource for brick colour change.
 void changeBrickColour(int score)
 {
+	print("Starting Here\r\n");
+	xil_printf("score: %d", score);
 	if (score % 10 == 0)
 	{
+		print("inside loop liao");
 		//release 2 semaphore colour resources!!!
 		sem_post(&sem_colour);
 		sem_post(&sem_colour);
