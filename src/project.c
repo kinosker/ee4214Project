@@ -22,11 +22,19 @@
 #define PRIO_COL 		4
 #define PRIO_SCORE_ZONE 5
 
+
+#define SEM_SUCCESS			0
+#define UPDATE_COLOUR_SCORE	10
+#define MAX_RAND_SLEEP		10 	// for snatching colour sema
+
 /************************** Function Prototypes *****************************/
 
-//int changeBarColor(int threadID, u32 colour);
 void* thread_func_controller();
 void* thread_func_col(int col_x);
+
+void changeBrickColour(int score);
+unsigned int updateBrickColour();
+
 
 void main_prog(void *arg);
 
@@ -51,7 +59,7 @@ pthread_t tid_controller, tid_col_1, tid_col_2, tid_col_3, tid_col_4, tid_col_5,
 /************************** Thread Synchronisation variables ****************************/
 pthread_mutex_t mutex_col;
 struct barrier_t barrier_col;
-sem_t sem;
+sem_t sem_colour;
 
 volatile int taskrunning;
 
@@ -78,7 +86,7 @@ void main_prog(void *arg) {
 	int ret;
 
 	// initialize the semaphore
-	if (sem_init(&sem, 1, 2) ! = 0) 
+	if (sem_init(&sem_colour, 0, 2)  < 0) // init sem_colour with 2 resource 
 	{
 		print("Error while initializing semaphore sem.\r\n");
 	}
@@ -210,19 +218,22 @@ void main_prog(void *arg) {
 
 void* thread_func_controller() {
 
-	// mailbox
 	// semaphore release
-	u8 semVal = 0, i;
+	int score = 0;
 
 	while(1)
 	{
+		// mailbox should be here....
+		// update score should be here, print score somwhere else...
+
+		// score updated => update colour.. then fire all col threads.
+
+
 		myBarrier_wait(&barrier_col); // "fire" all col threads
 
-		sleep(2000);
+		sleep(1000);
 
-		tft_fillRect(&InstancePtr, OUTER_COL_START_X, OUTER_COL_START_Y,OUTER_COL_END_X, OUTER_COL_END_Y, COLOR_GREEN); // fill bg with green
-
-		sleep(2000);
+		changeBrickColour(score++);
 
 
 	}
@@ -234,8 +245,8 @@ void* thread_func_controller() {
 }
 
 void* thread_func_col(int col_x) {
-	unsigned int currentColour = 0; // some default color.
-	unsigned int futureColour = 0; // some default color.
+	unsigned int currentColour = COLOR_GREEN; // some default color.
+	unsigned int futureColour = COLOR_GREEN; // some default color.
 
 	unsigned char currentBricks = 0; 		 // start with 0 bricks..
 	unsigned char futureBricks = COL_BRICKS; // after updateColumn will have COL_BRICKS!!!
@@ -250,6 +261,8 @@ void* thread_func_col(int col_x) {
 
 		myBarrier_wait(&barrier_col); // wait for all col threads to reach here... and controller thread to reach wait.
 
+		futureColour = updateBrickColour();
+
 		pthread_mutex_lock (&mutex_col);
 		xil_printf ("\r\nThis is Col :  %d \r", col_x);
 		tft_updateColumn(&InstancePtr, col_x, currentBricks, futureBricks,currentColour, futureColour);
@@ -260,6 +273,38 @@ void* thread_func_col(int col_x) {
 	}
 
 }
+
+
+// Simple Description : Release 2 semaphore resource for brick colour change.
+void changeBrickColour(int score)
+{
+	if (score % 10 == 0)
+	{
+		//release 2 semaphore colour resources!!!
+		sem_post(&sem_colour);
+		sem_post(&sem_colour);
+	}
+}
+
+// Simple Description : Snatch for 2 semaphore resource, fail then colour same..
+unsigned int updateBrickColour()
+{
+	sleep (rand() % MAX_RAND_SLEEP);
+
+	if(sem_trywait(&sem_colour) == SEM_SUCCESS)
+	{
+		// resource snatched !
+		return COLOR_YELLOW;	
+	}
+	else
+	{
+		// failed to snatched resource.
+		return COLOR_GREEN;
+	}
+
+}
+
+
 
 //void do_something(int max, int ID) {
 //  sem_wait(&sem);
