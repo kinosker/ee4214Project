@@ -87,12 +87,8 @@ void main_prog(void *arg) {
 	int ret;
 
 	// initialize the semaphore
-<<<<<<< HEAD
 	if (sem_init(&sem_colour, 0, 2)  < 0) // init sem_colour with 2 resource 
 	{
-=======
-	if (sem_init(&sem, 1, 2) < 0) {
->>>>>>> adb8e9ead65b5b9642e43297cbd7e55b41cb264c
 		print("Error while initializing semaphore sem.\r\n");
 	}
 
