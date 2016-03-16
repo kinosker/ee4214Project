@@ -84,9 +84,9 @@ void main_prog(void *arg) {
 	}
 
 	// initialize barrier
-	ret = pthread_mutex_init(&mutex_col, NULL );
+	ret = myBarrier_init(&barrier_col, COL_BRICKS + 1); // barrier is for # of col threads + controller thread (1)
 	if (ret != 0) {
-		xil_printf("-- ERROR (%d) init uart_mutex...\r\n", ret);
+		xil_printf("-- ERROR (%d) init barrier...\r\n", ret);
 	}
 
 
@@ -216,29 +216,18 @@ void* thread_func_controller() {
 
 	while(1)
 	{
-		sleep(3000);
+		myBarrier_wait(&barrier_col); // "fire" all col threads
 
-		//tft_fillRect(&InstancePtr, OUTER_COL_START_X, OUTER_COL_START_Y,OUTER_COL_END_X, OUTER_COL_END_Y, COLOR_GREEN);
+		sleep(2000);
 
-		if(sem_getvalue(&sem_col_barrier, &semVal))
-		{
-			// error
-		}
-		else
-		{
-			// success
-			if(semVal == 0)
-			{
-				// all completed updating column
-				for(i = 0 ; i < COL_BRICKS ; i++)
-					sem_post(&sem_col_barrier);
-			}
-		}
+		tft_fillRect(&InstancePtr, OUTER_COL_START_X, OUTER_COL_START_Y,OUTER_COL_END_X, OUTER_COL_END_Y, COLOR_GREEN); // fill bg with green
+
+		sleep(2000);
+
 
 	}
 	//pthread_exit(0);
 
-	//pthread_mutex_unlock(&mutex_col); // unlock all col for barrier....
 
 	// ???
 
@@ -259,7 +248,7 @@ void* thread_func_col(int col_x) {
 		// check if picked randomly => update colour
 		// test print
 
-		sem_wait(&sem_col_barrier); // block here if not posted
+		myBarrier_wait(&barrier_col); // wait for all col threads to reach here... and controller thread to reach wait.
 
 		pthread_mutex_lock (&mutex_col);
 		xil_printf ("\r\nThis is Col :  %d \r", col_x);
