@@ -57,7 +57,7 @@ typedef struct barrier_t
  *   - BARRIER_FAILURE if unsuccessful.
  *
  *****************************************************************************/
-int myBarrier_init(unsigned int count, struct barrier_t *barrier);
+int myBarrier_init(struct barrier_t *barrier, unsigned int count);
 
 
 /*****************************************************************************
@@ -71,4 +71,4 @@ int myBarrier_init(unsigned int count, struct barrier_t *barrier);
  *   - NONE
  *
  *****************************************************************************/
-void myBarrier_wait(struct OSBarrier *barrier);
+void myBarrier_wait(struct barrier_t *barrier);

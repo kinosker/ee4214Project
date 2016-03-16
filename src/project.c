@@ -50,7 +50,7 @@ pthread_t tid_controller, tid_col_1, tid_col_2, tid_col_3, tid_col_4, tid_col_5,
 
 /************************** Thread Synchronisation variables ****************************/
 pthread_mutex_t mutex_col;
-sem_t sem_col_barrier;
+struct barrier_t barrier_col;
 sem_t sem;
 
 volatile int taskrunning;
@@ -78,12 +78,15 @@ void main_prog(void *arg) {
 	int ret;
 
 	// initialize the semaphore
-	if (sem_init(&sem, 1, 2) < 0) {
+	if (sem_init(&sem, 1, 2) ! = 0) 
+	{
 		print("Error while initializing semaphore sem.\r\n");
 	}
 
-	if (sem_init(&sem_col_barrier, 0, COL_BRICKS) < 0) {	// initialise semaphore to 10 resources (COL)
-		print("Error while initializing semaphore sem.\r\n");
+	// initialize barrier
+	ret = pthread_mutex_init(&mutex_col, NULL );
+	if (ret != 0) {
+		xil_printf("-- ERROR (%d) init uart_mutex...\r\n", ret);
 	}
 
 
@@ -93,6 +96,9 @@ void main_prog(void *arg) {
 	if (ret != 0) {
 		xil_printf("-- ERROR (%d) init uart_mutex...\r\n", ret);
 	}
+
+
+
 
 	print("startinitDraw");
 	tft_intialDraw(&InstancePtr);

@@ -1,7 +1,7 @@
 #include "myBarrier.h"
 
 
-int myBarrier_init(unsigned int count, struct barrier_t *barrier)
+int myBarrier_init(struct barrier_t *barrier, unsigned int count)
 {
 	int ret;
 
