@@ -4,18 +4,6 @@ XGpio gpPB; //PB device instance.
 static XTft TftInstance;
 int barLeftPos = BAR_START_X, barRightPos = BAR_START_X + BAR_LENGTH;
 
-/*****************************************************************************
- *
- * Initialize the TFT display
- *
- * @param  XTft_SetPixel is the TFT device ID
- *
- * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
- *
- *
- ******************************************************************************/
 int tft_init(u32 TftDeviceId, XTft *InstancePtr) {
 	int Status;
 	XTft_Config *TftConfigPtr;
@@ -66,43 +54,9 @@ int tft_init(u32 TftDeviceId, XTft *InstancePtr) {
 	return XST_SUCCESS;
 }
 
-/*****************************************************************************/
-/**
- * Thread-safe set pixel (instead of using setpixel, use this!)
- *
- * @param  Tft is a pointer to the XTft instance.
- * @param  colVal is the x cordinate to draw the circle
- * @param  rowVal is the y cordinate to draw the circle
- * @param  colour determines the colour of the circle
- * @param  mutex_sw_tft software mutex that enable thread safe setting of pixel
- *
- * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
- *
- *
- ******************************************************************************/
 static int tft_setPixelSafe(XTft *InstancePtr, u32 colVal, u32 rowVal,
 		u32 colour, pthread_mutex_t mutex_sw_tft);
 
-/*****************************************************************************
- **
- * Draw initial GUI
- *	- Overall Background
- *	- Scores background
- *	- CurrentBall Speed
- *	- Number of Bricks Left
- *	- MSG queue to all threads? (still to be decided)
- *
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- *
- *
- * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
- *
- *****************************************************************************/
 int tft_intialDraw(XTft *InstancePtr) {
 	int i, j, stor_X = COL_1_X;
 	// Outer green box
@@ -173,44 +127,8 @@ int tft_intialDraw(XTft *InstancePtr) {
 	tft_addCircle(InstancePtr, CIRCLE_X, CIRCLE_Y, CIRCLE_RADIUS);
 }
 
-/*****************************************************************************
- **
- * Brain of tft update
- *	- Fire threads to update based on timer / mailbox? (still to be determined)
- *	- Update params based on msg queue?
- *
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- *
- *
- * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
- *
- *****************************************************************************/
 int tft_updateDisplay(XTft *InstancePtr);
 
-/*****************************************************************************
- **
- * Update column for the bricks to be drawn
- *	- Calculate difference of currentBricks and future bricks
- *		- Add / Remove based on it from BOTTOM to TOP!!!
- *		- For loop to add/remove => use colour to draw !! (May change colour due to requirement)
- *		* Update column for the bricks to be drawn
- * 		- NOTE !! : if color differ => DRAW ALL FUTUREBRICKS
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- * @param  col_x is the position of X axis to start drawing.
- * @param  currentBricks is the number of bricks on the screen.
- * @param  futureBricks is the number of bricks to be shown on the screen.
- * @param  colour is the colour of the bricks to be shown.
- *
- *
- * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
- *
- *****************************************************************************/
 int tft_updateColumn(XTft *InstancePtr, const int col_x, int currentBricks,
 		int futureBricks, unsigned int currentColour, unsigned int futureColour) {
 
@@ -252,20 +170,6 @@ int tft_updateColumn(XTft *InstancePtr, const int col_x, int currentBricks,
 
 }
 
-/*****************************************************************************
- **
- * Update score based on tft_writeInteger()
- *	- Depending if you wan to save resources... can old score compare new score to save print
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- * @param  score is the new score to be updated
- *
- *
- * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
- *
- *****************************************************************************/
 int tft_updateScore(XTft *InstancePtr, int score) {
 	int score_Digit_Hundredth, score_Digit_Tens, score_Digit_Ones;
 	if (score != 0)
@@ -292,42 +196,11 @@ int tft_updateScore(XTft *InstancePtr, int score) {
 			SCORE_BOX_START_Y + 15, score_Digit_Ones, COLOR_BLACK, COLOR_GREY); //third number
 }
 
-/*****************************************************************************
- **
- * Update speed based on tft_writeInteger()
- *	- Depending if you wan to save resources... can old score compare new score to save print
- *	- Handle different number of digit!
- *	- Print 000 -> 009  instead of 1 to 9?
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- * @param  speed is the new score to be updated
- *
- *
- * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
- *
- *****************************************************************************/
 int tft_updateSpeed(XTft *InstancePtr, int speed) {
 	tft_writeInteger(InstancePtr, BALL_SPEED_START_X + 50,
 			BALL_SPEED_START_Y + 5, speed, COLOR_BLACK, COLOR_GREY);
 }
 
-/*****************************************************************************
- **
- * Update bricks left based on tft_writeInteger()
- *	- Handle single digit please!!!
- *	- Print 00 -> 09 instead of 1 to 9
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- * @param  bricksLeft is the new score to be updated
- *
- *
- * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
- *
- *****************************************************************************/
 int tft_updateBricksLeft(XTft *InstancePtr, int bricksLeft) {
 	int temp_brickLeft = bricksLeft, count=0;
 	while ((temp_brickLeft /= 10) != 0)
@@ -351,21 +224,6 @@ int tft_updateBricksLeft(XTft *InstancePtr, int bricksLeft) {
 
 }
 
-/*****************************************************************************
- **
- * Precondition : Max of 5 digits value
- * Write integer value the TFT.
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- * @param  x is the X axis cordinate to start writing the Integer
- * @param  x is the Y axis cordinate to start writing the Integer
- * @param  value is the integer you wished to print (Max 5 digits)
- *
- * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
- *
- *****************************************************************************/
 int tft_writeInteger(XTft *InstancePtr, int x, int y, const int value,
 		u32 foreGround, u32 backGround) {
 	char buffer[6];
@@ -373,23 +231,6 @@ int tft_writeInteger(XTft *InstancePtr, int x, int y, const int value,
 	return tft_writeString(InstancePtr, x, y, buffer, foreGround, backGround);
 }
 
-/*****************************************************************************
- **
- * Write a string of characters to the TFT.
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- * @param  x is the X axis cordinate to start writing the character
- * @param  x is the Y axis cordinate to start writing the character
- * @param  CharValue is a pointer to the character array to be written
- *   to the TFT screen.
- *
- * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
- *
- * @note   None.
- *
- ******************************************************************************/
 int tft_writeString(XTft *InstancePtr, int x, int y, const char *CharValue,
 		u32 foreGround, u32 backGround) {
 	/*
@@ -406,61 +247,14 @@ int tft_writeString(XTft *InstancePtr, int x, int y, const char *CharValue,
 	return XST_SUCCESS;
 }
 
-/*****************************************************************************
- **
- * Add circle based on tft_drawCircle() to add it on the screen
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- * @param  x0 is the x cordinate to draw the circle
- * @param  y0 is the y cordinate to draw the circle
- * @param  radius determines how big is the circle
- *
- *
- * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
- *
- *
- ******************************************************************************/
 int tft_addCircle(XTft *InstancePtr, int x0, int y0, int radius) {
 	tft_drawCircle(InstancePtr, x0, y0, radius, COLOR_YELLOW);
 }
 
-/*****************************************************************************
- **
- * Remove circle based on tft_drawCircle() to remove it on the screen
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- * @param  x0 is the x cordinate to draw the circle
- * @param  y0 is the y cordinate to draw the circle
- * @param  radius determines how big is the circle
- *
- * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
- *
- *
- ******************************************************************************/
 int tft_removeCircle(XTft *InstancePtr, int x0, int y0, int radius) {
 	tft_drawCircle(InstancePtr, x0, y0, radius, COLOR_GREEN);
 }
 
-/*****************************************************************************
- **
- * Draw a solid circle on the Tft display based on midpoint circle algorithm.
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- * @param  x0 is the x cordinate to draw the circle
- * @param  y0 is the y cordinate to draw the circle
- * @param  radius determines how big is the circle
- * @param  colour determines the colour of the circle
- *
- * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
- *
- *
- ******************************************************************************/
 int tft_drawCircle(XTft *InstancePtr, int x0, int y0, int radius,
 		unsigned int colour) {
 	int x = radius;
@@ -504,26 +298,6 @@ int tft_drawCircle(XTft *InstancePtr, int x0, int y0, int radius,
 	return XST_SUCCESS;
 }
 
-/*****************************************************************************
- **
- * Draws a brick based on tft_drawLine() to add it on the screen
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- * @param  ColStartPos is the Start point of Column.
- *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
- * @param  RowStartPos is the Start point of Row.
- *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
- * @param  ColEndPos is the End point of Column.
- *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
- * @param  RowEndPos is the End point of Row.
- *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
- *
- * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
- *
- *
- ******************************************************************************/
 int tft_addBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 		u32 ColEndPos, u32 RowEndPos) {
 
@@ -531,26 +305,6 @@ int tft_addBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 			COLOR_BLACK);
 }
 
-/*****************************************************************************
- **
- * Remove a brick based on tft_drawLine() to remove it on the screen
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- * @param  ColStartPos is the Start point of Column.
- *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
- * @param  RowStartPos is the Start point of Row.
- *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
- * @param  ColEndPos is the End point of Column.
- *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
- * @param  RowEndPos is the End point of Row.
- *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
- *
- * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
- *
- *
- ******************************************************************************/
 int tft_removeBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 		u32 ColEndPos, u32 RowEndPos) {
 
@@ -558,27 +312,6 @@ int tft_removeBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 			COLOR_WHITE);
 }
 
-/*****************************************************************************
- **
- * Fill a brick on the screen
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- * @param  ColStartPos is the Start point of Column.
- *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
- * @param  RowStartPos is the Start point of Row.
- *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
- * @param  ColEndPos is the End point of Column.
- *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
- * @param  RowEndPos is the End point of Row.
- *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
- * @param  colour is the Color value to be filled for the brick.
- *
- * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
- *
- *
- ******************************************************************************/
 int tft_fillBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 		u32 ColEndPos, u32 RowEndPos, unsigned int color) {
 
@@ -586,27 +319,6 @@ int tft_fillBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 			color);
 }
 
-/*****************************************************************************
- **
- * Add a bar based on tft_drawLine() to add it on the screen
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- * @param  ColStartPos is the Start point of Column.
- *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
- * @param  RowStartPos is the Start point of Row.
- *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
- * @param  ColEndPos is the End point of Column.
- *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
- * @param  RowEndPos is the End point of Row.
- *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
- * @param  colour is the Color value to be filled for the bar.
- *
- * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
- *
- *
- ******************************************************************************/
 int tft_addBar(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 		u32 ColEndPos, u32 RowEndPos, unsigned int colour) {
 	tft_drawRect(InstancePtr, ColStartPos, RowStartPos, ColEndPos, RowEndPos,
@@ -617,18 +329,6 @@ int tft_addBar(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 
 }
 
-/*****************************************************************************/
-/**
- * Move the bar to the left
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- *
- * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
- *
- *
- ******************************************************************************/
 int tft_moveBarLeft(XTft *InstancePtr) {
 	if (barLeftPos > 0) {
 		barLeftPos--;
@@ -643,18 +343,6 @@ int tft_moveBarLeft(XTft *InstancePtr) {
 	}
 }
 
-/*****************************************************************************/
-/**
- * Move the bar to the right
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- *
- * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
- *
- *
- ******************************************************************************/
 int tft_moveBarRight(XTft *InstancePtr) {
 	if (barRightPos < DISPLAY_COLUMNS - 1) {
 		barRightPos++;
@@ -668,27 +356,6 @@ int tft_moveBarRight(XTft *InstancePtr) {
 	}
 }
 
-/*****************************************************************************/
-/**
- * Draws a line between two points with a specified color.
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- * @param  ColStartPos is the Start point of Column.
- *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
- * @param  RowStartPos is the Start point of Row.
- *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
- * @param  ColEndPos is the End point of Column.
- *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
- * @param  RowEndPos is the End point of Row.
- *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
- * @param  colour is the Color Value to be put at pixel.
- *
- * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
- *
- *
- ******************************************************************************/
 int tft_drawLine(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 		u32 ColEndPos, u32 RowEndPos, unsigned int colour) {
 	u32 Slope;
@@ -786,23 +453,6 @@ int tft_drawLine(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 	}
 }
 
-/*****************************************************************************
- **
- * Draw a rectangle base of TftDrawLine
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- * @param  ColStartPos is the Start point of Column.
- *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
- * @param  RowStartPos is the Start point of Row.
- *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
- * @param  ColEndPos is the End point of Column.
- *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
- * @param  RowEndPos is the End point of Row.
- *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
- * @param  colour is the Color Value to be put at pixel.
- *
- *
- ******************************************************************************/
 void tft_drawRect(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 		u32 ColEndPos, u32 RowEndPos, u32 colour) {
 	tft_drawLine(InstancePtr, ColStartPos, RowStartPos, ColEndPos, RowStartPos,
@@ -815,46 +465,12 @@ void tft_drawRect(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 			colour);
 }
 
-/*****************************************************************************
- **
- * Fill a rectangle
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- * @param  ColStartPos is the Start point of Column.
- *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
- * @param  RowStartPos is the Start point of Row.
- *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
- * @param  ColEndPos is the End point of Column.
- *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
- * @param  RowEndPos is the End point of Row.
- *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
- * @param  colour is the Color Value to be filled.
- *
- *
- ******************************************************************************/
 void tft_fillRect(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 		u32 ColEndPos, u32 RowEndPos, u32 colour) {
 	XTft_FillScreen(InstancePtr, ColStartPos, RowStartPos, ColEndPos, RowEndPos,
 			colour);
 }
 
-/*****************************************************************************
- **																			 *
- *																			 *
- *					---- Start of Helper Function Prototype ----			 *
- *																			 *
- *																			 *
- *****************************************************************************/
-
-/*****************************************************************************/
-/**
- * Converts integer to ascii
- *
- * @param  n is the integer to be converted
- * @param  s is the char buffer to store the conversion
- *
- *
- ******************************************************************************/
 void itoa(int n, char s[]) {
 	int i, sign;
 
@@ -870,14 +486,6 @@ void itoa(int n, char s[]) {
 	reverse(s);
 }
 
-/*****************************************************************************/
-/**
- * Reverse the char array
- *
- * @param  s is the char array to be reversed
- *
- *
- ******************************************************************************/
 void reverse(char s[]) {
 	int i, j;
 	char c;
