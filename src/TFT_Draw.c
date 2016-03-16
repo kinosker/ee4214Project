@@ -109,24 +109,24 @@ int tft_intialDraw(XTft *InstancePtr) {
 
 	tft_drawRect(InstancePtr, OUTER_COL_START_X, OUTER_COL_START_Y,
 			OUTER_COL_END_X, OUTER_COL_END_Y, COLOR_BLACK);
-	XTft_FillScreen(InstancePtr, OUTER_COL_START_X, OUTER_COL_START_Y,
+	tft_fillRect(InstancePtr, OUTER_COL_START_X, OUTER_COL_START_Y,
 			OUTER_COL_END_X, OUTER_COL_END_Y, COLOR_GREEN);
 
 	// Inner 80 Small boxes
 
-	for (i = 0; i < 10; i++) {
-		for (j = 0; j < 8; j++) {
-			tft_drawLine(InstancePtr, stor_X, ROW_1_Y + (20 * j), stor_X + 40,
-					ROW_1_Y + (20 * j), COLOR_BLACK);
-			tft_drawLine(InstancePtr, stor_X, ROW_1_Y + (20 * j), stor_X,
-					ROW_1_Y + (20 * j) + (15), COLOR_BLACK);
-			tft_drawLine(InstancePtr, stor_X, ROW_1_Y + (20 * j) + (15),
-					stor_X + 40, ROW_1_Y + (20 * j) + (15), COLOR_BLACK);
-			tft_drawLine(InstancePtr, stor_X + 40, ROW_1_Y + (20 * j),
-					stor_X + 40, ROW_1_Y + (20 * j) + (15), COLOR_BLACK);
-		}
-		stor_X = stor_X + 45;
-	}
+//	for (i = 0; i < 10; i++) {
+//		for (j = 0; j < 8; j++) {
+//			tft_drawLine(InstancePtr, stor_X, ROW_1_Y + (20 * j), stor_X + 40,
+//					ROW_1_Y + (20 * j), COLOR_BLACK);
+//			tft_drawLine(InstancePtr, stor_X, ROW_1_Y + (20 * j), stor_X,
+//					ROW_1_Y + (20 * j) + (15), COLOR_BLACK);
+//			tft_drawLine(InstancePtr, stor_X, ROW_1_Y + (20 * j) + (15),
+//					stor_X + 40, ROW_1_Y + (20 * j) + (15), COLOR_BLACK);
+//			tft_drawLine(InstancePtr, stor_X + 40, ROW_1_Y + (20 * j),
+//					stor_X + 40, ROW_1_Y + (20 * j) + (15), COLOR_BLACK);
+//		}
+//		stor_X = stor_X + 45;
+//	}
 
 	// Bar Box
 	tft_drawRect(InstancePtr, BAR_START_X, BAR_START_Y, BAR_END_X, BAR_END_Y,
@@ -135,7 +135,7 @@ int tft_intialDraw(XTft *InstancePtr) {
 	// Score (WORD) Box
 	tft_drawRect(InstancePtr, SCORE_WORD_BOX_START_X, SCORE_WORD_BOX_START_Y,
 			SCORE_WORD_BOX_END_X, SCORE_WORD_BOX_END_Y, COLOR_BLACK);
-	XTft_FillScreen(InstancePtr, SCORE_WORD_BOX_START_X, SCORE_WORD_BOX_START_Y,
+	tft_fillRect(InstancePtr, SCORE_WORD_BOX_START_X, SCORE_WORD_BOX_START_Y,
 			SCORE_WORD_BOX_END_X, SCORE_WORD_BOX_END_Y, COLOR_GREY);
 	tft_writeString(InstancePtr, SCORE_WORD_BOX_START_X + 2,
 			SCORE_WORD_BOX_START_Y + 7, "Scores", COLOR_BLACK, COLOR_GREY);
@@ -143,9 +143,8 @@ int tft_intialDraw(XTft *InstancePtr) {
 	// Score Outer Box
 	tft_drawRect(InstancePtr, SCORE_OUTER_BOX_START_X, SCORE_OUTER_BOX_START_Y,
 			SCORE_OUTER_BOX_END_X, SCORE_OUTER_BOX_END_Y, COLOR_BLACK);
-	XTft_FillScreen(InstancePtr, SCORE_OUTER_BOX_START_X,
-			SCORE_OUTER_BOX_START_Y, SCORE_OUTER_BOX_END_X,
-			SCORE_OUTER_BOX_END_Y, COLOR_GREY);
+	tft_fillRect(InstancePtr, SCORE_OUTER_BOX_START_X, SCORE_OUTER_BOX_START_Y,
+			SCORE_OUTER_BOX_END_X, SCORE_OUTER_BOX_END_Y, COLOR_GREY);
 
 	// 3 Score Inner Box
 	tft_drawRect(InstancePtr, SCORE_BOX1_START_X, SCORE_BOX_START_Y,
@@ -158,7 +157,7 @@ int tft_intialDraw(XTft *InstancePtr) {
 	// Current Ball Speed
 	tft_drawRect(InstancePtr, BALL_SPEED_START_X, BALL_SPEED_START_Y,
 			BALL_SPEED_END_X, BALL_SPEED_END_Y, COLOR_BLACK);
-	XTft_FillScreen(InstancePtr, BALL_SPEED_START_X, BALL_SPEED_START_Y,
+	tft_fillRect(InstancePtr, BALL_SPEED_START_X, BALL_SPEED_START_Y,
 			BALL_SPEED_END_X, BALL_SPEED_END_Y, COLOR_GREY);
 	tft_writeString(InstancePtr, BALL_SPEED_START_X, BALL_SPEED_START_Y - 20,
 			"Ball Speed", COLOR_BLACK, COLOR_WHITE);
@@ -166,7 +165,7 @@ int tft_intialDraw(XTft *InstancePtr) {
 	// Bricks Left
 	tft_drawRect(InstancePtr, BRICK_LEFT_START_X, BRICK_LEFT_START_Y,
 			BRICK_LEFT_END_X, BRICK_LEFT_END_Y, COLOR_BLACK);
-	XTft_FillScreen(InstancePtr, BRICK_LEFT_START_X, BRICK_LEFT_START_Y,
+	tft_fillRect(InstancePtr, BRICK_LEFT_START_X, BRICK_LEFT_START_Y,
 			BRICK_LEFT_END_X, BRICK_LEFT_END_Y, COLOR_GREY);
 	tft_writeString(InstancePtr, BRICK_LEFT_START_X, BALL_SPEED_END_Y + 5,
 			"Bricks left", COLOR_BLACK, COLOR_WHITE);
@@ -198,7 +197,7 @@ int tft_updateDisplay(XTft *InstancePtr);
  *		- Add / Remove based on it from BOTTOM to TOP!!!
  *		- For loop to add/remove => use colour to draw !! (May change colour due to requirement)
  *		* Update column for the bricks to be drawn
- * 		- NOTE !! : if color differ from FOREGROUND => DRAW ALL FUTUREBRICKS
+ * 		- NOTE !! : if color differ => DRAW ALL FUTUREBRICKS
  *
  * @param  InstancePtr is a pointer to the XTft instance.
  * @param  col_x is the position of X axis to start drawing.
@@ -213,7 +212,45 @@ int tft_updateDisplay(XTft *InstancePtr);
  *
  *****************************************************************************/
 int tft_updateColumn(XTft *InstancePtr, const int col_x, int currentBricks,
-		int futureBricks, unsigned int colour);
+		int futureBricks, unsigned int currentColour, unsigned int futureColour) {
+
+	int row_num, row_y;
+	if (currentColour != futureColour) {
+		// fill all future bricks
+		// add all future bricks
+		for (row_num = currentBricks; row_num < futureBricks; row_num++) {
+			row_y = ROW_Y_START + ROW_OFFSET * row_num; // position of y to draw rect.
+
+			tft_addBrick(InstancePtr, col_x, row_y, col_x + BRICK_SIZE_LENGTH,
+					row_y + BRICK_SIZE_HEIGHT);
+
+			tft_addBrick(InstancePtr, col_x, row_y, col_x + BRICK_SIZE_LENGTH,
+					row_y + BRICK_SIZE_HEIGHT);
+		}
+	}
+
+	else if (futureBricks < currentBricks) {
+		// remove some bricks
+		for (row_num = futureBricks; row_num < currentBricks; row_num++) {
+			row_y = ROW_Y_START + ROW_OFFSET * row_num; // position of y to draw rect.
+
+			tft_removeBrick(InstancePtr, col_x, row_y,
+					col_x + BRICK_SIZE_LENGTH, row_y + BRICK_SIZE_HEIGHT);
+		}
+	}
+
+	else if (futureBricks > currentBricks) {
+		// add some bricks
+
+		for (row_num = currentBricks; row_num < futureBricks; row_num++) {
+			row_y = ROW_Y_START + ROW_OFFSET * row_num; // position of y to draw rect.
+
+			tft_addBrick(InstancePtr, col_x, row_y, col_x + BRICK_SIZE_LENGTH,
+					row_y + BRICK_SIZE_HEIGHT);
+		}
+	}
+
+}
 
 /*****************************************************************************
  **
@@ -235,23 +272,24 @@ int tft_updateScore(XTft *InstancePtr, int score) {
 		score_Digit_Ones = score % 10;
 	else
 		score_Digit_Ones = 0;
-	score = score/10;
+	score = score / 10;
 	if (score != 0)
 		score_Digit_Tens = score % 10;
 	else
 		score_Digit_Tens = 0;
-	score = score/10;
+	score = score / 10;
 	if (score != 0)
 		score_Digit_Hundredth = score % 10;
 	else
 		score_Digit_Hundredth = 0;
 
-	tft_writeInteger(InstancePtr, SCORE_BOX1_START_X + 8,
-			SCORE_BOX_START_Y + 15, score_Digit_Hundredth, COLOR_BLACK, COLOR_GREY); //first number
-	tft_writeInteger(InstancePtr, SCORE_BOX2_START_X + 8,
-				SCORE_BOX_START_Y + 15, score_Digit_Tens, COLOR_BLACK, COLOR_GREY); //second number
-	tft_writeInteger(InstancePtr, SCORE_BOX3_START_X + 8,
-				SCORE_BOX_START_Y + 15, score_Digit_Ones, COLOR_BLACK, COLOR_GREY); //third number
+	tft_writeInteger(InstancePtr, SCORE_BOX1_START_X + 9,
+			SCORE_BOX_START_Y + 15, score_Digit_Hundredth, COLOR_BLACK,
+			COLOR_GREY); //first number
+	tft_writeInteger(InstancePtr, SCORE_BOX2_START_X + 9,
+			SCORE_BOX_START_Y + 15, score_Digit_Tens, COLOR_BLACK, COLOR_GREY); //second number
+	tft_writeInteger(InstancePtr, SCORE_BOX3_START_X + 9,
+			SCORE_BOX_START_Y + 15, score_Digit_Ones, COLOR_BLACK, COLOR_GREY); //third number
 }
 
 /*****************************************************************************
@@ -291,8 +329,26 @@ int tft_updateSpeed(XTft *InstancePtr, int speed) {
  *
  *****************************************************************************/
 int tft_updateBricksLeft(XTft *InstancePtr, int bricksLeft) {
-	tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 50,
-			BRICK_LEFT_START_Y + 5, bricksLeft, COLOR_BLACK, COLOR_GREY);
+	int temp_brickLeft = bricksLeft, count=0;
+	while ((temp_brickLeft /= 10) != 0)
+	{
+		count++;
+	}
+	switch(count){
+		case 0:
+			tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 53,
+						BRICK_LEFT_START_Y + 5, bricksLeft, COLOR_BLACK, COLOR_GREY);
+			break;
+		case 1:
+			tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 53,
+									BRICK_LEFT_START_Y + 5, bricksLeft, COLOR_BLACK, COLOR_GREY);
+			break;
+		case 2:
+			tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 50,
+						BRICK_LEFT_START_Y + 5, bricksLeft, COLOR_BLACK, COLOR_GREY);
+			break;
+	}
+
 }
 
 /*****************************************************************************
@@ -471,7 +527,7 @@ int tft_drawCircle(XTft *InstancePtr, int x0, int y0, int radius,
 int tft_addBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 		u32 ColEndPos, u32 RowEndPos) {
 
-	tft_addBar(InstancePtr, ColStartPos, RowStartPos, ColEndPos, RowStartPos,
+	tft_drawRect(InstancePtr, ColStartPos, RowStartPos, ColEndPos, RowEndPos,
 			COLOR_BLACK);
 }
 
@@ -497,8 +553,37 @@ int tft_addBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
  ******************************************************************************/
 int tft_removeBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 		u32 ColEndPos, u32 RowEndPos) {
-	tft_addBar(InstancePtr, ColStartPos, RowStartPos, ColEndPos, RowStartPos,
+
+	tft_drawRect(InstancePtr, ColStartPos, RowStartPos, ColEndPos, RowEndPos,
 			COLOR_WHITE);
+}
+
+/*****************************************************************************
+ **
+ * Fill a brick on the screen
+ *
+ * @param  InstancePtr is a pointer to the XTft instance.
+ * @param  ColStartPos is the Start point of Column.
+ *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
+ * @param  RowStartPos is the Start point of Row.
+ *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
+ * @param  ColEndPos is the End point of Column.
+ *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
+ * @param  RowEndPos is the End point of Row.
+ *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
+ * @param  colour is the Color value to be filled for the brick.
+ *
+ * @return
+ *   - XST_SUCCESS if successful.
+ *   - XST_FAILURE if unsuccessful.
+ *
+ *
+ ******************************************************************************/
+int tft_fillBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
+		u32 ColEndPos, u32 RowEndPos, unsigned int color) {
+
+	tft_fillRect(InstancePtr, ColStartPos, RowStartPos, ColEndPos, RowEndPos,
+			color);
 }
 
 /*****************************************************************************
@@ -514,7 +599,7 @@ int tft_removeBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
  *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
  * @param  RowEndPos is the End point of Row.
  *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
- * @param  colour is the Color Value to be put at pixel.
+ * @param  colour is the Color value to be filled for the bar.
  *
  * @return
  *   - XST_SUCCESS if successful.
@@ -525,7 +610,11 @@ int tft_removeBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 int tft_addBar(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 		u32 ColEndPos, u32 RowEndPos, unsigned int colour) {
 	tft_drawRect(InstancePtr, ColStartPos, RowStartPos, ColEndPos, RowEndPos,
-			colour);
+			COLOR_BLACK); // line color = black
+
+	// tft_fillRect(InstancePtr, ColStartPos, RowStartPos, ColEndPos, RowEndPos,
+	// 		colour); // line color = black
+
 }
 
 /*****************************************************************************/
@@ -715,15 +804,38 @@ int tft_drawLine(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
  *
  ******************************************************************************/
 void tft_drawRect(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
-		u32 ColEndPos, u32 RowEndPos, u32 PixelVal) {
+		u32 ColEndPos, u32 RowEndPos, u32 colour) {
 	tft_drawLine(InstancePtr, ColStartPos, RowStartPos, ColEndPos, RowStartPos,
-			PixelVal);
+			colour);
 	tft_drawLine(InstancePtr, ColStartPos, RowStartPos, ColStartPos, RowEndPos,
-			PixelVal);
+			colour);
 	tft_drawLine(InstancePtr, ColStartPos, RowEndPos, ColEndPos, RowEndPos,
-			PixelVal);
+			colour);
 	tft_drawLine(InstancePtr, ColEndPos, RowStartPos, ColEndPos, RowEndPos,
-			PixelVal);
+			colour);
+}
+
+/*****************************************************************************
+ **
+ * Fill a rectangle
+ *
+ * @param  InstancePtr is a pointer to the XTft instance.
+ * @param  ColStartPos is the Start point of Column.
+ *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
+ * @param  RowStartPos is the Start point of Row.
+ *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
+ * @param  ColEndPos is the End point of Column.
+ *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
+ * @param  RowEndPos is the End point of Row.
+ *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
+ * @param  colour is the Color Value to be filled.
+ *
+ *
+ ******************************************************************************/
+void tft_fillRect(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
+		u32 ColEndPos, u32 RowEndPos, u32 colour) {
+	XTft_FillScreen(InstancePtr, ColStartPos, RowStartPos, ColEndPos, RowEndPos,
+			colour);
 }
 
 /*****************************************************************************

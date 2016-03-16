@@ -66,7 +66,26 @@
 #define OUTER_COL_END_Y		420
 
 //inner smaller squares (x80)
-#define COL_1_X			65			// default X value to start.
+#define COL_OFFSET		45 								// Col offset from each other
+#define COL_X_START		65 								// Default start x value for the smaller square
+#define COL_1_X			COL_X_START + COL_OFFSET * 0 	// Default col 1 X value to start.
+#define COL_2_X			COL_X_START + COL_OFFSET * 1 	// Default col 2 X value to start.
+#define COL_3_X			COL_X_START + COL_OFFSET * 2	// Default col 3 X value to start.
+#define COL_4_X			COL_X_START + COL_OFFSET * 3 	// Default col 4 X value to start.
+#define COL_5_X			COL_X_START + COL_OFFSET * 4 	// Default col 5 X value to start.
+#define COL_6_X			COL_X_START + COL_OFFSET * 5 	// Default col 6 X value to start.
+#define COL_7_X			COL_X_START + COL_OFFSET * 6 	// Default col 7 X value to start.
+#define COL_8_X			COL_X_START + COL_OFFSET * 7 	// Default col 8 X value to start.
+#define COL_9_X			COL_X_START + COL_OFFSET * 8 	// Default col 9 X value to start.
+#define COL_10_X		COL_X_START + COL_OFFSET * 9 	// Default col 10 X value to start.
+
+#define ROW_OFFSET		20 											// Row offset from each other
+#define ROW_Y_START		65 											// Default start Y value to draw smaller square
+#define ROW_Y_END		ROW_Y_START + ROW_OFFSET *  ROW_BRICKS - 1	// Default Endin Y value to draw smaller square
+
+
+
+
 #define ROW_1_Y			65 			// default Y value to start.
 //bar
 #define BAR_START_X			220
@@ -203,9 +222,10 @@ int tft_updateDisplay(XTft *InstancePtr);
  *
  * @param  InstancePtr is a pointer to the XTft instance.
  * @param  col_x is the position of X axis to start drawing.
- * @param  currentBricks is the number of bricks on the screen.
- * @param  futureBricks is the number of bricks to be shown on the screen.
- * @param  colour is the colour of the bricks to be shown.
+ * @param  currentBricks is the number of bricks on the screen now.
+ * @param  futureBricks is the number of bricks that is to be updated.
+ * @param  currentColour is the colour of the bricks on the screen now.
+ * @param  futureColour is the colour of the bricks that is to be updated.
  *
  *
  * @return
@@ -214,7 +234,7 @@ int tft_updateDisplay(XTft *InstancePtr);
  *
  *****************************************************************************/
 int tft_updateColumn(XTft *InstancePtr, const int col_x, int currentBricks,
-		int futureBricks, unsigned int colour);
+		int futureBricks, unsigned int currentColour, unsigned int futureColour);
 
 /*****************************************************************************
  **
@@ -403,6 +423,31 @@ int tft_addBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 int tft_removeBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 		u32 ColEndPos, u32 RowEndPos);
 
+
+/*****************************************************************************
+ **
+ * Fill a brick on the screen
+ *
+ * @param  InstancePtr is a pointer to the XTft instance.
+ * @param  ColStartPos is the Start point of Column.
+ *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
+ * @param  RowStartPos is the Start point of Row.
+ *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
+ * @param  ColEndPos is the End point of Column.
+ *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
+ * @param  RowEndPos is the End point of Row.
+ *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
+ * @param  colour is the Color value to be filled for the brick.
+ *
+ * @return
+ *   - XST_SUCCESS if successful.
+ *   - XST_FAILURE if unsuccessful.
+ *
+ *
+ ******************************************************************************/
+int tft_fillBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
+		u32 ColEndPos, u32 RowEndPos, unsigned int colour);
+
 /*****************************************************************************
  **
  * Add a bar based on tft_drawLine() to add it on the screen
@@ -497,7 +542,32 @@ int tft_drawLine(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
  *
  ******************************************************************************/
 void tft_drawRect(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
-		u32 ColEndPos, u32 RowEndPos, u32 PixelVal);
+		u32 ColEndPos, u32 RowEndPos, u32 colour);
+
+
+/*****************************************************************************
+ **
+ * Fill a rectangle
+ *
+ * @param  InstancePtr is a pointer to the XTft instance.
+ * @param  ColStartPos is the Start point of Column.
+ *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
+ * @param  RowStartPos is the Start point of Row.
+ *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
+ * @param  ColEndPos is the End point of Column.
+ *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
+ * @param  RowEndPos is the End point of Row.
+ *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
+ * @param  colour is the Color Value to be filled.
+ *
+ *
+ ******************************************************************************/
+void tft_fillRect(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
+		u32 ColEndPos, u32 RowEndPos, u32 colour);
+
+
+
+
 
 /*****************************************************************************
  **																			 *
