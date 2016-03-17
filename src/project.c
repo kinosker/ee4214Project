@@ -19,8 +19,8 @@
 
 // 5 Priority levels for this processor.
 #define PRIO_CONTROLLER 1
-#define PRIO_BALL		2
-#define PRIO_BAR		3
+#define PRIO_BAR		2
+#define PRIO_BALL		3
 #define PRIO_COL 		4
 #define PRIO_SCORE_ZONE 5
 
@@ -33,6 +33,7 @@
 
 void* thread_func_controller();
 void* thread_func_col(int col_x);
+void* thread_func_time_elapsed() ;
 
 void changeBrickColour(int score,  int colThreads);
 unsigned int updateBrickColour(unsigned int currentColour);
@@ -54,7 +55,7 @@ struct sched_param sched_par;
 
 pthread_attr_t attr;
 
-pthread_t tid_controller, tid_col_1, tid_col_2, tid_col_3, tid_col_4, tid_col_5,
+pthread_t tid_controller, tid_time_elapsed, tid_col_1, tid_col_2, tid_col_3, tid_col_4, tid_col_5,
 		tid_col_6, tid_col_7, tid_col_8, tid_col_9, tid_col_10;
 
 
@@ -229,6 +230,18 @@ void main_prog(void *arg) {
 	} else {
 		xil_printf("Col Thread 10 launched with ID %d \r\n", tid_col_10);
 	}
+
+
+	sched_par.sched_priority = PRIO_SCORE_ZONE; 	// set priority for score zone threads
+	pthread_attr_setschedparam(&attr, &sched_par); 	// update priority attribute
+
+	//start timer thread. (SHOULD NOT BE HERE ON ACTUAL PROJECT !!! Launch ball => then start this thread..)
+	ret = pthread_create(&tid_time_elapsed, NULL, (void*) thread_func_time_elapsed);
+	if (ret != 0) {
+		xil_printf("-- ERROR (%d) launching thread_time_elapsed...\r\n", ret);
+	} else {
+		xil_printf("Col Thread 1 launched with ID %d \r\n", tid_col_1);
+	}
 }
 
 void* thread_func_controller() {
@@ -268,6 +281,40 @@ void* thread_func_controller() {
 	}
 
 }
+
+
+void* thread_func_time_elapsed() 
+{
+	time_t startTime, timeElapsed, gameTime, prevGameTime; 
+
+	time(&startTime); // get start time of the game
+	
+	while (1)
+	{
+		time(&timeElapsed); // get time elapsed so far...
+
+		if(timeElapsed < startTime)
+		{
+			// over flow ... handle it !
+			gameTime = MAX_TIME - timeElapsed - startTime; // max time = ??
+		}
+		else
+		{
+			gameTime = startTime - timeElapsed;
+		}
+
+		if(prevGameTime != gameTime)
+		{
+			// update time box (function needed !!!)
+			// tft_updateTime(???????? , gameTime);
+
+			prevGameTime = gameTime;
+		}
+
+	}
+
+}
+
 
 void* thread_func_col(int col_x) {
 	unsigned int currentColour = COLOR_GREEN; // some default color.
