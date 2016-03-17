@@ -63,7 +63,7 @@ pthread_mutex_t mutex_col;
 struct barrier_t barrier_col;
 sem_t sem_colour_yellow;
 sem_t sem_colour_background;
-
+time_t abc;
 /************************** Button variables********************************************/
 //volatile char bar_Status;
 XGpio gpPB; //PB device instance.

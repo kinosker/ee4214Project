@@ -8,7 +8,6 @@
 #ifndef MYBUTTON_H_
 #define MYBUTTON_H_
 
-#include "xgpio.h"
 
 /*****************************************************************************
  *																			 *
@@ -33,23 +32,106 @@
  *****************************************************************************/
 
 
-
-// return 1 if left button is pressed
+/*****************************************************************************
+ **
+ * Check whether the left button is pressed
+ *
+ * @return
+ *   -> 1 if button pressed.
+ *   -> 0 if not pressed
+ *
+ *
+ ******************************************************************************/
 char myButton_checkLeft();
 
-// return 1 if right button is pressed
+/*****************************************************************************
+ **
+ * Check whether the right button is pressed
+ *
+ * @return
+ *   -> 1 if button pressed.
+ *   -> 0 if not pressed
+ *
+ *
+ ******************************************************************************/
 char myButton_checkRight();
 
-// return 1 if up button is pressed
+/*****************************************************************************
+ **
+ * Check whether the up button is pressed
+ *
+ * @return
+ *   -> 1 if button pressed.
+ *   -> 0 if not pressed
+ *
+ *
+ ******************************************************************************/
 char myButton_checkUp();
 
-// return 1 if down button is pressed
+/*****************************************************************************
+ **
+ * Check whether the down button is pressed
+ *
+ * @return
+ *   -> 1 if button pressed.
+ *   -> 0 if not pressed
+ *
+ *
+ ******************************************************************************/
 char myButton_checkDown();
 
-// return 1 if center button is pressed
+/*****************************************************************************
+ **
+ * Check whether the centre button is pressed
+ *
+ * @return
+ *   -> 1 if button pressed.
+ *   -> 0 if not pressed
+ *
+ *
+ ******************************************************************************/
 char myButton_checkCenter();
 
+/*****************************************************************************
+ **
+ * Initialize the hardware button
+ *
+ * @param *gpPB
+ *
+ * @return
+ *   -> 1 if initialize success
+ *   -> 0 if not suuccess
+ *
+ *
+ ******************************************************************************/
 int init_myButton(XGpio *gpPB);
+
+/*****************************************************************************
+ **
+ * Interrupt that handle button when button is pressed
+ *
+ * @param *gpPB
+ *
+ ******************************************************************************/
 void myButton_int_handler(XGpio *gpPB);
+
+/*****************************************************************************
+ **
+ * Interrupt that handle button when button is pressed
+ *
+ * @param *debTimer is the interrupt timer that is used to determine whether
+ * 					the button is pressed or it is just a bouncing effect
+ * 					when the button is pressed
+ *
+ *
+ * @return
+ *   -> 1 if not debounce
+ *   -> 0 if debounce happens
+ *
+ *
+ ******************************************************************************/
+int debounce(unsigned long *debTimer);
+
+unsigned int myButton_ticks_to_ms (unsigned int ticks);
 
 #endif /* MYBUTTON_H_ */
