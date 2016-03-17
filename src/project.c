@@ -62,6 +62,12 @@ pthread_mutex_t mutex_col;
 struct barrier_t barrier_col;
 sem_t sem_colour;
 
+/************************** Button variables********************************************/
+volatile char bar_Status;
+XGpio gpPB; //PB device instance.
+
+
+
 volatile int taskrunning;
 
 int main() {
@@ -84,7 +90,7 @@ int main() {
 }
 
 void main_prog(void *arg) {
-	int ret;
+	int ret, Status;;
 
 	// initialize the semaphore
 	if (sem_init(&sem_colour, 0, 2)  < 0) // init sem_colour with 2 resource 
@@ -106,7 +112,17 @@ void main_prog(void *arg) {
 		xil_printf("-- ERROR (%d) init uart_mutex...\r\n", ret);
 	}
 
-
+	//initialize button
+//	xil_printf("Initializing PB\r\n");
+//	Status = XGpio_Initialize(&gpPB, XPAR_GPIO_0_DEVICE_ID);
+//	XGpio_SetDataDirection(&gpPB, 1, 0x000000FF);
+//	xil_printf("Enabling PB interrupts\r\n");
+//	XGpio_InterruptGlobalEnable(&gpPB);
+//	// interrupt enable. both global enable and this function should be called to enable gpio interrupts.
+//	XGpio_InterruptEnable(&gpPB,1);
+//	register_int_handler(XPAR_MICROBLAZE_0_AXI_INTC_AXI_GPIO_0_IP2INTC_IRPT_INTR, gpPBIntHandler, &gpPB);
+//	//enable the interrupt in xilkernel
+//	enable_interrupt(XPAR_MICROBLAZE_0_AXI_INTC_AXI_GPIO_0_IP2INTC_IRPT_INTR);
 
 
 	print("startinitDraw");
@@ -270,6 +286,19 @@ void* thread_func_col(int col_x) {
 		currentColour = futureColour;
 		xil_printf ("\r\nend is Col :  %d \r", col_x);
 		pthread_mutex_unlock (&mutex_col);
+
+//		if(FLAG_BARRIGHT)
+//		{
+//			tft_moveBarRight(&InstancePtr);
+//			bar_Status = 0;
+//		}
+//
+//		if(FLAG_BARLEFT)
+//		{
+//			tft_moveBarLeft(&InstancePtr);
+//			bar_Status = 0;
+//		}
+
 
 		//pthread_exit(0);
 	}

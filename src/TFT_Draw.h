@@ -91,11 +91,16 @@
 
 #define ROW_1_Y			65 			// default Y value to start.
 //bar
-#define BAR_START_X			220
+#define BAR_START_X			247
 #define BAR_START_Y			405
-#define BAR_END_X			300
+#define BAR_END_X			327
 #define BAR_END_Y			410
 #define BAR_LENGTH			80
+
+//Ball Radius
+#define CIRCLE_RADIUS 7
+#define CIRCLE_X 287
+#define CIRCLE_Y 397
 
 //Box Containing Word SCORE
 #define SCORE_WORD_BOX_START_X		550
@@ -119,6 +124,12 @@
 #define SCORE_BOX_START_Y		75
 #define SCORE_BOX_END_Y			115
 
+//Time Box
+#define TIME_START_X		520
+#define TIME_START_Y		250
+#define TIME_END_X	    	635
+#define TIME_END_Y		    270
+
 //Speed of Ball Box
 #define BALL_SPEED_START_X		520
 #define BALL_SPEED_START_Y		348
@@ -131,11 +142,14 @@
 #define BRICK_LEFT_END_X		635
 #define BRICK_LEFT_END_Y		408
 
-//Ball Radius
-#define CIRCLE_RADIUS 7
-#define CIRCLE_X 223
-#define CIRCLE_Y 397
-
+//Buttons
+#define BTNL  4     // Bit 3 of value read
+#define BTNR  8     // Bit 4 of value read
+#define BTNU  16     // Bit 3 of value read
+#define BTND  2     // Bit 4 of value read
+#define BTNC  1     // Bit 3 of value read
+#define FLAG_BARLEFT 1 // bar moving left
+#define FLAG_BARRIGHT 0 // bar moving right
 /*****************************************************************************
  **																			 *
  *																			 *
@@ -600,5 +614,7 @@ void itoa(int n, char s[]);
  *
  ******************************************************************************/
 void reverse(char s[]);
+
+static int gpPBIntHandler(XGpio gpPB);
 
 #endif /* TFT_DRAW_H_ */
