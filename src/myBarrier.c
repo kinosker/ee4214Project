@@ -24,12 +24,12 @@ void myBarrier_wait(struct barrier_t *barrier)
 
 	if(barrier->currentSize == 0)
 	{
-		for(i = 0 ; i < barrier->maxCount ; i++)
+		for(i = 0 ; i < barrier->maxSize ; i++)
 		{
 			sem_post(&(barrier->sema));
 		}
 
-		barrier->currentSize = barrier->maxSize; // reset back to maxCount of threads to wait.
+		barrier->currentSize = barrier->maxSize; // reset back to maxSize of threads to wait.
 	}	
 
 	pthread_mutex_unlock(&barrier->mutex);
