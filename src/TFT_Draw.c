@@ -193,7 +193,7 @@ int tft_updateColumn(XTft *InstancePtr, const int col_x, int currentBricks,
 	
 	row_num = 0; // reset row number
 
-	while(futureBricks)
+	while(futureBricks && (currentColour != futureColour))
 	{
 		// fill all bricks in futureBricks
 		if(futureBricks & 1)
@@ -352,8 +352,8 @@ int tft_addBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 int tft_removeBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 		u32 ColEndPos, u32 RowEndPos) {
 
-	tft_drawRect(InstancePtr, ColStartPos, RowStartPos, ColEndPos, RowEndPos,
-			COLOR_WHITE);
+	tft_fillRect(InstancePtr, ColStartPos, RowStartPos, ColEndPos, RowEndPos,
+			COLOR_GREEN);
 }
 
 int tft_fillBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,

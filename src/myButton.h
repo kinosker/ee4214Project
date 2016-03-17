@@ -8,6 +8,8 @@
 #ifndef MYBUTTON_H_
 #define MYBUTTON_H_
 
+#include "xgpio.h"
+
 /*****************************************************************************
  *																			 *
  *																			 *
@@ -44,6 +46,6 @@
  *
  *****************************************************************************/
 
-static int gpPBIntHandler(XGpio gpPB);
+int gpPBIntHandler(XGpio gpPB);
 
 #endif /* MYBUTTON_H_ */

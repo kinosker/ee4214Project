@@ -12,6 +12,7 @@
 #include <stdio.h>
 #include "TFT_Draw.h"
 #include "myBarrier.h"
+#include "myButton.h"
 #define XST_SUCCESS                     0L
 #define XST_FAILURE                     1L
 // TO DO : read and understand the xilkernel system calls as well as the driver APIs used.
@@ -33,8 +34,8 @@
 void* thread_func_controller();
 void* thread_func_col(int col_x);
 
-void changeBrickColour(int score);
-unsigned int updateBrickColour();
+void changeBrickColour(int score,  int colThreads);
+unsigned int updateBrickColour(unsigned int currentColour);
 
 
 void main_prog(void *arg);
@@ -60,7 +61,8 @@ pthread_t tid_controller, tid_col_1, tid_col_2, tid_col_3, tid_col_4, tid_col_5,
 /************************** Thread Synchronisation variables ****************************/
 pthread_mutex_t mutex_col;
 struct barrier_t barrier_col;
-sem_t sem_colour;
+sem_t sem_colour_yellow;
+sem_t sem_colour_background;
 
 /************************** Button variables********************************************/
 volatile char bar_Status;
@@ -93,7 +95,13 @@ void main_prog(void *arg) {
 	int ret, Status;;
 
 	// initialize the semaphore
-	if (sem_init(&sem_colour, 0, 2)  < 0) // init sem_colour with 2 resource 
+	if (sem_init(&sem_colour_yellow, 0, COL_YELLOW)  < 0) // init sem_colour_yellow with 2 resource
+	{
+		print("Error while initializing semaphore sem.\r\n");
+	}
+
+	// initialize the semaphore
+	if (sem_init(&sem_colour_background, 0, COL_BACKGROUND)  < 0) // init sem_colour_background with 8 resource
 	{
 		print("Error while initializing semaphore sem.\r\n");
 	}
@@ -237,6 +245,7 @@ void* thread_func_controller() {
 
 	// semaphore release
 	int score = 0;
+	int colThreads = COL_BRICKS; // Number of column threads = how many column of bricks.
 
 	while(1)
 	{
@@ -248,16 +257,12 @@ void* thread_func_controller() {
 
 		myBarrier_wait(&barrier_col); // "fire" all col threads
 
-		sleep(100);
+		sleep(400);
 
-		changeBrickColour(++score);
+		changeBrickColour(++score, colThreads);
 
 
 	}
-	//pthread_exit(0);
-
-
-	// ???
 
 }
 
@@ -265,8 +270,9 @@ void* thread_func_col(int col_x) {
 	unsigned int currentColour = COLOR_GREEN; // some default color.
 	unsigned int futureColour = COLOR_GREEN; // some default color.
 
-	unsigned char currentBricks = 0; 		 // start with 0 bricks..
-	unsigned char futureBricks = COL_BRICKS; // after updateColumn will have COL_BRICKS!!!
+	unsigned char currentBricks = 0; 		  // start with 0 bricks..
+	unsigned char futureBricks = 0b11111111; // after updateColumn will have 8 col brick!!!
+	unsigned char randBricks;
 
 	unsigned int thread_ScoreAccumulated = 0;
 
@@ -278,25 +284,32 @@ void* thread_func_col(int col_x) {
 
 		myBarrier_wait(&barrier_col); // wait for all col threads to reach here... and controller thread to reach wait.
 
-		futureColour = updateBrickColour();
+		futureColour = updateBrickColour(currentColour);
+
 
 		pthread_mutex_lock (&mutex_col);
 		xil_printf ("\r\nThis is Col :  %d \r", col_x);
 		tft_updateColumn(&InstancePtr, col_x, currentBricks, futureBricks,currentColour, futureColour);
+
 		currentColour = futureColour;
+		currentBricks = futureBricks;
+
+		randBricks = rand() % 256;
+
+		if(randBricks < currentBricks)
+			futureBricks = randBricks;
+
 		xil_printf ("\r\nend is Col :  %d \r", col_x);
 		pthread_mutex_unlock (&mutex_col);
 
 //		if(FLAG_BARRIGHT)
 //		{
 //			tft_moveBarRight(&InstancePtr);
-//			bar_Status = 0;
 //		}
 //
 //		if(FLAG_BARLEFT)
 //		{
 //			tft_moveBarLeft(&InstancePtr);
-//			bar_Status = 0;
 //		}
 
 
@@ -306,35 +319,78 @@ void* thread_func_col(int col_x) {
 }
 
 
-// Simple Description : Release 2 semaphore resource for brick colour change.
-void changeBrickColour(int score)
+// Simple Description : Release semaphore resource for brick colour change.
+void changeBrickColour(int score, int colThreads)
 {
+	int i, semaRelease;
+
 	print("Starting Here\r\n");
 	xil_printf("score: %d", score);
 	if (score % 10 == 0)
 	{
 		print("inside loop liao");
-		//release 2 semaphore colour resources!!!
-		sem_post(&sem_colour);
-		sem_post(&sem_colour);
+		//release 2 semaphore yellow colour resources!!!
+
+		if(colThreads > COL_YELLOW)
+		{
+			// some col need to be green
+			semaRelease = colThreads - COL_YELLOW;
+			for(i = 0; i < semaRelease ; i++)
+			{
+				// release semaphore to change to background
+				sem_post(&sem_colour_background);
+			}
+		}
+
+		if(colThreads < COL_YELLOW)
+		{
+			// lesser thread than column to be yellow.. release lesser sema.
+			for(i = 0; i < colThreads ; i++)
+			{
+				// release semaphore to change to background
+				sem_post(&sem_colour_yellow);
+			}
+		}
+		else
+		{
+			for(i = 0; i < COL_YELLOW ; i++)
+			{
+				// release semaphore to change to background
+				sem_post(&sem_colour_yellow);
+			}
+		}
 	}
 }
 
 // Simple Description : Snatch for 2 semaphore resource, fail then colour same..
-unsigned int updateBrickColour()
+unsigned int updateBrickColour(unsigned int currentColour)
 {
+
+
 	sleep (rand() % MAX_RAND_SLEEP);
 
-	if(sem_trywait(&sem_colour) == SEM_SUCCESS)
+	if(sem_trywait(&sem_colour_yellow) == SEM_SUCCESS)
 	{
 		// resource snatched !
 		return COLOR_YELLOW;	
 	}
 	else
 	{
-		// failed to snatched resource.
-		return COLOR_GREEN;
+		if(sem_trywait(&sem_colour_background) == SEM_SUCCESS)
+		{
+			// failed to snatched resource
+			return COLOR_GREEN;
+		}
+		else
+		{
+			// nothing to snatch
+			return currentColour;
+
+		}
+
 	}
+
+
 
 }
 
