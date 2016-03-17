@@ -17,13 +17,12 @@
  *																			 *
  *																			 *
  ******************************************************************************/
-#define BTNL  4     // Bit 3 of value read
-#define BTNR  8     // Bit 4 of value read
-#define BTNU  16     // Bit 3 of value read
-#define BTND  2     // Bit 4 of value read
-#define BTNC  1     // Bit 3 of value read
-#define FLAG_BARLEFT 1 // bar moving left
-#define FLAG_BARRIGHT 0 // bar moving right
+#define BUTTON_LEFT_PRESS  4     // Bit 3 of value read
+#define BUTTON_RIGHT_PRESS  8     // Bit 4 of value read
+#define BUTTON_UP_PRESS  16     // Bit 3 of value read
+#define BUTTON_DOWN_PRESS  2     // Bit 4 of value read
+#define BUTTON_CENTER_PRESS  1     // Bit 3 of value read
+#define BUTTON_INIT 0 // bar moving right
 
 /*****************************************************************************
  **																			 *
@@ -33,19 +32,24 @@
  *																			 *
  *****************************************************************************/
 
-/*****************************************************************************
- **
- * Button Interrupt
- *
- * @param  gpPB is the button in hardware.
- *
- *
- * @return
- *   - FLAG_BARLEFT if LEFT button pressed.
- *   - FLAG_BARRIGHT if RIGHT button pressed.
- *
- *****************************************************************************/
 
-int gpPBIntHandler(XGpio gpPB);
+
+// return 1 if left button is pressed
+char myButton_checkLeft();
+
+// return 1 if right button is pressed
+char myButton_checkRight();
+
+// return 1 if up button is pressed
+char myButton_checkUp();
+
+// return 1 if down button is pressed
+char myButton_checkDown();
+
+// return 1 if center button is pressed
+char myButton_checkCenter();
+
+int init_myButton(XGpio *gpPB);
+void myButton_int_handler(XGpio *gpPB);
 
 #endif /* MYBUTTON_H_ */

@@ -93,9 +93,10 @@
 //bar
 #define BAR_START_X			247
 #define BAR_START_Y			405
-#define BAR_END_X			327
-#define BAR_END_Y			410
+//#define BAR_END_X			327
+//#define BAR_END_Y			410
 #define BAR_LENGTH			80
+#define BAR_HEIGHT			5
 
 //Ball Radius
 #define CIRCLE_RADIUS 7
