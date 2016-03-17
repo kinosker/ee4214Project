@@ -267,10 +267,11 @@ void* thread_func_col(int col_x) {
 		pthread_mutex_lock (&mutex_col);
 		xil_printf ("\r\nThis is Col :  %d \r", col_x);
 		tft_updateColumn(&InstancePtr, col_x, currentBricks, futureBricks,currentColour, futureColour);
+		currentColour = futureColour;
 		xil_printf ("\r\nend is Col :  %d \r", col_x);
 		pthread_mutex_unlock (&mutex_col);
 
-		pthread_exit(0);
+		//pthread_exit(0);
 	}
 
 }
