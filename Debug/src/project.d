@@ -9,6 +9,8 @@ src/project.d: ../src/project.c \
  ../../xilkernel_bsp_0/microblaze_0/include/mb_interface.h \
  ../../xilkernel_bsp_0/microblaze_0/include/xil_exception.h \
  ../../xilkernel_bsp_0/microblaze_0/include/xil_printf.h \
+ ../../xilkernel_bsp_0/microblaze_0/include/xgpio.h \
+ ../../xilkernel_bsp_0/microblaze_0/include/xgpio_l.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/init.h \
  ../../xilkernel_bsp_0/microblaze_0/include/config/config_cparam.h \
  ../../xilkernel_bsp_0/microblaze_0/include/os_config.h \
@@ -22,8 +24,6 @@ src/project.d: ../src/project.c \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/ipc.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/shm.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/mpu.h \
- ../../xilkernel_bsp_0/microblaze_0/include/xgpio.h \
- ../../xilkernel_bsp_0/microblaze_0/include/xgpio_l.h \
  ../../xilkernel_bsp_0/microblaze_0/include/xparameters.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/timer.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/intr.h \
@@ -50,6 +50,10 @@ src/project.d: ../src/project.c \
 
 ../../xilkernel_bsp_0/microblaze_0/include/xil_printf.h:
 
+../../xilkernel_bsp_0/microblaze_0/include/xgpio.h:
+
+../../xilkernel_bsp_0/microblaze_0/include/xgpio_l.h:
+
 ../../xilkernel_bsp_0/microblaze_0/include/sys/init.h:
 
 ../../xilkernel_bsp_0/microblaze_0/include/config/config_cparam.h:
@@ -75,10 +79,6 @@ src/project.d: ../src/project.c \
 ../../xilkernel_bsp_0/microblaze_0/include/sys/shm.h:
 
 ../../xilkernel_bsp_0/microblaze_0/include/sys/mpu.h:
-
-../../xilkernel_bsp_0/microblaze_0/include/xgpio.h:
-
-../../xilkernel_bsp_0/microblaze_0/include/xgpio_l.h:
 
 ../../xilkernel_bsp_0/microblaze_0/include/xparameters.h:
 

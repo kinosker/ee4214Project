@@ -23,8 +23,6 @@ src/TFT_Draw.d: ../src/TFT_Draw.c ../src/TFT_Draw.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/ipc.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/shm.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/mpu.h \
- ../../xilkernel_bsp_0/microblaze_0/include/xgpio.h \
- ../../xilkernel_bsp_0/microblaze_0/include/xgpio_l.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/timer.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/intr.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/queue.h
@@ -78,10 +76,6 @@ src/TFT_Draw.d: ../src/TFT_Draw.c ../src/TFT_Draw.h \
 ../../xilkernel_bsp_0/microblaze_0/include/sys/shm.h:
 
 ../../xilkernel_bsp_0/microblaze_0/include/sys/mpu.h:
-
-../../xilkernel_bsp_0/microblaze_0/include/xgpio.h:
-
-../../xilkernel_bsp_0/microblaze_0/include/xgpio_l.h:
 
 ../../xilkernel_bsp_0/microblaze_0/include/sys/timer.h:
 

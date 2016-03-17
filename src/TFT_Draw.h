@@ -8,7 +8,6 @@
 #include "xmk.h"
 #include "stdlib.h"
 #include "sys/init.h"
-#include "xgpio.h"
 #include "semaphore.h"
 #include <pthread.h>
 #include <sys/timer.h> //for using sleep. need to set config_time to true

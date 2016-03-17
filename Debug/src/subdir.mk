@@ -9,7 +9,8 @@ C_SRCS += \
 ../src/myBarrier.c \
 ../src/myButton.c \
 ../src/platform.c \
-../src/project.c 
+../src/project.c \
+../src/project_core0.c 
 
 LD_SRCS += \
 ../src/lscript.ld 
@@ -20,7 +21,8 @@ OBJS += \
 ./src/myBarrier.o \
 ./src/myButton.o \
 ./src/platform.o \
-./src/project.o 
+./src/project.o \
+./src/project_core0.o 
 
 C_DEPS += \
 ./src/TFT_Draw.d \
@@ -28,7 +30,8 @@ C_DEPS += \
 ./src/myBarrier.d \
 ./src/myButton.d \
 ./src/platform.d \
-./src/project.d 
+./src/project.d \
+./src/project_core0.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes

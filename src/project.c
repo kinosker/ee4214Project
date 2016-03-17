@@ -1,9 +1,9 @@
 
 #include "xmk.h"
 #include "xtft.h"
+#include "xgpio.h"
 #include "stdlib.h"
 #include "sys/init.h"
-#include "xgpio.h"
 #include "xparameters.h"
 #include "semaphore.h"
 #include <pthread.h>
@@ -123,9 +123,9 @@ void main_prog(void *arg) {
 	init_myButton(&gpPB);
 
 
-	print("startinitDraw");
+//	print("startinitDraw");
 	tft_intialDraw(&InstancePtr);
-	print("end init");
+//	print("end init");
 
 	tft_updateSpeed(&InstancePtr, 54);
 	tft_updateBricksLeft(&InstancePtr, 0);
@@ -291,7 +291,7 @@ void* thread_func_col(int col_x) {
 
 
 		pthread_mutex_lock (&mutex_col);
-		xil_printf ("\r\nThis is Col :  %d \r", col_x);
+	//	xil_printf ("\r\nThis is Col :  %d \r", col_x);
 		tft_updateColumn(&InstancePtr, col_x, currentBricks, futureBricks,currentColour, futureColour);
 
 		currentColour = futureColour;
@@ -302,7 +302,7 @@ void* thread_func_col(int col_x) {
 		if(randBricks < currentBricks)
 			futureBricks = randBricks;
 
-		xil_printf ("\r\nend is Col :  %d \r", col_x);
+//		xil_printf ("\r\nend is Col :  %d \r", col_x);
 		pthread_mutex_unlock (&mutex_col);
 
 
@@ -319,11 +319,11 @@ void changeBrickColour(int score, int colThreads)
 {
 	int i, semaRelease;
 
-	print("Starting Here\r\n");
-	xil_printf("score: %d", score);
+//	print("Starting Here\r\n");
+//	xil_printf("score: %d", score);
 	if (score % 10 == 0)
 	{
-		print("inside loop liao");
+	//	print("inside loop liao");
 		//release 2 semaphore yellow colour resources!!!
 
 		if(colThreads > COL_YELLOW)

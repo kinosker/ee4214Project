@@ -55,7 +55,7 @@ void myButton_int_handler(XGpio *gpPB) //Should be very short (in time). In a pr
 
 	//add debounce
 
-
+    print("Starting INT\r\n");
 	// --Possible to use (XGpio*)arg instead of &gpPB
 	XGpio_InterruptClear(gpPB,1);
 	 //Read the state of the push buttons.
