@@ -138,40 +138,79 @@ int tft_updateDisplay(XTft *InstancePtr);
 int tft_updateColumn(XTft *InstancePtr, const int col_x, int currentBricks,
 		int futureBricks, unsigned int currentColour, unsigned int futureColour) {
 
-	int row_num, row_y;
-	if (currentColour != futureColour) {
-		// fill all future bricks
-		// add all future bricks
-		for (row_num = currentBricks; row_num < futureBricks; row_num++) {
-			row_y = ROW_Y_START + ROW_OFFSET * row_num; // position of y to draw rect.
+	int row_num, row_y, updateBricks, updateAddBricks, updateRemoveBricks;
 
-			tft_fillBrick(InstancePtr, col_x, row_y, col_x + BRICK_SIZE_LENGTH,
-					row_y + BRICK_SIZE_HEIGHT, futureColour);
 
-			tft_addBrick(InstancePtr, col_x, row_y, col_x + BRICK_SIZE_LENGTH,
-					row_y + BRICK_SIZE_HEIGHT);
-		}
-	}
 
-	else if (futureBricks < currentBricks) {
-		// remove some bricks
-		for (row_num = futureBricks; row_num < currentBricks; row_num++) {
+	updateBricks =  currentBricks ^ futureBricks; // get required bricks to update
+	updateAddBricks = futureBricks & updateBricks;	// get what bricks to add.
+	updateRemoveBricks = (~futureBricks) & updateBricks; // get what bricks to remove
+
+
+	// case 1 : need remove bricks.
+
+	row_num = 0; // reset row number
+
+	while(updateRemoveBricks)
+	{
+		// removeBricks if there is bricks to remove
+		if(updateRemoveBricks & 1)
+		{
+			// if current bricks is to be removed....
 			row_y = ROW_Y_START + ROW_OFFSET * row_num; // position of y to draw rect.
 
 			tft_removeBrick(InstancePtr, col_x, row_y,
 					col_x + BRICK_SIZE_LENGTH, row_y + BRICK_SIZE_HEIGHT);
 		}
+		
+		updateRemoveBricks = updateRemoveBricks >> 1; // move to next brick to check
+		row_num++;
 	}
 
-	else if (futureBricks > currentBricks) {
-		// add some bricks
 
-		for (row_num = currentBricks; row_num < futureBricks; row_num++) {
+
+	// case 2 : need add bricks.
+
+	row_num = 0; // reset row number
+
+	while(updateAddBricks)
+	{
+		// addBricks if there is bricks to add
+		if(updateAddBricks & 1)
+		{
+			// if current bricks is to be added....
 			row_y = ROW_Y_START + ROW_OFFSET * row_num; // position of y to draw rect.
 
-			tft_addBrick(InstancePtr, col_x, row_y, col_x + BRICK_SIZE_LENGTH,
-					row_y + BRICK_SIZE_HEIGHT);
+			tft_addBrick(InstancePtr, col_x, row_y,
+					col_x + BRICK_SIZE_LENGTH, row_y + BRICK_SIZE_HEIGHT);
 		}
+		
+		updateAddBricks = updateAddBricks >> 1; // move to next brick to check
+		row_num++;
+	}
+
+	// case 3 : need update colour (bricks are already added/remove... just fill them)
+	
+	row_num = 0; // reset row number
+
+	while(futureBricks)
+	{
+		// fill all bricks in futureBricks
+		if(futureBricks & 1)
+		{
+			// if current bricks is to be filled....
+			row_y = ROW_Y_START + ROW_OFFSET * row_num; // position of y to draw rect.
+
+			tft_fillBrick(InstancePtr, col_x, row_y, col_x + BRICK_SIZE_LENGTH,
+					row_y + BRICK_SIZE_HEIGHT, futureColour);
+
+
+			tft_addBrick(InstancePtr, col_x, row_y,
+					col_x + BRICK_SIZE_LENGTH, row_y + BRICK_SIZE_HEIGHT);
+		}
+		
+		futureBricks = futureBricks >> 1; // move to next brick to check
+		row_num++;
 	}
 
 }
