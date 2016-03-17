@@ -18,18 +18,14 @@ volatile char buttonPress = BUTTON_INIT;
 unsigned int myButton_Interrupt_Timer = 0;
 
 // Debouncing function. Returns TRUE if this interrupt was not caused by a bouncing switch
-int debounce(unsigned long *debTimer)
-{
+int debounce(unsigned long *debTimer) {
 	unsigned int tmp = *debTimer;
 	unsigned int currTime = myButton_ticks_to_ms(xget_clock_ticks());
 
-	if ((currTime - tmp) > 500)
-	{
+	if ((currTime - tmp) > 100) {
 		*debTimer = currTime;
 		return 1;
-	}
-	else
-	{
+	} else {
 		return 0;
 	}
 }
@@ -64,16 +60,14 @@ void myButton_int_handler(XGpio *gpPB) //Should be very short (in time). In a pr
 	//clear the interrupt flag. if this is not done, gpio will keep interrupting the microblaze.--
 
 	//add debounce
-	if (debounce(&myButton_Interrupt_Timer))
-	{
-		print("Starting INT\r\n");
-		// --Possible to use (XGpio*)arg instead of &gpPB
-		XGpio_InterruptClear(gpPB, 1);
+	if (debounce(&myButton_Interrupt_Timer)) {
 		//Read the state of the push buttons.
 		buttonPress = XGpio_DiscreteRead(gpPB, 1);
-	}
-	else
-		xil_printf("button value: %d", buttonPress);
+		xil_printf("button value: %d\r\n", buttonPress);
+	} else
+		xil_printf("bounce\r\n");
+
+	XGpio_InterruptClear(gpPB, 1);
 
 }
 
@@ -95,7 +89,6 @@ int init_myButton(XGpio *gpPB) {
 
 }
 
-unsigned int myButton_ticks_to_ms (unsigned int ticks)
-{
-    return  (ticks * (SYSTMR_INTERVAL / SYSTMR_CLK_FREQ_KHZ));
+unsigned int myButton_ticks_to_ms(unsigned int ticks) {
+	return (ticks * (SYSTMR_INTERVAL / SYSTMR_CLK_FREQ_KHZ));
 }
