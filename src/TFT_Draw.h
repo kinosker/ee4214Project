@@ -65,7 +65,7 @@
 #define OUTER_COL_END_X		515
 #define OUTER_COL_END_Y		420
 
-//inner smaller squares (x80)
+//bricks column - inner smaller squares (x80)
 #define COL_OFFSET		45 								// Col offset from each other
 #define COL_X_START		65 								// Default start x value for the smaller square
 #define COL_1_X			COL_X_START + COL_OFFSET * 0 	// Default col 1 X value to start.
@@ -78,6 +78,9 @@
 #define COL_8_X			COL_X_START + COL_OFFSET * 7 	// Default col 8 X value to start.
 #define COL_9_X			COL_X_START + COL_OFFSET * 8 	// Default col 9 X value to start.
 #define COL_10_X		COL_X_START + COL_OFFSET * 9 	// Default col 10 X value to start.
+
+
+
 
 #define ROW_OFFSET		20 											// Row offset from each other
 #define ROW_Y_START		65 											// Default start Y value to draw smaller square
