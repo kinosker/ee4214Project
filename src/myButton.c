@@ -15,12 +15,12 @@
 #include <sys/xtrace.h>
 
 volatile char buttonPress = BUTTON_INIT;
-unsigned long myButton_Interrupt_Timer = 0;
+unsigned int myButton_Interrupt_Timer = 0;
 
 // Debouncing function. Returns TRUE if this interrupt was not caused by a bouncing switch
 int debounce(unsigned long *debTimer)
 {
-	unsigned long tmp = *debTimer;
+	unsigned int tmp = *debTimer;
 	unsigned int currTime = myButton_ticks_to_ms(xget_clock_ticks());
 
 	if ((currTime - tmp) > 500)

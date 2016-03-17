@@ -236,12 +236,12 @@ void main_prog(void *arg) {
 	pthread_attr_setschedparam(&attr, &sched_par); 	// update priority attribute
 
 	//start timer thread. (SHOULD NOT BE HERE ON ACTUAL PROJECT !!! Launch ball => then start this thread..)
-	ret = pthread_create(&tid_time_elapsed, NULL, (void*) thread_func_time_elapsed);
-	if (ret != 0) {
-		xil_printf("-- ERROR (%d) launching thread_time_elapsed...\r\n", ret);
-	} else {
-		xil_printf("Col Thread 1 launched with ID %d \r\n", tid_col_1);
-	}
+	// ret = pthread_create(&tid_time_elapsed, NULL, (void*) thread_func_time_elapsed);
+	// if (ret != 0) {
+	// 	xil_printf("-- ERROR (%d) launching thread_time_elapsed...\r\n", ret);
+	// } else {
+	// 	xil_printf("Col Thread 1 launched with ID %d \r\n", tid_col_1);
+	// }
 }
 
 void* thread_func_controller() {
@@ -283,37 +283,37 @@ void* thread_func_controller() {
 }
 
 
-void* thread_func_time_elapsed() 
-{
-	time_t startTime, timeElapsed, gameTime, prevGameTime; 
+// void* thread_func_time_elapsed() 
+// {
+// 	time_t startTime, timeElapsed, gameTime, prevGameTime; 
 
-	time(&startTime); // get start time of the game
+// 	time(&startTime); // get start time of the game
 	
-	while (1)
-	{
-		time(&timeElapsed); // get time elapsed so far...
+// 	while (1)
+// 	{
+// 		time(&timeElapsed); // get time elapsed so far...
 
-		if(timeElapsed < startTime)
-		{
-			// over flow ... handle it !
-			gameTime = MAX_TIME - timeElapsed - startTime; // max time = ??
-		}
-		else
-		{
-			gameTime = startTime - timeElapsed;
-		}
+// 		if(timeElapsed < startTime)
+// 		{
+// 			// over flow ... handle it !
+// 			gameTime = MAX_TIME - timeElapsed - startTime; // max time = ??
+// 		}
+// 		else
+// 		{
+// 			gameTime = startTime - timeElapsed;
+// 		}
 
-		if(prevGameTime != gameTime)
-		{
-			// update time box (function needed !!!)
-			// tft_updateTime(???????? , gameTime);
+// 		if(prevGameTime != gameTime)
+// 		{
+// 			// update time box (function needed !!!)
+// 			// tft_updateTime(???????? , gameTime);
 
-			prevGameTime = gameTime;
-		}
+// 			prevGameTime = gameTime;
+// 		}
 
-	}
+// 	}
 
-}
+// }
 
 
 void* thread_func_col(int col_x) {
