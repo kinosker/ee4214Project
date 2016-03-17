@@ -142,14 +142,7 @@
 #define BRICK_LEFT_END_X		635
 #define BRICK_LEFT_END_Y		408
 
-//Buttons
-#define BTNL  4     // Bit 3 of value read
-#define BTNR  8     // Bit 4 of value read
-#define BTNU  16     // Bit 3 of value read
-#define BTND  2     // Bit 4 of value read
-#define BTNC  1     // Bit 3 of value read
-#define FLAG_BARLEFT 1 // bar moving left
-#define FLAG_BARRIGHT 0 // bar moving right
+
 /*****************************************************************************
  **																			 *
  *																			 *
@@ -614,7 +607,5 @@ void itoa(int n, char s[]);
  *
  ******************************************************************************/
 void reverse(char s[]);
-
-static int gpPBIntHandler(XGpio gpPB);
 
 #endif /* TFT_DRAW_H_ */
