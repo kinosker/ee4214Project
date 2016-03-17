@@ -27,7 +27,7 @@
 
 typedef struct barrier_t
 {
-  	int currentCount, maxCount;
+  	int currentSize, maxSize;
 	pthread_mutex_t mutex;
 	sem_t sema;
 
@@ -48,7 +48,7 @@ typedef struct barrier_t
  **
  * Initialise the barrier
  *
- * @param  count is the numbers of threads inside the barrier
+ * @param  maxSize is the max numbers of threads to wait in the barrier
  * @param  barrier is the barrier to initialise.
  *
  *
@@ -57,7 +57,7 @@ typedef struct barrier_t
  *   - BARRIER_FAILURE if unsuccessful.
  *
  *****************************************************************************/
-int myBarrier_init(struct barrier_t *barrier, unsigned int count);
+int myBarrier_init(struct barrier_t *barrier, unsigned int maxSize);
 
 
 /*****************************************************************************
@@ -72,5 +72,18 @@ int myBarrier_init(struct barrier_t *barrier, unsigned int count);
  *
  *****************************************************************************/
 void myBarrier_wait(struct barrier_t *barrier);
+
+/*****************************************************************************
+ **
+ * Decrease the barrier size by 1
+ *
+ * @param  barrier is the barrier to be used.
+ *
+ *
+ * @return
+ *   - NONE
+ *
+ *****************************************************************************/
+void myBarrier_decreaseSize(struct barrier_t *barrier);
 
 #endif
