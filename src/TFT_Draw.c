@@ -1,7 +1,5 @@
 #include "TFT_Draw.h"
 
-
-
 int barLeftPos = BAR_START_X, barRightPos = BAR_START_X + BAR_LENGTH;
 
 int tft_init(u32 TftDeviceId, XTft *InstancePtr) {
@@ -66,7 +64,6 @@ int tft_intialDraw(XTft *InstancePtr) {
 	tft_drawRect(InstancePtr, OUTER_COL_START_X, OUTER_COL_START_Y,
 			OUTER_COL_END_X, OUTER_COL_END_Y, COLOR_BLACK);
 
-
 	// Inner 80 Small boxes
 
 //	for (i = 0; i < 10; i++) {
@@ -109,21 +106,29 @@ int tft_intialDraw(XTft *InstancePtr) {
 	tft_drawRect(InstancePtr, SCORE_BOX3_START_X, SCORE_BOX_START_Y,
 			SCORE_BOX4_END_X, SCORE_BOX_END_Y, COLOR_BLACK);
 
+	// Current time
+	tft_fillRect(InstancePtr, TIME_START_X, TIME_START_Y,
+			TIME_END_X, TIME_END_Y, COLOR_GREY);
+	tft_drawRect(InstancePtr, TIME_START_X, TIME_START_Y,
+			TIME_END_X, TIME_END_Y, COLOR_BLACK);
+	tft_writeString(InstancePtr, TIME_START_X, TIME_START_Y - 20,
+			"Time: ", COLOR_BLACK, COLOR_WHITE);
+
 	// Current Ball Speed
-	tft_drawRect(InstancePtr, BALL_SPEED_START_X, BALL_SPEED_START_Y,
-			BALL_SPEED_END_X, BALL_SPEED_END_Y, COLOR_BLACK);
 	tft_fillRect(InstancePtr, BALL_SPEED_START_X, BALL_SPEED_START_Y,
 			BALL_SPEED_END_X, BALL_SPEED_END_Y, COLOR_GREY);
+	tft_drawRect(InstancePtr, BALL_SPEED_START_X, BALL_SPEED_START_Y,
+			BALL_SPEED_END_X, BALL_SPEED_END_Y, COLOR_BLACK);
 	tft_writeString(InstancePtr, BALL_SPEED_START_X, BALL_SPEED_START_Y - 20,
-			"Ball Speed", COLOR_BLACK, COLOR_WHITE);
+			"Ball Speed: ", COLOR_BLACK, COLOR_WHITE);
 
 	// Bricks Left
-	tft_drawRect(InstancePtr, BRICK_LEFT_START_X, BRICK_LEFT_START_Y,
-			BRICK_LEFT_END_X, BRICK_LEFT_END_Y, COLOR_BLACK);
 	tft_fillRect(InstancePtr, BRICK_LEFT_START_X, BRICK_LEFT_START_Y,
 			BRICK_LEFT_END_X, BRICK_LEFT_END_Y, COLOR_GREY);
+	tft_drawRect(InstancePtr, BRICK_LEFT_START_X, BRICK_LEFT_START_Y,
+			BRICK_LEFT_END_X, BRICK_LEFT_END_Y, COLOR_BLACK);
 	tft_writeString(InstancePtr, BRICK_LEFT_START_X, BALL_SPEED_END_Y + 5,
-			"Bricks left", COLOR_BLACK, COLOR_WHITE);
+			"Bricks left: ", COLOR_BLACK, COLOR_WHITE);
 
 	tft_addCircle(InstancePtr, CIRCLE_X, CIRCLE_Y, CIRCLE_RADIUS);
 }
@@ -203,24 +208,23 @@ int tft_updateSpeed(XTft *InstancePtr, int speed) {
 }
 
 int tft_updateBricksLeft(XTft *InstancePtr, int bricksLeft) {
-	int temp_brickLeft = bricksLeft, count=0;
-	while ((temp_brickLeft /= 10) != 0)
-	{
+	int temp_brickLeft = bricksLeft, count = 0;
+	while ((temp_brickLeft /= 10) != 0) {
 		count++;
 	}
-	switch(count){
-		case 0:
-			tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 53,
-						BRICK_LEFT_START_Y + 5, bricksLeft, COLOR_BLACK, COLOR_GREY);
-			break;
-		case 1:
-			tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 53,
-									BRICK_LEFT_START_Y + 5, bricksLeft, COLOR_BLACK, COLOR_GREY);
-			break;
-		case 2:
-			tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 50,
-						BRICK_LEFT_START_Y + 5, bricksLeft, COLOR_BLACK, COLOR_GREY);
-			break;
+	switch (count) {
+	case 0:
+		tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 53,
+				BRICK_LEFT_START_Y + 5, bricksLeft, COLOR_BLACK, COLOR_GREY);
+		break;
+	case 1:
+		tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 53,
+				BRICK_LEFT_START_Y + 5, bricksLeft, COLOR_BLACK, COLOR_GREY);
+		break;
+	case 2:
+		tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 50,
+				BRICK_LEFT_START_Y + 5, bricksLeft, COLOR_BLACK, COLOR_GREY);
+		break;
 	}
 
 }
@@ -332,28 +336,28 @@ int tft_addBar(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 
 int tft_moveBarLeft(XTft *InstancePtr) {
 	if (barLeftPos > 0) {
-		barLeftPos--;
+		barLeftPos = barLeftPos - 25;
 		tft_drawRect(InstancePtr, BAR_START_X, BAR_START_Y, BAR_END_X,
 				BAR_START_Y, COLOR_GREEN);
 		tft_drawRect(InstancePtr, barLeftPos, BAR_START_Y, barRightPos,
 				BAR_START_Y, COLOR_BLACK);
 		//XTft_SetPixel(InstancePtr, barRightPos, BAR_START_Y, COLOR_WHITE); // clear 1 pixel
 		///XTft_SetPixel(InstancePtr, barLeftPos, BAR_START_Y, COLOR_BLUE); // set 1 pixel
-		barRightPos--;
+		barRightPos = barRightPos - 25;
 
 	}
 }
 
 int tft_moveBarRight(XTft *InstancePtr) {
 	if (barRightPos < DISPLAY_COLUMNS - 1) {
-		barRightPos++;
+		barRightPos = barRightPos + 25;
 		tft_drawRect(InstancePtr, BAR_START_X, BAR_START_Y, BAR_END_X,
 				BAR_START_Y, COLOR_GREEN);
 		tft_drawRect(InstancePtr, barRightPos, BAR_START_Y, barLeftPos,
 				BAR_START_Y, COLOR_BLACK);
 		//XTft_SetPixel(InstancePtr, barLeftPos, BAR_START_Y, COLOR_WHITE); // clear 1 pixel
 		//XTft_SetPixel(InstancePtr, barRightPos, BAR_START_Y, COLOR_BLUE); // set 1 pixel
-		barLeftPos++;
+		barLeftPos = barLeftPos + 25;
 	}
 }
 
