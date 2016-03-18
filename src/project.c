@@ -289,9 +289,8 @@ void* thread_func_time_elapsed() {
 
 		if (prevGameTime != gameTime) {
 			// update time box (function needed !!!)
-			// tft_updateTime(???????? , gameTime);
+			tft_updateTime(&InstancePtr , gameTime);
 			prevGameTime = gameTime;
-			xil_printf("time: %d\r\n", gameTime);
 		}
 
 	}
