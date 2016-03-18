@@ -20,8 +20,6 @@
 
 #defined PRIOR_MAILBOX_SEND 1
 // mailbox declaration
-//#define MY_CPU_ID 1
-#define MY_CPU_ID XPAR_CPU_ID
 #define MBOX_DEVICE_ID		XPAR_MBOX_0_DEVICE_ID
 
 

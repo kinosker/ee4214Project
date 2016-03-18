@@ -13,9 +13,25 @@
 #include "TFT_Draw.h"
 #include "myBarrier.h"
 #include "myButton.h"
+#include "xmbox.h"
+
+
+/************************** Struct Definition *****************************/
+
+typedef struct 
+{
+
+  int dir,speed,x,y;
+
+} ball_msg;
+
+
 #define XST_SUCCESS                     0L
 #define XST_FAILURE                     1L
 // TO DO : read and understand the xilkernel system calls as well as the driver APIs used.
+
+#define MBOX_DEVICE_ID		XPAR_MBOX_0_DEVICE_ID
+
 
 // 5 Priority levels for this processor.
 #define PRIO_CONTROLLER 1
@@ -57,11 +73,12 @@ pthread_t tid_controller, tid_time_elapsed, tid_col_1, tid_col_2, tid_col_3,
 		tid_col_10;
 
 /************************** Thread Synchronisation variables ****************************/
+static XMbox Mbox;	
+
 pthread_mutex_t mutex_col;
 struct barrier_t barrier_col;
 sem_t sem_colour_yellow;
 sem_t sem_colour_background;
-time_t abc;
 /************************** Button variables********************************************/
 //volatile char bar_Status;
 XGpio gpPB; //PB device instance.
@@ -88,8 +105,9 @@ int main() {
 }
 
 void main_prog(void *arg) {
+	
 	int ret, Status;
-	;
+	
 
 	// initialize the semaphore
 	if (sem_init(&sem_colour_yellow, 0, COL_YELLOW) < 0) // init sem_colour_yellow with 2 resource
@@ -115,7 +133,25 @@ void main_prog(void *arg) {
 		xil_printf("-- ERROR (%d) init uart_mutex...\r\n", ret);
 	}
 
+
 	init_myButton(&gpPB);
+
+	/************************** Mailbox Init ****************************/
+
+  	XMbox_Config *ConfigPtr;
+
+
+  	ConfigPtr = XMbox_LookupConfig(MBOX_DEVICE_ID );
+  		if (ConfigPtr == (XMbox_Config *)NULL) {
+  			 print("-- Error configuring Mbox uB1 Sender--\r\n");
+  			return XST_FAILURE;
+  		}
+
+  	Status = XMbox_CfgInitialize(&Mbox, ConfigPtr, ConfigPtr->BaseAddress);
+  		if (Status != XST_SUCCESS) {
+  				 print("-- Error initializing Mbox uB1 Sender--\r\n");
+  				return XST_FAILURE;
+
 
 //	print("startinitDraw");
 	tft_intialDraw(&InstancePtr);
@@ -306,11 +342,17 @@ void* thread_func_col(int col_x) {
 
 	unsigned int thread_ScoreAccumulated = 0;
 
+	ball_msg ball; // ball param received from mailbox
+
 	while (1) {
 		// some msg q or ....... semaphore.... or .....
 		// check if ball hit brick => update score, future brick
 		// check if picked randomly => update colour
 		// test print
+
+		// add mailbox to blockingReceive (wait) for updated ball param to satisfy (fps)
+		//XMbox_ReadBlocking(&Mbox, &ball, sizeof(ball_msg));
+
 
 		myBarrier_wait(&barrier_col); // wait for all col threads to reach here... and controller thread to reach wait.
 
@@ -332,7 +374,12 @@ void* thread_func_col(int col_x) {
 //		xil_printf ("\r\nend is Col :  %d \r", col_x);
 		pthread_mutex_unlock(&mutex_col);
 
+
+		// some msgq or semaphore to indicate completion of rebounce and bar param
+		// writeBlocking send it back.
+
 		//pthread_exit(0);
+
 	}
 
 }
