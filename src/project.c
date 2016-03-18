@@ -25,9 +25,24 @@
 #define PRIO_SCORE_ZONE 5
 
 
+// Mailbox definition
+
+#define MY_CPU_ID XPAR_CPU_ID
+#define MBOX_DEVICE_ID		XPAR_MBOX_0_DEVICE_ID
+
+
 #define SEM_SUCCESS			0
 #define UPDATE_COLOUR_SCORE	10
 #define MAX_RAND_SLEEP		100 	// for snatching colour sema
+
+
+/************************** Struct definition *****************************/
+
+struct ball_msg
+{
+  int dir,speed,x,y;
+};
+
 
 /************************** Function Prototypes *****************************/
 
@@ -60,11 +75,14 @@ pthread_t tid_controller, tid_time_elapsed, tid_col_1, tid_col_2, tid_col_3, tid
 
 
 /************************** Thread Synchronisation variables ****************************/
+static XMbox Mbox;	/* Instance of the Mailbox driver */
+
 pthread_mutex_t mutex_col;
 struct barrier_t barrier_col;
 sem_t sem_colour_yellow;
 sem_t sem_colour_background;
-time_t abc;
+
+
 /************************** Button variables********************************************/
 //volatile char bar_Status;
 XGpio gpPB; //PB device instance.
@@ -133,6 +151,46 @@ void main_prog(void *arg) {
 	tft_updateScore(&InstancePtr, 5);
 
 	pthread_attr_init(&attr);						// get attribute for thread.
+
+	/************************** Mailbox Init ****************************/
+
+  	XMbox_Config *ConfigPtr;
+
+
+  	ConfigPtr = XMbox_LookupConfig(MBOX_DEVICE_ID );
+  		if (ConfigPtr == (XMbox_Config *)NULL) {
+  			 print("-- Error configuring Mbox uB1 Sender--\r\n");
+  			return XST_FAILURE;
+  		}
+
+  	Status = XMbox_CfgInitialize(&Mbox, ConfigPtr, ConfigPtr->BaseAddress);
+  		if (Status != XST_SUCCESS) {
+  				 print("-- Error initializing Mbox uB1 Sender--\r\n");
+  				return XST_FAILURE;
+
+
+  	pthread_attr_init(&attr);						// get attribute for thread.
+
+  
+
+  	/************************** Controller Threads Init ****************************/
+
+	sched_par.sched_priority = PRIOR_MAILBOX_SEND; // set priority for mailbox thread
+	pthread_attr_setschedparam(&attr, &sched_par); 	// update priority attribute
+
+	//start controller thread 1
+	ret = pthread_create(&tid_mailbox, NULL, (void*) thread_func_mailbox,
+			NULL );
+	if (ret != 0) 
+	{
+		xil_printf("-- ERROR (%d) launching thread_func_mailbox...\r\n", ret);
+	}
+	 else 
+	{
+		xil_printf("Controller Thread launched with ID %d \r\n",
+				tid_mailbox);
+	}
+   
 
 	//pthread_barrier_init(&barrier, NULL, 11); // barrier of size 11, for 10 col threads + 1 update display
 
@@ -249,6 +307,7 @@ void* thread_func_controller() {
 	// semaphore release
 	int score = 0;
 	int colThreads = COL_BRICKS; // Number of column threads = how many column of bricks.
+	ball_msg ball_received; // ball received from mailbox
 
 	while(1)
 	{
@@ -257,6 +316,7 @@ void* thread_func_controller() {
 
 		// score updated => update colour.. then fire all col threads.
 
+		//XMbox_ReadBlocking(MboxInstancePtr,	&ball_received,	sizeof(ball_msg)); // to test mailbox.
 
 		myBarrier_wait(&barrier_col); // "fire" all col threads
 
@@ -277,43 +337,14 @@ void* thread_func_controller() {
 
 		changeBrickColour(++score, colThreads);
 
+		// some semaphore or msgqueue that indicate score calculation is completed
+		// send the require message through mailbox
+
 
 	}
 
 }
 
-
-// void* thread_func_time_elapsed() 
-// {
-// 	time_t startTime, timeElapsed, gameTime, prevGameTime; 
-
-// 	time(&startTime); // get start time of the game
-	
-// 	while (1)
-// 	{
-// 		time(&timeElapsed); // get time elapsed so far...
-
-// 		if(timeElapsed < startTime)
-// 		{
-// 			// over flow ... handle it !
-// 			gameTime = MAX_TIME - timeElapsed - startTime; // max time = ??
-// 		}
-// 		else
-// 		{
-// 			gameTime = startTime - timeElapsed;
-// 		}
-
-// 		if(prevGameTime != gameTime)
-// 		{
-// 			// update time box (function needed !!!)
-// 			// tft_updateTime(???????? , gameTime);
-
-// 			prevGameTime = gameTime;
-// 		}
-
-// 	}
-
-// }
 
 
 void* thread_func_col(int col_x) {
@@ -331,6 +362,8 @@ void* thread_func_col(int col_x) {
 		// check if ball hit brick => update score, future brick
 		// check if picked randomly => update colour
 		// test print
+
+		// mailbox
 
 		myBarrier_wait(&barrier_col); // wait for all col threads to reach here... and controller thread to reach wait.
 
