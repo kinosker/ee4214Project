@@ -300,6 +300,23 @@ int tft_updateSpeed(XTft *InstancePtr, int speed);
  *****************************************************************************/
 int tft_updateBricksLeft(XTft *InstancePtr, int bricksLeft);
 
+/****************************************************************************
+ **
+ * Update time when the game has started by tft_writeString() and tft_writeInteger()
+ *	- handle 2 digits in minutes and seconds
+ *
+ *
+ * @param  InstancePtr is a pointer to the XTft instance.
+ * @param  gameTime is the amount of time has passed from the start of the game
+ *
+ *
+ * @return
+ *   - XST_SUCCESS if successful.
+ *   - XST_FAILURE if unsuccessful.
+ *
+ *****************************************************************************/
+int tft_updateTime(XTft *InstancePtr, int gameTime);
+
 /*****************************************************************************
  **
  * Precondition : Max of 5 digits value

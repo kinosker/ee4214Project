@@ -1,4 +1,3 @@
-
 #include "xmk.h"
 #include "xtft.h"
 #include "xgpio.h"
@@ -10,6 +9,7 @@
 #include <sys/timer.h> //for using sleep. need to set config_time to true
 #include <sys/intr.h> //xilkernel api for interrupts
 #include <stdio.h>
+#include <limits.h>
 #include "TFT_Draw.h"
 #include "myBarrier.h"
 #include "myButton.h"
@@ -24,35 +24,17 @@
 #define PRIO_COL 		4
 #define PRIO_SCORE_ZONE 5
 
-
-// Mailbox definition
-
-#define MY_CPU_ID XPAR_CPU_ID
-#define MBOX_DEVICE_ID		XPAR_MBOX_0_DEVICE_ID
-
-
 #define SEM_SUCCESS			0
 #define UPDATE_COLOUR_SCORE	10
 #define MAX_RAND_SLEEP		100 	// for snatching colour sema
-
-
-/************************** Struct definition *****************************/
-
-struct ball_msg
-{
-  int dir,speed,x,y;
-};
-
-
 /************************** Function Prototypes *****************************/
 
 void* thread_func_controller();
 void* thread_func_col(int col_x);
-void* thread_func_time_elapsed() ;
+void* thread_func_time_elapsed();
 
-void changeBrickColour(int score,  int colThreads);
+void changeBrickColour(int score, int colThreads);
 unsigned int updateBrickColour(unsigned int currentColour);
-
 
 void main_prog(void *arg);
 
@@ -70,24 +52,19 @@ struct sched_param sched_par;
 
 pthread_attr_t attr;
 
-pthread_t tid_controller, tid_time_elapsed, tid_col_1, tid_col_2, tid_col_3, tid_col_4, tid_col_5,
-		tid_col_6, tid_col_7, tid_col_8, tid_col_9, tid_col_10;
-
+pthread_t tid_controller, tid_time_elapsed, tid_col_1, tid_col_2, tid_col_3,
+		tid_col_4, tid_col_5, tid_col_6, tid_col_7, tid_col_8, tid_col_9,
+		tid_col_10;
 
 /************************** Thread Synchronisation variables ****************************/
-static XMbox Mbox;	/* Instance of the Mailbox driver */
-
 pthread_mutex_t mutex_col;
 struct barrier_t barrier_col;
 sem_t sem_colour_yellow;
 sem_t sem_colour_background;
-
-
+time_t abc;
 /************************** Button variables********************************************/
 //volatile char bar_Status;
 XGpio gpPB; //PB device instance.
-
-
 
 volatile int taskrunning;
 
@@ -111,17 +88,18 @@ int main() {
 }
 
 void main_prog(void *arg) {
-	int ret, Status;;
+	int ret, Status;
+	;
 
 	// initialize the semaphore
-	if (sem_init(&sem_colour_yellow, 0, COL_YELLOW)  < 0) // init sem_colour_yellow with 2 resource
-	{
+	if (sem_init(&sem_colour_yellow, 0, COL_YELLOW) < 0) // init sem_colour_yellow with 2 resource
+			{
 		print("Error while initializing semaphore sem.\r\n");
 	}
 
 	// initialize the semaphore
-	if (sem_init(&sem_colour_background, 0, COL_BACKGROUND)  < 0) // init sem_colour_background with 8 resource
-	{
+	if (sem_init(&sem_colour_background, 0, COL_BACKGROUND) < 0) // init sem_colour_background with 8 resource
+			{
 		print("Error while initializing semaphore sem.\r\n");
 	}
 
@@ -131,8 +109,6 @@ void main_prog(void *arg) {
 		xil_printf("-- ERROR (%d) init barrier...\r\n", ret);
 	}
 
-
-
 	// initialize mutex
 	ret = pthread_mutex_init(&mutex_col, NULL );
 	if (ret != 0) {
@@ -140,7 +116,6 @@ void main_prog(void *arg) {
 	}
 
 	init_myButton(&gpPB);
-
 
 //	print("startinitDraw");
 	tft_intialDraw(&InstancePtr);
@@ -151,46 +126,6 @@ void main_prog(void *arg) {
 	tft_updateScore(&InstancePtr, 5);
 
 	pthread_attr_init(&attr);						// get attribute for thread.
-
-	/************************** Mailbox Init ****************************/
-
-  	XMbox_Config *ConfigPtr;
-
-
-  	ConfigPtr = XMbox_LookupConfig(MBOX_DEVICE_ID );
-  		if (ConfigPtr == (XMbox_Config *)NULL) {
-  			 print("-- Error configuring Mbox uB1 Sender--\r\n");
-  			return XST_FAILURE;
-  		}
-
-  	Status = XMbox_CfgInitialize(&Mbox, ConfigPtr, ConfigPtr->BaseAddress);
-  		if (Status != XST_SUCCESS) {
-  				 print("-- Error initializing Mbox uB1 Sender--\r\n");
-  				return XST_FAILURE;
-
-
-  	pthread_attr_init(&attr);						// get attribute for thread.
-
-  
-
-  	/************************** Controller Threads Init ****************************/
-
-	sched_par.sched_priority = PRIOR_MAILBOX_SEND; // set priority for mailbox thread
-	pthread_attr_setschedparam(&attr, &sched_par); 	// update priority attribute
-
-	//start controller thread 1
-	ret = pthread_create(&tid_mailbox, NULL, (void*) thread_func_mailbox,
-			NULL );
-	if (ret != 0) 
-	{
-		xil_printf("-- ERROR (%d) launching thread_func_mailbox...\r\n", ret);
-	}
-	 else 
-	{
-		xil_printf("Controller Thread launched with ID %d \r\n",
-				tid_mailbox);
-	}
-   
 
 	//pthread_barrier_init(&barrier, NULL, 11); // barrier of size 11, for 10 col threads + 1 update display
 
@@ -289,17 +224,16 @@ void main_prog(void *arg) {
 		xil_printf("Col Thread 10 launched with ID %d \r\n", tid_col_10);
 	}
 
-
-	sched_par.sched_priority = PRIO_SCORE_ZONE; 	// set priority for score zone threads
+	sched_par.sched_priority = PRIO_SCORE_ZONE; // set priority for score zone threads
 	pthread_attr_setschedparam(&attr, &sched_par); 	// update priority attribute
 
 	//start timer thread. (SHOULD NOT BE HERE ON ACTUAL PROJECT !!! Launch ball => then start this thread..)
-	// ret = pthread_create(&tid_time_elapsed, NULL, (void*) thread_func_time_elapsed);
-	// if (ret != 0) {
-	// 	xil_printf("-- ERROR (%d) launching thread_time_elapsed...\r\n", ret);
-	// } else {
-	// 	xil_printf("Col Thread 1 launched with ID %d \r\n", tid_col_1);
-	// }
+	ret = pthread_create(&tid_time_elapsed, NULL,(void*) thread_func_time_elapsed,0);
+	if (ret != 0) {
+		xil_printf("-- ERROR (%d) launching thread_time_elapsed...\r\n", ret);
+	} else {
+		xil_printf("Col Thread 1 launched with ID %d \r\n", tid_col_1);
+	}
 }
 
 void* thread_func_controller() {
@@ -307,45 +241,60 @@ void* thread_func_controller() {
 	// semaphore release
 	int score = 0;
 	int colThreads = COL_BRICKS; // Number of column threads = how many column of bricks.
-	ball_msg ball_received; // ball received from mailbox
 
-	while(1)
-	{
+	while (1) {
 		// mailbox should be here....
 		// update score should be here, print score somwhere else...
 
 		// score updated => update colour.. then fire all col threads.
 
-		//XMbox_ReadBlocking(MboxInstancePtr,	&ball_received,	sizeof(ball_msg)); // to test mailbox.
-
 		myBarrier_wait(&barrier_col); // "fire" all col threads
 
-
-		pthread_mutex_lock (&mutex_col);
-		if(myButton_checkLeft())
-		{
+		pthread_mutex_lock(&mutex_col);
+		if (myButton_checkLeft(&gpPB)) {
+			xil_printf("lapsed time is : %d\r\n", myButton_checkLeft(&gpPB));
 			tft_moveBarLeft(&InstancePtr);
+			//tft_addCircle(&InstancePtr, CIRCLE_X, CIRCLE_Y, 15);
+
 		}
 
-		if(myButton_checkRight())
-		{
+		if (myButton_checkRight(&gpPB)) {
+			xil_printf("lapsed time is : %d\r\n", myButton_checkRight(&gpPB));
 			tft_moveBarRight(&InstancePtr);
 		}
-		pthread_mutex_unlock (&mutex_col);
+		pthread_mutex_unlock(&mutex_col);
 
-		sleep(400);
+		sleep(10);
 
 		changeBrickColour(++score, colThreads);
-
-		// some semaphore or msgqueue that indicate score calculation is completed
-		// send the require message through mailbox
-
 
 	}
 
 }
 
+void* thread_func_time_elapsed() {
+	time_t startTime, timeElapsed, gameTime, prevGameTime;
 
+	sys_time(&startTime); // get start time of the game
+
+	while (1) {
+		sys_time(&timeElapsed); // get time elapsed so far...
+
+		if (timeElapsed < startTime) {
+			// over flow ... handle it !
+			gameTime = LONG_MAX - timeElapsed - startTime; // max time = LONG_MAX
+		} else {
+			gameTime = timeElapsed - startTime;
+		}
+
+		if (prevGameTime != gameTime) {
+			// update time box (function needed !!!)
+			tft_updateTime(&InstancePtr , gameTime);
+			prevGameTime = gameTime;
+		}
+
+	}
+}
 
 void* thread_func_col(int col_x) {
 	unsigned int currentColour = COLOR_GREEN; // some default color.
@@ -363,73 +312,58 @@ void* thread_func_col(int col_x) {
 		// check if picked randomly => update colour
 		// test print
 
-		// mailbox
-
 		myBarrier_wait(&barrier_col); // wait for all col threads to reach here... and controller thread to reach wait.
 
 		futureColour = updateBrickColour(currentColour);
 
-
-		pthread_mutex_lock (&mutex_col);
-	//	xil_printf ("\r\nThis is Col :  %d \r", col_x);
-		tft_updateColumn(&InstancePtr, col_x, currentBricks, futureBricks,currentColour, futureColour);
+		pthread_mutex_lock(&mutex_col);
+		//	xil_printf ("\r\nThis is Col :  %d \r", col_x);
+		tft_updateColumn(&InstancePtr, col_x, currentBricks, futureBricks,
+				currentColour, futureColour);
 
 		currentColour = futureColour;
 		currentBricks = futureBricks;
 
 		randBricks = rand() % 256;
 
-		if(randBricks < currentBricks)
+		if (randBricks < currentBricks)
 			futureBricks = randBricks;
 
 //		xil_printf ("\r\nend is Col :  %d \r", col_x);
-		pthread_mutex_unlock (&mutex_col);
-
-
-
+		pthread_mutex_unlock(&mutex_col);
 
 		//pthread_exit(0);
 	}
 
 }
 
-
 // Simple Description : Release semaphore resource for brick colour change.
-void changeBrickColour(int score, int colThreads)
-{
+void changeBrickColour(int score, int colThreads) {
 	int i, semaRelease;
 
 //	print("Starting Here\r\n");
 //	xil_printf("score: %d", score);
-	if (score % 10 == 0)
-	{
-	//	print("inside loop liao");
+	if (score % 10 == 0) {
+		//	print("inside loop liao");
 		//release 2 semaphore yellow colour resources!!!
 
-		if(colThreads > COL_YELLOW)
-		{
+		if (colThreads > COL_YELLOW) {
 			// some col need to be green
 			semaRelease = colThreads - COL_YELLOW;
-			for(i = 0; i < semaRelease ; i++)
-			{
+			for (i = 0; i < semaRelease; i++) {
 				// release semaphore to change to background
 				sem_post(&sem_colour_background);
 			}
 		}
 
-		if(colThreads < COL_YELLOW)
-		{
+		if (colThreads < COL_YELLOW) {
 			// lesser thread than column to be yellow.. release lesser sema.
-			for(i = 0; i < colThreads ; i++)
-			{
+			for (i = 0; i < colThreads; i++) {
 				// release semaphore to change to background
 				sem_post(&sem_colour_yellow);
 			}
-		}
-		else
-		{
-			for(i = 0; i < COL_YELLOW ; i++)
-			{
+		} else {
+			for (i = 0; i < COL_YELLOW; i++) {
 				// release semaphore to change to background
 				sem_post(&sem_colour_yellow);
 			}
@@ -438,26 +372,18 @@ void changeBrickColour(int score, int colThreads)
 }
 
 // Simple Description : Snatch for 2 semaphore resource, fail then colour same..
-unsigned int updateBrickColour(unsigned int currentColour)
-{
+unsigned int updateBrickColour(unsigned int currentColour) {
 
+	sleep(rand() % MAX_RAND_SLEEP);
 
-	sleep (rand() % MAX_RAND_SLEEP);
-
-	if(sem_trywait(&sem_colour_yellow) == SEM_SUCCESS)
-	{
+	if (sem_trywait(&sem_colour_yellow) == SEM_SUCCESS) {
 		// resource snatched !
-		return COLOR_YELLOW;	
-	}
-	else
-	{
-		if(sem_trywait(&sem_colour_background) == SEM_SUCCESS)
-		{
+		return COLOR_YELLOW;
+	} else {
+		if (sem_trywait(&sem_colour_background) == SEM_SUCCESS) {
 			// failed to snatched resource
 			return COLOR_GREEN;
-		}
-		else
-		{
+		} else {
 			// nothing to snatch
 			return currentColour;
 
@@ -465,11 +391,7 @@ unsigned int updateBrickColour(unsigned int currentColour)
 
 	}
 
-
-
 }
-
-
 
 //void do_something(int max, int ID) {
 //  sem_wait(&sem);

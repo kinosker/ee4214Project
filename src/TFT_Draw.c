@@ -1,6 +1,6 @@
 #include "TFT_Draw.h"
 
-int barLeftPos = BAR_START_X, barRightPos = BAR_START_X + BAR_LENGTH;
+static int barLeftPos = BAR_START_X, barRightPos = BAR_START_X + BAR_LENGTH;
 
 int tft_init(u32 TftDeviceId, XTft *InstancePtr) {
 	int Status;
@@ -211,6 +211,41 @@ int tft_updateScore(XTft *InstancePtr, int score) {
 			SCORE_BOX_START_Y + 15, score_Digit_Tens, COLOR_BLACK, COLOR_GREY); //second number
 	tft_writeInteger(InstancePtr, SCORE_BOX3_START_X + 9,
 			SCORE_BOX_START_Y + 15, score_Digit_Ones, COLOR_BLACK, COLOR_GREY); //third number
+}
+
+int tft_updateTime(XTft *InstancePtr, int gameTime) {
+	int gameTime_mins = 0, gameTime_secs = 0, gameTime_mins_higherBit = 0,
+			gameTime_secs_higherBit = 0, gameTime_mins_lowerBit = 0,
+			gameTime_secs_lowerBit = 0;
+
+	if (gameTime == 0) {
+		gameTime_mins = 0;
+		gameTime_secs = 0;
+	} else if (gameTime >= 60) {
+		gameTime_mins = gameTime / 60;
+		gameTime_secs = gameTime - (gameTime_mins * 60);
+	} else
+		gameTime_secs = gameTime;
+
+	//two bits of time in minutes
+	gameTime_mins_higherBit = gameTime_mins / 10;
+	gameTime_mins_lowerBit = gameTime_mins % 10;
+
+	//two bits of time in seconds
+	gameTime_secs_higherBit = gameTime_secs / 10;
+	gameTime_secs_lowerBit = gameTime_secs % 10;
+
+	tft_writeInteger(InstancePtr, TIME_START_X + 35, TIME_START_Y + 5, gameTime_mins_higherBit,
+			COLOR_BLACK, COLOR_GREY);
+	tft_writeInteger(InstancePtr, TIME_START_X + 45, TIME_START_Y + 5, gameTime_mins_lowerBit,
+			COLOR_BLACK, COLOR_GREY);
+	tft_writeString(InstancePtr, TIME_START_X + 53, TIME_START_Y + 5, ":",
+			COLOR_BLACK, COLOR_GREY);
+	tft_writeInteger(InstancePtr, TIME_START_X + 61, TIME_START_Y + 5, gameTime_secs_higherBit,
+			COLOR_BLACK, COLOR_GREY);
+	tft_writeInteger(InstancePtr, TIME_START_X + 71, TIME_START_Y + 5, gameTime_secs_lowerBit,
+			COLOR_BLACK, COLOR_GREY);
+
 }
 
 int tft_updateSpeed(XTft *InstancePtr, int speed) {
