@@ -23,6 +23,10 @@
 #define BUTTON_CENTER_PRESS  1     // Bit 3 of value read
 #define BUTTON_INIT 0 // bar moving right
 
+
+ #define BUTTON_UPDATED 	1
+ #define BUTTON_NOT_UPDATED 0
+
 /*****************************************************************************
  **																			 *
  *																			 *
@@ -117,11 +121,11 @@ void myButton_int_handler(XGpio *gpPB);
 
 /*****************************************************************************
  **
- * Interrupt that handle button when button is pressed
+ * Determine if the button is pressed through debouncing technique
  *
- * @param *debTimer is the interrupt timer that is used to determine whether
- * 					the button is pressed or it is just a bouncing effect
- * 					when the button is pressed
+ * @param *debounceTime is the last debounced press time.
+ * @param currentTime is the current time
+ * 					
  *
  *
  * @return
@@ -130,7 +134,7 @@ void myButton_int_handler(XGpio *gpPB);
  *
  *
  ******************************************************************************/
-int debounce(unsigned long *debTimer);
+int debounce(unsigned int *debounceTime, unsigned int currentTime) ;
 
 unsigned int myButton_ticks_to_ms (unsigned int ticks);
 

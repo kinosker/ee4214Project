@@ -14,30 +14,52 @@
 #include <sys/decls.h>
 #include <sys/xtrace.h>
 
-volatile char buttonPress = BUTTON_INIT;
-unsigned int myButton_Interrupt_Timer = 0;
+volatile char buttonPress = BUTTON_INIT, prevButtonPress = BUTTON_INIT, buttonFlag;
+unsigned int myButton_deboubceTime, myButton_currentTime = 0;
+unsigned int myButton_leftPressTime = 0, myButton_rightPressTime = 0;
+
 
 // Debouncing function. Returns TRUE if this interrupt was not caused by a bouncing switch
-int debounce(unsigned long *debTimer) {
-	unsigned int tmp = *debTimer;
-	unsigned int currTime = myButton_ticks_to_ms(xget_clock_ticks());
+int debounce(unsigned int *debounceTime, unsigned int currentTime) {
 
-	if ((currTime - tmp) > 100) {
-		*debTimer = currTime;
+	if ((currentTime - *debounceTime) > 100) 
+	{
+		*debounceTime = currentTime;
 		return 1;
 	} else {
 		return 0;
 	}
 }
 
-// return 1 if left button is pressed
-char myButton_checkLeft() {
-	return (buttonPress & BUTTON_LEFT_PRESS);
+// return "hold time" in ms if left button is pressed
+// return 0 if left button is not pressed
+int myButton_checkLeft() 
+{
+	if (buttonPress & BUTTON_LEFT_PRESS)
+	{
+		myButton_currentTime =  myButton_ticks_to_ms(xget_clock_ticks()); // get current time elapsed in ms
+		return myButton_leftPressTime - myButton_currentTime;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
-// return 1 if right button is pressed
-char myButton_checkRight() {
-	return (buttonPress & BUTTON_RIGHT_PRESS);
+
+// return "hold time" in ms if left button is pressed
+// return 0 if left button is not pressed
+int myButton_checkRight() 
+{
+	if (buttonPress & BUTTON_LEFT_PRESS)
+	{
+		myButton_currentTime =  myButton_ticks_to_ms(xget_clock_ticks()); // get current time elapsed in ms
+		return myButton_rightPressTime - myButton_currentTime;
+	}
+	else
+	{
+		return 0;
+	}
 }
 
 // return 1 if up button is pressed
@@ -60,10 +82,27 @@ void myButton_int_handler(XGpio *gpPB) //Should be very short (in time). In a pr
 	//clear the interrupt flag. if this is not done, gpio will keep interrupting the microblaze.--
 
 	//add debounce
-	if (debounce(&myButton_Interrupt_Timer)) {
+
+	myButton_currentTime =  myButton_ticks_to_ms(xget_clock_ticks()); // get current time elapsed in ms
+
+	if (debounce(&myButton_deboubceTime, myButton_currentTime)) 
+	{
 		//Read the state of the push buttons.
 		buttonPress = XGpio_DiscreteRead(gpPB, 1);
 		xil_printf("button value: %d\r\n", buttonPress);
+
+		if(buttonPress & BUTTON_LEFT_PRESS & (~prevButtonPress)) // left press and prevButton not press (110)
+		{
+			myButton_leftPressTime = myButton_currentTime;
+		}
+
+		if(buttonPress & BUTTON_RIGHT_PRESS & (~prevButtonPress)) // right press and prevButton not press (110)
+		{
+			myButton_rightPressTime = myButton_currentTime;
+		}
+
+		prevButtonPress = buttonPress;
+
 	} else
 		xil_printf("bounce\r\n");
 
