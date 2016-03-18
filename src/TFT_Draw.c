@@ -1,6 +1,6 @@
 #include "TFT_Draw.h"
 
-int barLeftPos = BAR_START_X, barRightPos = BAR_START_X + BAR_LENGTH;
+static int barLeftPos = BAR_START_X, barRightPos = BAR_START_X + BAR_LENGTH;
 
 int tft_init(u32 TftDeviceId, XTft *InstancePtr) {
 	int Status;
@@ -213,6 +213,7 @@ int tft_updateScore(XTft *InstancePtr, int score) {
 			SCORE_BOX_START_Y + 15, score_Digit_Ones, COLOR_BLACK, COLOR_GREY); //third number
 }
 
+
 int tft_updateSpeed(XTft *InstancePtr, int speed) {
 	tft_writeInteger(InstancePtr, BALL_SPEED_START_X + 50,
 			BALL_SPEED_START_Y + 5, speed, COLOR_BLACK, COLOR_GREY);
@@ -353,6 +354,7 @@ int tft_moveBarLeft(XTft *InstancePtr) {
 		tft_addBar(InstancePtr, barLeftPos, BAR_START_Y, barRightPos,
 				BAR_START_Y + BAR_HEIGHT, COLOR_GREEN);
 
+
 		barLeftPos = barLeftPos - 25;
 		barRightPos = barRightPos - 25;
 
@@ -364,6 +366,7 @@ int tft_moveBarLeft(XTft *InstancePtr) {
 		// add bar
 		tft_addBar(InstancePtr, barLeftPos, BAR_START_Y, barRightPos,
 				BAR_START_Y + BAR_HEIGHT, COLOR_BLACK);
+
 
 	}
 }

@@ -13,32 +13,63 @@
 #include <sys/process.h>
 #include <sys/decls.h>
 #include <sys/xtrace.h>
+#include <limits.h>
 
 volatile char buttonPress = BUTTON_INIT, prevButtonPress = BUTTON_INIT, buttonFlag;
-unsigned int myButton_deboubceTime, myButton_currentTime = 0;
+unsigned int myButton_debounceTime, myButton_currentTime = 0;
 unsigned int myButton_leftPressTime = 0, myButton_rightPressTime = 0;
 
 
 // Debouncing function. Returns TRUE if this interrupt was not caused by a bouncing switch
-int debounce(unsigned int *debounceTime, unsigned int currentTime) {
+int debounce(unsigned int *debounceTime, unsigned int currentTime, char tempButton, char buttonPress)
+{
+	unsigned int lapsedTime;
 
-	if ((currentTime - *debounceTime) > 100) 
+	if(tempButton ^ buttonPress)
 	{
-		*debounceTime = currentTime;
-		return 1;
-	} else {
+		if (*debounceTime > currentTime)
+		{
+			lapsedTime = UINT_MAX+1 - currentTime - *debounceTime;
+		}
+		else
+		{
+			lapsedTime = currentTime - *debounceTime;
+		}
+
+		if (lapsedTime > 50)
+		{
+			*debounceTime = currentTime;
+			return 1;
+		}
+	}
+	else
+	{
 		return 0;
 	}
+
 }
 
 // return "hold time" in ms if left button is pressed
 // return 0 if left button is not pressed
-int myButton_checkLeft() 
+unsigned int myButton_checkLeft(XGpio *gpPB)
 {
-	if (buttonPress & BUTTON_LEFT_PRESS)
+	char currentButton = XGpio_DiscreteRead(gpPB, 1);
+
+	if (buttonPress & BUTTON_LEFT_PRESS & currentButton) // debounced state (buttonPress) &  current state (currentButton)
 	{
 		myButton_currentTime =  myButton_ticks_to_ms(xget_clock_ticks()); // get current time elapsed in ms
-		return myButton_leftPressTime - myButton_currentTime;
+
+
+		if(myButton_leftPressTime > myButton_currentTime)
+		{
+			// overflowed
+			return  UINT_MAX+1 - myButton_leftPressTime - myButton_currentTime;
+
+		}
+		else
+		{
+			return myButton_currentTime - myButton_leftPressTime ;
+		}
 	}
 	else
 	{
@@ -49,12 +80,25 @@ int myButton_checkLeft()
 
 // return "hold time" in ms if left button is pressed
 // return 0 if left button is not pressed
-int myButton_checkRight() 
+unsigned int myButton_checkRight(XGpio *gpPB)
 {
-	if (buttonPress & BUTTON_LEFT_PRESS)
+
+	char currentButton = XGpio_DiscreteRead(gpPB, 1);
+
+	if (buttonPress & BUTTON_RIGHT_PRESS & currentButton)
 	{
 		myButton_currentTime =  myButton_ticks_to_ms(xget_clock_ticks()); // get current time elapsed in ms
-		return myButton_rightPressTime - myButton_currentTime;
+
+		if(myButton_rightPressTime > myButton_currentTime)
+		{
+			// overflowed
+			return  UINT_MAX+1 - myButton_rightPressTime - myButton_currentTime;
+
+		}
+		else
+		{
+			return myButton_currentTime - myButton_rightPressTime ;
+		}
 	}
 	else
 	{
@@ -63,18 +107,24 @@ int myButton_checkRight()
 }
 
 // return 1 if up button is pressed
-char myButton_checkUp() {
-	return (buttonPress & BUTTON_UP_PRESS);
+char myButton_checkUp(XGpio *gpPB)
+{
+	char currentButton = XGpio_DiscreteRead(gpPB, 1);
+	return (buttonPress & BUTTON_UP_PRESS & currentButton);
 }
 
 // return 1 if down button is pressed
-char myButton_checkDown() {
-	return (buttonPress & BUTTON_DOWN_PRESS);
+char myButton_checkDown(XGpio *gpPB) {
+
+	char currentButton = XGpio_DiscreteRead(gpPB, 1);
+	return (buttonPress & BUTTON_DOWN_PRESS & currentButton);
 }
 
 // return 1 if center button is pressed
-char myButton_checkCenter() {
-	return (buttonPress & BUTTON_CENTER_PRESS);
+char myButton_checkCenter(XGpio *gpPB) {
+
+	char currentButton = XGpio_DiscreteRead(gpPB, 1);
+	return (buttonPress & BUTTON_CENTER_PRESS & currentButton);
 }
 
 void myButton_int_handler(XGpio *gpPB) //Should be very short (in time). In a practical program, don't print etc.
@@ -83,13 +133,15 @@ void myButton_int_handler(XGpio *gpPB) //Should be very short (in time). In a pr
 
 	//add debounce
 
+	char tempButton = XGpio_DiscreteRead(gpPB, 1);
+
 	myButton_currentTime =  myButton_ticks_to_ms(xget_clock_ticks()); // get current time elapsed in ms
 
-	if (debounce(&myButton_deboubceTime, myButton_currentTime)) 
+	if (debounce(&myButton_debounceTime, myButton_currentTime, tempButton, buttonPress))
 	{
 		//Read the state of the push buttons.
-		buttonPress = XGpio_DiscreteRead(gpPB, 1);
-		xil_printf("button value: %d\r\n", buttonPress);
+		buttonPress = tempButton;
+		//xil_printf("button value: %d\r\n", buttonPress);
 
 		if(buttonPress & BUTTON_LEFT_PRESS & (~prevButtonPress)) // left press and prevButton not press (110)
 		{
@@ -103,8 +155,7 @@ void myButton_int_handler(XGpio *gpPB) //Should be very short (in time). In a pr
 
 		prevButtonPress = buttonPress;
 
-	} else
-		xil_printf("bounce\r\n");
+	}
 
 	XGpio_InterruptClear(gpPB, 1);
 

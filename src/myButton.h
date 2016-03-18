@@ -46,7 +46,7 @@
  *
  *
  ******************************************************************************/
-char myButton_checkLeft();
+unsigned int myButton_checkLeft(XGpio *gpPB);
 
 /*****************************************************************************
  **
@@ -58,7 +58,7 @@ char myButton_checkLeft();
  *
  *
  ******************************************************************************/
-char myButton_checkRight();
+unsigned int myButton_checkRight(XGpio *gpPB);
 
 /*****************************************************************************
  **
@@ -70,7 +70,7 @@ char myButton_checkRight();
  *
  *
  ******************************************************************************/
-char myButton_checkUp();
+char myButton_checkUp(XGpio *gpPB);
 
 /*****************************************************************************
  **
@@ -82,7 +82,7 @@ char myButton_checkUp();
  *
  *
  ******************************************************************************/
-char myButton_checkDown();
+char myButton_checkDown(XGpio *gpPB);
 
 /*****************************************************************************
  **
@@ -94,7 +94,7 @@ char myButton_checkDown();
  *
  *
  ******************************************************************************/
-char myButton_checkCenter();
+char myButton_checkCenter(XGpio *gpPB);
 
 /*****************************************************************************
  **
@@ -134,7 +134,7 @@ void myButton_int_handler(XGpio *gpPB);
  *
  *
  ******************************************************************************/
-int debounce(unsigned int *debounceTime, unsigned int currentTime) ;
+int debounce(unsigned int *debounceTime, unsigned int currentTime, char tempButton, char buttonPress);
 
 unsigned int myButton_ticks_to_ms (unsigned int ticks);
 
