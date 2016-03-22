@@ -507,9 +507,6 @@ int tft_addBar(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
  * Move the circle
  *
  * @param  InstancePtr is a pointer to the XTft instance.
- * @param  x0 is x position of the centre of the ball.
- * @param  y0 is y position of the centre of the ball
- * @param  radius is radius of the ball(Usually fixed)
  *
  *
  * @return
