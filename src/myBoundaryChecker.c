@@ -19,7 +19,7 @@ int myBoundaryChecker_Check(int ball_X, int ball_Y, int myBoundary_Start_X,
 	}
 	if (side_ball_X >= myBoundary_End_X) {	//right boundary
 		//side_ball_X = myBoundary_End_X;
-		return HIT_RIGHTBOUNDARY;// return 2
+		return HIT_RIGHTBOUNDARY;		// return 2
 	}
 	if (side_ball_Y <= myBoundary_Start_Y) { // top boundary
 		//side_ball_Y = myBoundary_Start_Y;
@@ -27,7 +27,7 @@ int myBoundaryChecker_Check(int ball_X, int ball_Y, int myBoundary_Start_X,
 	}
 	if (side_ball_Y >= myBoundary_End_Y) { // bottom boundary
 		//side_ball_Y = myBoundary_End_Y;
-		return HIT_BOTTOMBOUNDARY;// return 4
+		return HIT_BOTTOMBOUNDARY;		// return 4
 	}
 
 	/*******************************************four corners checking****************************************/
@@ -59,4 +59,5 @@ int myBoundaryChecker_Check(int ball_X, int ball_Y, int myBoundary_Start_X,
 		//side_ball_Y = myBoundary_End_Y;
 		return HIT_2_BOUNDARY_BOTTOM_RIGHT; // return 8
 	}
+	return 0;
 }

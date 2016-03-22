@@ -1,4 +1,4 @@
-`/*
+/*
  * project_core0.c
  *
  *  Created on: Mar 17, 2016
@@ -18,7 +18,7 @@
 
 
 
-#defined PRIOR_MAILBOX_SEND 1
+#define PRIOR_MAILBOX_SEND 	1
 // mailbox declaration
 #define MBOX_DEVICE_ID		XPAR_MBOX_0_DEVICE_ID
 
@@ -57,6 +57,7 @@ typedef struct
 
 
 int main_prog(void);
+void* thread_func_mailbox();
 
 int main (void) {
 
@@ -97,7 +98,7 @@ int main_prog(void)
   		if (Status != XST_SUCCESS) {
   				 print("-- Error initializing Mbox uB1 Sender--\r\n");
   				return XST_FAILURE;
-
+  		}
 
   	pthread_attr_init(&attr);						// get attribute for thread.
 
@@ -109,8 +110,7 @@ int main_prog(void)
 	pthread_attr_setschedparam(&attr, &sched_par); 	// update priority attribute
 
 	//start controller thread 1
-	ret = pthread_create(&tid_mailbox, NULL, (void*) thread_func_mailbox,
-			NULL );
+	ret = pthread_create(&tid_mailbox, NULL, (void*) thread_func_mailbox, NULL );
 	if (ret != 0) 
 	{
 		xil_printf("-- ERROR (%d) launching thread_func_mailbox...\r\n", ret);
@@ -121,9 +121,6 @@ int main_prog(void)
 				tid_mailbox);
 	}
    
-	
-
-
 }
 
 
@@ -143,7 +140,7 @@ void* thread_func_mailbox()
   	{
 
 		XMbox_WriteBlocking(&Mbox,&ball, sizeof(ball_msg));
-		sleep(1000;)
+		sleep(1000);
 
 		ball.x = rand() % 200;
 		ball.y = rand() % 200;

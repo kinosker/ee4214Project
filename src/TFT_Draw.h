@@ -78,12 +78,21 @@
 #define ROW_Y_START				65 						// Default start Y value to draw smaller square
 #define ROW_Y_END		ROW_Y_START + ROW_OFFSET *  ROW_BRICKS - 1	// Default Endin Y value to draw smaller square
 #define ROW_1_Y					65 						// default Y value to start.
+
 //bar
 #define BAR_START_X				247
 #define BAR_START_Y				405
+#define BAR_START_X_A_MINUS		247
+#define BAR_START_X_S_MINUS		257
+#define BAR_START_X_N			267
+#define BAR_START_X_A_PLUS		307
+#define BAR_START_X_S_PLUS		317
 //#define BAR_END_X				327
 //#define BAR_END_Y				410
 #define BAR_LENGTH				80
+#define BAR_LENGTH_A			10
+#define BAR_LENGTH_S			10
+#define BAR_LENGTH_N			40
 #define BAR_HEIGHT				5
 
 //Ball Radius

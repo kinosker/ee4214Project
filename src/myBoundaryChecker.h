@@ -19,9 +19,6 @@
 #define HIT_2_BOUNDARY_BOTTOM_LEFT 		7    // Hit 2 boundaries(bottom and left)
 #define HIT_2_BOUNDARY_BOTTOM_RIGHT 	8    // Hit 2 boundaries(bottom and left)
 
-
-int myBoundaryChecker_Check(int ball_X, int ball_Y, int myBoundary_Start_X,
-		int myBoundary_Start_Y, int myBoundary_End_X, int myBoundary_End_Y);//speed?? and angle??
-
+int myBoundaryChecker_Check(int ball_X, int ball_Y, int myBoundary_Start_X, int myBoundary_Start_Y, int myBoundary_End_X, int myBoundary_End_Y); //speed????? angle???
 
 #endif /* BOUNDARYCHECK_H_ */

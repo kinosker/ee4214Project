@@ -10,8 +10,7 @@ C_SRCS += \
 ../src/myBoundaryChecker.c \
 ../src/myButton.c \
 ../src/platform.c \
-../src/project.c \
-../src/project_core0.c 
+../src/project.c 
 
 LD_SRCS += \
 ../src/lscript.ld 
@@ -23,8 +22,7 @@ OBJS += \
 ./src/myBoundaryChecker.o \
 ./src/myButton.o \
 ./src/platform.o \
-./src/project.o \
-./src/project_core0.o 
+./src/project.o 
 
 C_DEPS += \
 ./src/TFT_Draw.d \
@@ -33,8 +31,7 @@ C_DEPS += \
 ./src/myBoundaryChecker.d \
 ./src/myButton.d \
 ./src/platform.d \
-./src/project.d \
-./src/project_core0.d 
+./src/project.d 
 
 
 # Each subdirectory must supply rules for building sources it contributes
