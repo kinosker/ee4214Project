@@ -12,6 +12,7 @@
 #include <sys/timer.h> //for using sleep. need to set config_time to true
 #include <sys/intr.h> //xilkernel api for interrupts
 #include "String.h"
+#include "ballControl.h"
 // Note : We need to change TFT function to thread-safe => sw mutex.
 // 		: <xtft_hw.h> defines XTFT_ASCIICHAR_OFFSET,  XTFT_CHAR_HEIGHT, XTFT_DISPLAY_HEIGHT, XTFT_DISPLAY_WIDTH
 //		: Make use of disable and enable display to draw initially / reset !
@@ -99,6 +100,7 @@
 #define CIRCLE_RADIUS			7
 #define CIRCLE_X 				287
 #define CIRCLE_Y 				397
+#define CIRCLE_ANGLE			0
 
 //Box Containing Word SCORE
 #define SCORE_WORD_BOX_START_X	550
@@ -499,6 +501,25 @@ int tft_fillBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
  ******************************************************************************/
 int tft_addBar(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 		u32 ColEndPos, u32 RowEndPos, unsigned int colour);
+
+/*****************************************************************************
+ **
+ * Move the circle
+ *
+ * @param  InstancePtr is a pointer to the XTft instance.
+ * @param  x0 is x position of the centre of the ball.
+ * @param  y0 is y position of the centre of the ball
+ * @param  radius is radius of the ball(Usually fixed)
+ *
+ *
+ * @return
+ *   - XST_SUCCESS if successful.
+ *   - XST_FAILURE if unsuccessful.
+ *
+ *
+ ******************************************************************************/
+
+int tft_moveCircle(XTft *InstancePtr);
 
 /*****************************************************************************
  **

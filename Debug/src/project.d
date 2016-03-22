@@ -28,8 +28,8 @@ src/project.d: ../src/project.c \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/timer.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/intr.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/queue.h ../src/TFT_Draw.h \
- ../src/myBarrier.h ../src/myButton.h \
- ../../xilkernel_bsp_0/microblaze_0/include/xmbox.h \
+ ../src/ballControl.h ../src/myBoundaryChecker.h ../src/myBarrier.h \
+ ../src/myButton.h ../../xilkernel_bsp_0/microblaze_0/include/xmbox.h \
  ../../xilkernel_bsp_0/microblaze_0/include/xmbox_hw.h \
  ../../xilkernel_bsp_0/microblaze_0/include/fsl.h
 
@@ -92,6 +92,10 @@ src/project.d: ../src/project.c \
 ../../xilkernel_bsp_0/microblaze_0/include/sys/queue.h:
 
 ../src/TFT_Draw.h:
+
+../src/ballControl.h:
+
+../src/myBoundaryChecker.h:
 
 ../src/myBarrier.h:
 

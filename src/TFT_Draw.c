@@ -1,6 +1,7 @@
 #include "TFT_Draw.h"
 
 static int barLeftPos = BAR_START_X, barRightPos = BAR_START_X + BAR_LENGTH;
+static int x0 = CIRCLE_X, y0= CIRCLE_Y, radius = CIRCLE_RADIUS, angle = CIRCLE_ANGLE;
 
 int tft_init(u32 TftDeviceId, XTft *InstancePtr) {
 	int Status;
@@ -117,7 +118,7 @@ int tft_intialDraw(XTft *InstancePtr) {
 	tft_addCircle(InstancePtr, CIRCLE_X, CIRCLE_Y, CIRCLE_RADIUS);
 }
 
-int tft_updateDisplay(XTft *InstancePtr);
+int tft_update (XTft *InstancePtr);
 
 int tft_updateColumn(XTft *InstancePtr, const int col_x, int currentBricks,
 		int futureBricks, unsigned int currentColour, unsigned int futureColour) {
@@ -380,6 +381,17 @@ int tft_addBar(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 
 }
 
+int tft_moveCircle(XTft *InstancePtr) {
+//	int speedX = 0, speedY = 0;
+//	if(angle == 0)
+//	{
+		//speed += INITIAL_SPEED;
+		tft_removeCircle(InstancePtr, x0, y0, radius);
+		y0 -= INITIAL_SPEED;
+		x0 = x0;
+		tft_addCircle(InstancePtr, x0, y0, radius);
+//	}
+}
 int tft_moveBarLeft(XTft *InstancePtr) {
 
 	if (barLeftPos > OUTER_COL_START_X) {

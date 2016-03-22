@@ -8,7 +8,7 @@
 #include "ballControl.h"
 #include "myBoundaryChecker.h"
 
-void myBallControl_SpeedChange(XTft *InstancePtr, int ball_X, int ball_Y,int score, int speed) {
+int myBallControl_SpeedChange(XTft *InstancePtr, int ball_X, int ball_Y,int score, int speed) {
 	//int side_ball_X = ball_X + CIRCLE_RADIUS;
 	int side_ball_Y = ball_Y + CIRCLE_RADIUS;
 	int curr_Score = score;
@@ -26,4 +26,5 @@ void myBallControl_SpeedChange(XTft *InstancePtr, int ball_X, int ball_Y,int sco
 		speed += SCORE_ACCELERATION;
 		prev_Score = curr_Score;
 	}
+	return speed;
 }

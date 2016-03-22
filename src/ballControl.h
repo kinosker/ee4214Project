@@ -16,7 +16,7 @@
 #define SCORE_ACCELERATION		1	//25pixels per sec -> 25fps = 1pixels (+1 when the score is increase by 10)
 
 
-void myBallControl_SpeedChange(XTft *InstancePtr, int ball_X, int ball_Y,int score, int speed);
+int myBallControl_SpeedChange(XTft *InstancePtr, int ball_X, int ball_Y,int score, int speed);
 
 
 #endif /* BALLCONTROL_H_ */

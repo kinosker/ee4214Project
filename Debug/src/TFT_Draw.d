@@ -25,7 +25,8 @@ src/TFT_Draw.d: ../src/TFT_Draw.c ../src/TFT_Draw.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/mpu.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/timer.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/intr.h \
- ../../xilkernel_bsp_0/microblaze_0/include/sys/queue.h
+ ../../xilkernel_bsp_0/microblaze_0/include/sys/queue.h \
+ ../src/ballControl.h ../src/myBoundaryChecker.h
 
 ../src/TFT_Draw.h:
 
@@ -82,3 +83,7 @@ src/TFT_Draw.d: ../src/TFT_Draw.c ../src/TFT_Draw.h \
 ../../xilkernel_bsp_0/microblaze_0/include/sys/intr.h:
 
 ../../xilkernel_bsp_0/microblaze_0/include/sys/queue.h:
+
+../src/ballControl.h:
+
+../src/myBoundaryChecker.h:
