@@ -15,16 +15,13 @@
 #include "myButton.h"
 #include "xmbox.h"
 
-
 /************************** Struct Definition *****************************/
 
-typedef struct 
-{
+typedef struct {
 
-  int dir,speed,x,y;
+	int dir, speed, x, y;
 
 } ball_msg;
-
 
 #define XST_SUCCESS                     0L
 #define XST_FAILURE                     1L
@@ -68,12 +65,13 @@ struct sched_param sched_par;
 
 pthread_attr_t attr;
 
-pthread_t tid_controller, tid_time_elapsed, tid_col_1, tid_col_2, tid_col_3,
+pthread_t  tid_controller, tid_time_elapsed, tid_col_1, tid_col_2, tid_col_3,
+
 		tid_col_4, tid_col_5, tid_col_6, tid_col_7, tid_col_8, tid_col_9,
 		tid_col_10;
 
 /************************** Thread Synchronisation variables ****************************/
-static XMbox Mbox;	
+static XMbox Mbox;
 
 pthread_mutex_t mutex_col;
 struct barrier_t barrier_col;
@@ -105,9 +103,8 @@ int main() {
 }
 
 void main_prog(void *arg) {
-	
+
 	int ret, Status;
-	
 
 	// initialize the semaphore
 	if (sem_init(&sem_colour_yellow, 0, COL_YELLOW) < 0) // init sem_colour_yellow with 2 resource
@@ -133,142 +130,153 @@ void main_prog(void *arg) {
 		xil_printf("-- ERROR (%d) init uart_mutex...\r\n", ret);
 	}
 
-
 	init_myButton(&gpPB);
 
 	/************************** Mailbox Init ****************************/
 
-  	XMbox_Config *ConfigPtr;
+	XMbox_Config *ConfigPtr;
 
-
-  	ConfigPtr = XMbox_LookupConfig(MBOX_DEVICE_ID );
-  		if (ConfigPtr == (XMbox_Config *)NULL) {
-  			 print("-- Error configuring Mbox uB1 Sender--\r\n");
-  			return XST_FAILURE;
-  		}
-
-  	Status = XMbox_CfgInitialize(&Mbox, ConfigPtr, ConfigPtr->BaseAddress);
-  		if (Status != XST_SUCCESS) {
-  				 print("-- Error initializing Mbox uB1 Sender--\r\n");
-  				return XST_FAILURE;
-
-
-//	print("startinitDraw");
-	tft_intialDraw(&InstancePtr);
-//	print("end init");
-
-	tft_updateSpeed(&InstancePtr, 54);
-	tft_updateBricksLeft(&InstancePtr, 0);
-	tft_updateScore(&InstancePtr, 5);
-
-	pthread_attr_init(&attr);						// get attribute for thread.
-
-	//pthread_barrier_init(&barrier, NULL, 11); // barrier of size 11, for 10 col threads + 1 update display
-
-	/************************** Controller Threads Init ****************************/
-
-	sched_par.sched_priority = PRIO_CONTROLLER; // set priority for controller thread
-	pthread_attr_setschedparam(&attr, &sched_par); 	// update priority attribute
-
-	//start controller thread 1
-	ret = pthread_create(&tid_controller, NULL, (void*) thread_func_controller,
-			NULL );
-	if (ret != 0) {
-		xil_printf("-- ERROR (%d) launching thread_func_1...\r\n", ret);
-	} else {
-		xil_printf("Controller Thread launched with ID %d \r\n",
-				tid_controller);
+	ConfigPtr = XMbox_LookupConfig(MBOX_DEVICE_ID);
+	if (ConfigPtr == (XMbox_Config *) NULL ) {
+		print("-- Error configuring Mbox uB1 Sender--\r\n");
+		return XST_FAILURE;
 	}
 
-	/************************** Column Threads Init ****************************/
+	Status = XMbox_CfgInitialize(&Mbox, ConfigPtr, ConfigPtr->BaseAddress);
+	if (Status != XST_SUCCESS) {
+		print("-- Error initializing Mbox uB1 Sender--\r\n");
+		return XST_FAILURE;
 
-	sched_par.sched_priority = PRIO_COL; 	// set priority for columns thread
-	pthread_attr_setschedparam(&attr, &sched_par); 	// update priority attribute
+		//	print("startinitDraw");
+		tft_intialDraw(&InstancePtr);
+		//	print("end init");
 
-	//start col thread 1
-	ret = pthread_create(&tid_col_1, NULL, (void*) thread_func_col, COL_1_X);
-	if (ret != 0) {
-		xil_printf("-- ERROR (%d) launching thread_func_col_1...\r\n", ret);
-	} else {
-		xil_printf("Col Thread 1 launched with ID %d \r\n", tid_col_1);
-	}
+		tft_updateSpeed(&InstancePtr, 54);
+		tft_updateBricksLeft(&InstancePtr, 0);
+		tft_updateScore(&InstancePtr, 5);
 
-	//start col thread 2
-	ret = pthread_create(&tid_col_2, NULL, (void*) thread_func_col, COL_2_X);
-	if (ret != 0) {
-		xil_printf("-- ERROR (%d) launching thread_func_col_2...\r\n", ret);
-	} else {
-		xil_printf("Col Thread 2 launched with ID %d \r\n", tid_col_2);
-	}
+		pthread_attr_init(&attr);					// get attribute for thread.
 
-	//start thread 3
-	ret = pthread_create(&tid_col_3, NULL, (void*) thread_func_col, COL_3_X);
-	if (ret != 0) {
-		xil_printf("-- ERROR (%d) launching thread_func_col_3...\r\n", ret);
-	} else {
-		xil_printf("Col Thread 3 launched with ID %d \r\n", tid_col_3);
-	}
+		//pthread_barrier_init(&barrier, NULL, 11); // barrier of size 11, for 10 col threads + 1 update display
 
-	//start thread 4
-	ret = pthread_create(&tid_col_4, NULL, (void*) thread_func_col, COL_4_X);
-	if (ret != 0) {
-		xil_printf("-- ERROR (%d) launching thread_func_col_4...\r\n", ret);
-	} else {
-		xil_printf("Col Thread 4 launched with ID %d \r\n", tid_col_4);
-	}
+		/************************** Controller Threads Init ****************************/
 
-	//start thread 5
-	ret = pthread_create(&tid_col_5, NULL, (void*) thread_func_col, COL_5_X);
-	if (ret != 0) {
-		xil_printf("-- ERROR (%d) launching thread_func_col_5...\r\n", ret);
-	} else {
-		xil_printf("Col Thread 5 launched with ID %d \r\n", tid_col_5);
-	}
+		sched_par.sched_priority = PRIO_CONTROLLER; // set priority for controller thread
+		pthread_attr_setschedparam(&attr, &sched_par); // update priority attribute
 
-	ret = pthread_create(&tid_col_6, NULL, (void*) thread_func_col, COL_6_X);
-	if (ret != 0) {
-		xil_printf("-- ERROR (%d) launching thread_func_col_6...\r\n", ret);
-	} else {
-		xil_printf("Col Thread 6 launched with ID %d \r\n", tid_col_6);
-	}
+		//start controller thread 1
+		ret = pthread_create(&tid_controller, NULL,
+				(void*) thread_func_controller, NULL );
+		if (ret != 0) {
+			xil_printf("-- ERROR (%d) launching thread_func_1...\r\n", ret);
+		} else {
+			xil_printf("Controller Thread launched with ID %d \r\n",
+					tid_controller);
+		}
 
-	ret = pthread_create(&tid_col_7, NULL, (void*) thread_func_col, COL_7_X);
-	if (ret != 0) {
-		xil_printf("-- ERROR (%d) launching thread_func_col_7...\r\n", ret);
-	} else {
-		xil_printf("Col Thread 7 launched with ID %d \r\n", tid_col_7);
-	}
+		/************************** Column Threads Init ****************************/
 
-	ret = pthread_create(&tid_col_8, NULL, (void*) thread_func_col, COL_8_X);
-	if (ret != 0) {
-		xil_printf("-- ERROR (%d) launching thread_func_col_8...\r\n", ret);
-	} else {
-		xil_printf("Col Thread 8 launched with ID %d \r\n", tid_col_8);
-	}
+		sched_par.sched_priority = PRIO_COL; // set priority for columns thread
+		pthread_attr_setschedparam(&attr, &sched_par); // update priority attribute
 
-	ret = pthread_create(&tid_col_9, NULL, (void*) thread_func_col, COL_9_X);
-	if (ret != 0) {
-		xil_printf("-- ERROR (%d) launching thread_func_col_9...\r\n", ret);
-	} else {
-		xil_printf("Col Thread 9 launched with ID %d \r\n", tid_col_9);
-	}
+		//start col thread 1
+		ret = pthread_create(&tid_col_1, NULL, (void*) thread_func_col,
+				COL_1_X);
+		if (ret != 0) {
+			xil_printf("-- ERROR (%d) launching thread_func_col_1...\r\n", ret);
+		} else {
+			xil_printf("Col Thread 1 launched with ID %d \r\n", tid_col_1);
+		}
 
-	ret = pthread_create(&tid_col_10, NULL, (void*) thread_func_col, COL_10_X);
-	if (ret != 0) {
-		xil_printf("-- ERROR (%d) launching thread_func_col_10...\r\n", ret);
-	} else {
-		xil_printf("Col Thread 10 launched with ID %d \r\n", tid_col_10);
-	}
+		//start col thread 2
+		ret = pthread_create(&tid_col_2, NULL, (void*) thread_func_col,
+				COL_2_X);
+		if (ret != 0) {
+			xil_printf("-- ERROR (%d) launching thread_func_col_2...\r\n", ret);
+		} else {
+			xil_printf("Col Thread 2 launched with ID %d \r\n", tid_col_2);
+		}
 
-	sched_par.sched_priority = PRIO_SCORE_ZONE; // set priority for score zone threads
-	pthread_attr_setschedparam(&attr, &sched_par); 	// update priority attribute
+		//start thread 3
+		ret = pthread_create(&tid_col_3, NULL, (void*) thread_func_col,
+				COL_3_X);
+		if (ret != 0) {
+			xil_printf("-- ERROR (%d) launching thread_func_col_3...\r\n", ret);
+		} else {
+			xil_printf("Col Thread 3 launched with ID %d \r\n", tid_col_3);
+		}
 
-	//start timer thread. (SHOULD NOT BE HERE ON ACTUAL PROJECT !!! Launch ball => then start this thread..)
-	ret = pthread_create(&tid_time_elapsed, NULL,(void*) thread_func_time_elapsed,0);
-	if (ret != 0) {
-		xil_printf("-- ERROR (%d) launching thread_time_elapsed...\r\n", ret);
-	} else {
-		xil_printf("Col Thread 1 launched with ID %d \r\n", tid_col_1);
+		//start thread 4
+		ret = pthread_create(&tid_col_4, NULL, (void*) thread_func_col,
+				COL_4_X);
+		if (ret != 0) {
+			xil_printf("-- ERROR (%d) launching thread_func_col_4...\r\n", ret);
+		} else {
+			xil_printf("Col Thread 4 launched with ID %d \r\n", tid_col_4);
+		}
+
+		//start thread 5
+		ret = pthread_create(&tid_col_5, NULL, (void*) thread_func_col,
+				COL_5_X);
+		if (ret != 0) {
+			xil_printf("-- ERROR (%d) launching thread_func_col_5...\r\n", ret);
+		} else {
+			xil_printf("Col Thread 5 launched with ID %d \r\n", tid_col_5);
+		}
+
+		ret = pthread_create(&tid_col_6, NULL, (void*) thread_func_col,
+				COL_6_X);
+		if (ret != 0) {
+			xil_printf("-- ERROR (%d) launching thread_func_col_6...\r\n", ret);
+		} else {
+			xil_printf("Col Thread 6 launched with ID %d \r\n", tid_col_6);
+		}
+
+		ret = pthread_create(&tid_col_7, NULL, (void*) thread_func_col,
+				COL_7_X);
+		if (ret != 0) {
+			xil_printf("-- ERROR (%d) launching thread_func_col_7...\r\n", ret);
+		} else {
+			xil_printf("Col Thread 7 launched with ID %d \r\n", tid_col_7);
+		}
+
+		ret = pthread_create(&tid_col_8, NULL, (void*) thread_func_col,
+				COL_8_X);
+		if (ret != 0) {
+			xil_printf("-- ERROR (%d) launching thread_func_col_8...\r\n", ret);
+		} else {
+			xil_printf("Col Thread 8 launched with ID %d \r\n", tid_col_8);
+		}
+
+		ret = pthread_create(&tid_col_9, NULL, (void*) thread_func_col,
+				COL_9_X);
+		if (ret != 0) {
+			xil_printf("-- ERROR (%d) launching thread_func_col_9...\r\n", ret);
+		} else {
+			xil_printf("Col Thread 9 launched with ID %d \r\n", tid_col_9);
+		}
+
+		ret = pthread_create(&tid_col_10, NULL, (void*) thread_func_col,
+				COL_10_X);
+		if (ret != 0) {
+			xil_printf("-- ERROR (%d) launching thread_func_col_10...\r\n",
+					ret);
+		} else {
+			xil_printf("Col Thread 10 launched with ID %d \r\n", tid_col_10);
+		}
+
+		sched_par.sched_priority = PRIO_SCORE_ZONE; // set priority for score zone threads
+		pthread_attr_setschedparam(&attr, &sched_par); // update priority attribute
+
+		//start timer thread. (SHOULD NOT BE HERE ON ACTUAL PROJECT !!! Launch ball => then start this thread..)
+		ret = pthread_create(&tid_time_elapsed, NULL,
+				(void*) thread_func_time_elapsed, 0);
+		if (ret != 0) {
+			xil_printf("-- ERROR (%d) launching thread_time_elapsed...\r\n",
+					ret);
+		} else {
+			xil_printf("Col Thread 1 launched with ID %d \r\n", tid_col_1);
+		}
 	}
 }
 
@@ -325,7 +333,7 @@ void* thread_func_time_elapsed() {
 
 		if (prevGameTime != gameTime) {
 			// update time box (function needed !!!)
-			tft_updateTime(&InstancePtr , gameTime);
+			tft_updateTime(&InstancePtr, gameTime);
 			prevGameTime = gameTime;
 		}
 
@@ -353,7 +361,6 @@ void* thread_func_col(int col_x) {
 		// add mailbox to blockingReceive (wait) for updated ball param to satisfy (fps)
 		//XMbox_ReadBlocking(&Mbox, &ball, sizeof(ball_msg));
 
-
 		myBarrier_wait(&barrier_col); // wait for all col threads to reach here... and controller thread to reach wait.
 
 		futureColour = updateBrickColour(currentColour);
@@ -371,9 +378,8 @@ void* thread_func_col(int col_x) {
 		if (randBricks < currentBricks)
 			futureBricks = randBricks;
 
-//		xil_printf ("\r\nend is Col :  %d \r", col_x);
+		//		xil_printf ("\r\nend is Col :  %d \r", col_x);
 		pthread_mutex_unlock(&mutex_col);
-
 
 		// some msgq or semaphore to indicate completion of rebounce and bar param
 		// writeBlocking send it back.
@@ -388,8 +394,8 @@ void* thread_func_col(int col_x) {
 void changeBrickColour(int score, int colThreads) {
 	int i, semaRelease;
 
-//	print("Starting Here\r\n");
-//	xil_printf("score: %d", score);
+	//	print("Starting Here\r\n");
+	//	xil_printf("score: %d", score);
 	if (score % 10 == 0) {
 		//	print("inside loop liao");
 		//release 2 semaphore yellow colour resources!!!
