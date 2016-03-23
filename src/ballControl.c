@@ -42,7 +42,7 @@ int myBallControl_SpeedChange(XTft *InstancePtr, int ball_X, int ball_Y,int scor
 
 int myBallControl_AngleChange(XTft *InstancePtr, int ball_X, int ball_Y, int angle) {
 	//int side_ball_X = ball_X + CIRCLE_RADIUS;
-	//int side_ball_Y = ball_Y + CIRCLE_RADIUS;
+	int side_ball_Y = ball_Y + CIRCLE_RADIUS;
 
 	if(angle <= MINIMUM_ANGLE_ON_BAR)
 	{
@@ -52,5 +52,18 @@ int myBallControl_AngleChange(XTft *InstancePtr, int ball_X, int ball_Y, int ang
 	{
 		angle = MAXIMUM_ANGLE_ON_BAR;
 	}
-
+	else
+	{
+		if(side_ball_Y <= BAR_START_X_A_MINUS)
+		{
+			side_ball_Y = BAR_START_X_A_MINUS;
+			angle -= BAR_INCREASE_DECREASE;
+		}
+		else if(side_ball_Y <= BAR_START_X_A_PLUS)
+		{
+			side_ball_Y = BAR_START_X_A_PLUS;
+			angle += BAR_INCREASE_DECREASE;
+		}
+	}
+	return angle;
 }
