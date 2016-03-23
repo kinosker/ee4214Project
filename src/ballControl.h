@@ -11,12 +11,69 @@
 #include "myBoundaryChecker.h"
 #include "TFT_Draw.h"
 
-#define INITIAL_SPEED 			10	//250pixels per sec -> 25fps = 10pixels
-#define BAR_AC_DECELERATION 	4	//100pixels per sec -> 25fps = 4pixels (+4 when hit S+ part of bar, -4 when hit S- part of bar)
-#define SCORE_ACCELERATION		1	//25pixels per sec -> 25fps = 1pixels (+1 when the score is increase by 10)
+/*****************************************************************************
+ *																			 *
+ *																			 *
+ *					---- Start of constant definition ----					 *
+ *																			 *
+ *																			 *
+ ******************************************************************************/
+#define FRAME_PER_SEC			25
+#define MINIMUM_SPEED			50/FRAME_PER_SEC
+#define MAXIMUM_SPEED			1000/FRAME_PER_SEC
+#define INITIAL_SPEED 			250/FRAME_PER_SEC	//250pixels per sec -> 25fps = 10pixels
+#define BAR_AC_DECELERATION 	100/FRAME_PER_SEC	//100pixels per sec -> 25fps = 4pixels (+4 when hit S+ part of bar, -4 when hit S- part of bar)
+#define SCORE_ACCELERATION		25/FRAME_PER_SEC	//25pixels per sec -> 25fps = 1pixels (+1 when the score is increase by 10)
 
+/*************************************************angle definition*****************************************/
+#define MINIMUM_ANGLE_ON_BAR			15
+#define MAXIMUM_ANGLE_ON_BAR			165
+#define INITIAL_ANGLE					0
+#define BAR_INCREASE_DECREASE			15// the increase/decrease angle when the ball hit A+/A- will be 15
 
+/*****************************************************************************
+ **																			 *
+ *																			 *
+ *					---- Start of Functions Prototype ----					 *
+ *																			 *
+ *																			 *
+ *****************************************************************************/
+
+/*****************************************************************************
+ **
+ * Control the change of speed according to the condiions
+ *
+ * @param InstancePtr is the Xtft pointer
+ * @param ball_X is the X-coordinate of the ball currently
+ * @param ball_Y is the Y-coordinate of the ball currently
+ * @param score is the current score in game
+ * @param speed is the current speed of the ball
+ *
+ *
+ * @return
+ *   - XST_SUCCESS if successful.
+ *   - XST_FAILURE if unsuccessful.
+ *
+ *
+ ******************************************************************************/
 int myBallControl_SpeedChange(XTft *InstancePtr, int ball_X, int ball_Y,int score, int speed);
 
+/*****************************************************************************
+ **
+ * Control the change of speed according to the condiions
+ *
+ * @param InstancePtr is the Xtft pointer
+ * @param ball_X is the X-coordinate of the ball currently
+ * @param ball_Y is the Y-coordinate of the ball currently
+ * @param angle is the current angle in game
+ *
+ *
+ * @return
+ *   - XST_SUCCESS if successful.
+ *   - XST_FAILURE if unsuccessful.
+ *
+ *
+ ******************************************************************************/
+int myBallControl_AngleChange(XTft *InstancePtr, int ball_X, int ball_Y, int angle);
 
 #endif /* BALLCONTROL_H_ */
