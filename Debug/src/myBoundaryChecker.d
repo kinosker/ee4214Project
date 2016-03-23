@@ -26,7 +26,8 @@ src/myBoundaryChecker.d: ../src/myBoundaryChecker.c \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/mpu.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/timer.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/intr.h \
- ../../xilkernel_bsp_0/microblaze_0/include/sys/queue.h
+ ../../xilkernel_bsp_0/microblaze_0/include/sys/queue.h \
+ ../src/ballControl.h
 
 ../src/myBoundaryChecker.h:
 
@@ -85,3 +86,5 @@ src/myBoundaryChecker.d: ../src/myBoundaryChecker.c \
 ../../xilkernel_bsp_0/microblaze_0/include/sys/intr.h:
 
 ../../xilkernel_bsp_0/microblaze_0/include/sys/queue.h:
+
+../src/ballControl.h:
