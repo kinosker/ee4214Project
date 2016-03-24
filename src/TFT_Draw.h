@@ -516,7 +516,7 @@ int tft_addBar(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
  *
  ******************************************************************************/
 
-int tft_moveCircle(XTft *InstancePtr);
+int tft_moveCircle(XTft *InstancePtr, int x0, int y0, int future_x0, int future_y0, int speed);
 
 /*****************************************************************************
  **

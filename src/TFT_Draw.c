@@ -1,7 +1,8 @@
 #include "TFT_Draw.h"
 
 static int barLeftPos = BAR_START_X, barRightPos = BAR_START_X + BAR_LENGTH;
-static int x0 = CIRCLE_X, y0= CIRCLE_Y, radius = CIRCLE_RADIUS, angle = CIRCLE_ANGLE;
+static int radius = CIRCLE_RADIUS; //,x0 = CIRCLE_X, y0= CIRCLE_Y;
+static int angle = CIRCLE_ANGLE;
 
 int tft_init(u32 TftDeviceId, XTft *InstancePtr) {
 	int Status;
@@ -118,7 +119,7 @@ int tft_intialDraw(XTft *InstancePtr) {
 	tft_addCircle(InstancePtr, CIRCLE_X, CIRCLE_Y, CIRCLE_RADIUS);
 }
 
-int tft_update (XTft *InstancePtr);
+int tft_update(XTft *InstancePtr);
 
 int tft_updateColumn(XTft *InstancePtr, const int col_x, int currentBricks,
 		int futureBricks, unsigned int currentColour, unsigned int futureColour) {
@@ -236,16 +237,16 @@ int tft_updateTime(XTft *InstancePtr, int gameTime) {
 	gameTime_secs_higherBit = gameTime_secs / 10;
 	gameTime_secs_lowerBit = gameTime_secs % 10;
 
-	tft_writeInteger(InstancePtr, TIME_START_X + 35, TIME_START_Y + 5, gameTime_mins_higherBit,
-			COLOR_BLACK, COLOR_GREY);
-	tft_writeInteger(InstancePtr, TIME_START_X + 45, TIME_START_Y + 5, gameTime_mins_lowerBit,
-			COLOR_BLACK, COLOR_GREY);
+	tft_writeInteger(InstancePtr, TIME_START_X + 35, TIME_START_Y + 5,
+			gameTime_mins_higherBit, COLOR_BLACK, COLOR_GREY);
+	tft_writeInteger(InstancePtr, TIME_START_X + 45, TIME_START_Y + 5,
+			gameTime_mins_lowerBit, COLOR_BLACK, COLOR_GREY);
 	tft_writeString(InstancePtr, TIME_START_X + 53, TIME_START_Y + 5, ":",
 			COLOR_BLACK, COLOR_GREY);
-	tft_writeInteger(InstancePtr, TIME_START_X + 61, TIME_START_Y + 5, gameTime_secs_higherBit,
-			COLOR_BLACK, COLOR_GREY);
-	tft_writeInteger(InstancePtr, TIME_START_X + 71, TIME_START_Y + 5, gameTime_secs_lowerBit,
-			COLOR_BLACK, COLOR_GREY);
+	tft_writeInteger(InstancePtr, TIME_START_X + 61, TIME_START_Y + 5,
+			gameTime_secs_higherBit, COLOR_BLACK, COLOR_GREY);
+	tft_writeInteger(InstancePtr, TIME_START_X + 71, TIME_START_Y + 5,
+			gameTime_secs_lowerBit, COLOR_BLACK, COLOR_GREY);
 
 }
 
@@ -381,15 +382,45 @@ int tft_addBar(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 
 }
 
-int tft_moveCircle(XTft *InstancePtr) {
+int tft_moveCircle(XTft *InstancePtr, int x0, int y0, int future_x0,
+		int future_y0, int speed) {
 //	int speedX = 0, speedY = 0;
 //	if(angle == 0)
 //	{
-		//speed += INITIAL_SPEED;
-		tft_removeCircle(InstancePtr, x0, y0, radius);
-		y0 -= INITIAL_SPEED;
-		x0 = x0;
-		tft_addCircle(InstancePtr, x0, y0, radius);
+	int diff_X = 0, diff_Y = 0, number_of_Steps_X = 0, number_of_Steps_Y = 0,
+			i = 0, j =0;
+	diff_X = future_x0 - x0;
+	diff_Y = future_y0 - y0;
+
+	tft_removeCircle(InstancePtr, x0, y0, radius);
+	//if the distance between 2 points is >> speed then it will need to take a nubmer of steps before the ball will reach the destination
+	if (diff_X > speed) {
+		number_of_Steps_X = diff_X / speed;
+	}
+	if (diff_Y > speed) {
+		number_of_Steps_Y = diff_Y / speed;
+	}
+	if (number_of_Steps_Y > 0 && number_of_Steps_X <= 0) {
+		for (i = 0; i < number_of_Steps_Y; i++) {
+			future_y0 = y0 + ((i + 1) * speed);
+			tft_addCircle(InstancePtr, future_x0, future_y0, radius);
+		}
+	}
+	else if (number_of_Steps_X > 0 && number_of_Steps_Y <= 0) {
+		for (i = 0; i < number_of_Steps_X; i++) {
+			future_x0 = x0 + ((i + 1) * speed);
+			tft_addCircle(InstancePtr, future_x0, future_y0, radius);
+		}
+	}
+	else
+	{
+		for (i = 0; i < number_of_Steps_X; i++) {
+			for (j = 0; j < number_of_Steps_X; j++) {
+				future_x0 = x0 + ((i + 1) * speed);
+			}
+		}
+
+	}
 //	}
 }
 int tft_moveBarLeft(XTft *InstancePtr) {

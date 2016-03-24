@@ -153,7 +153,14 @@ void main_prog(void *arg) {
 
 	tft_updateSpeed(&InstancePtr, 54);
 	tft_updateBricksLeft(&InstancePtr, 0);
-	tft_updateScore(&InstancePtr, 5);
+	tft_updateScore(&InstancePtr, 105);
+//	int speed;
+//	while(1)
+//	{
+//		tft_moveCircle(&InstancePtr);
+//		speed = myBallControl_SpeedChange()
+//		tft_moveCircle
+//	}
 
 	pthread_attr_init(&attr);					// get attribute for thread.
 
