@@ -45,6 +45,7 @@ typedef struct {
 void* thread_func_controller();
 void* thread_func_col(int col_x);
 void* thread_func_time_elapsed();
+void* thread_func_ball();
 
 void changeBrickColour(int score, int colThreads);
 unsigned int updateBrickColour(unsigned int currentColour);
@@ -52,6 +53,10 @@ unsigned int updateBrickColour(unsigned int currentColour);
 void main_prog(void *arg);
 
 /************************** Variable Definitions ****************************/
+
+
+/************************** Temp BallSpeed Variable ************************/
+static int ballSpeed = 250;
 
 /************************** Tft variables ****************************/
 
@@ -65,15 +70,14 @@ struct sched_param sched_par;
 
 pthread_attr_t attr;
 
-pthread_t  tid_controller, tid_time_elapsed, tid_col_1, tid_col_2, tid_col_3,
-
+pthread_t  tid_controller, tid_time_elapsed, tid_ball, tid_col_1, tid_col_2, tid_col_3,
 tid_col_4, tid_col_5, tid_col_6, tid_col_7, tid_col_8, tid_col_9,
 tid_col_10;
 
 /************************** Thread Synchronisation variables ****************************/
 static XMbox Mbox;
 
-pthread_mutex_t mutex_col, mutex_timer;
+pthread_mutex_t mutex_tft, mutex_timer, mutex_ball;
 struct barrier_t barrier_col;
 sem_t sem_colour_yellow;
 sem_t sem_colour_background;
@@ -125,7 +129,7 @@ void main_prog(void *arg) {
 	}
 
 	// initialize mutex
-	ret = pthread_mutex_init(&mutex_col, NULL );
+	ret = pthread_mutex_init(&mutex_tft, NULL );
 	if (ret != 0) {
 		xil_printf("-- ERROR (%d) init uart_mutex...\r\n", ret);
 	}
@@ -134,6 +138,13 @@ void main_prog(void *arg) {
 	if (ret != 0) {
 		xil_printf("-- ERROR (%d) init uart_mutex...\r\n", ret);
 	}
+
+	ret = pthread_mutex_init(&mutex_ball, NULL );
+	if (ret != 0) {
+		xil_printf("-- ERROR (%d) init uart_mutex...\r\n", ret);
+	}
+
+
 
 	init_myButton(&gpPB);
 
@@ -280,6 +291,9 @@ void main_prog(void *arg) {
 	sched_par.sched_priority = PRIO_SCORE_ZONE; // set priority for score zone threads
 	pthread_attr_setschedparam(&attr, &sched_par); // update priority attribute
 
+
+	/************************ TIMER INIT *************************/
+
 	//start timer thread. (SHOULD NOT BE HERE ON ACTUAL PROJECT !!! Launch ball => then start this thread..)
 	ret = pthread_create(&tid_time_elapsed, NULL, (void*) thread_func_time_elapsed, 0);
 	if (ret != 0) {
@@ -288,6 +302,21 @@ void main_prog(void *arg) {
 	} else {
 		xil_printf("Col Thread 1 launched with ID %d \r\n", tid_col_1);
 	}
+
+	/************************ Update ball INIT *************************/
+
+	sched_par.sched_priority = PRIO_BALL; // set priority for score zone threads
+	pthread_attr_setschedparam(&attr, &sched_par); // update priority attribute
+
+	ret = pthread_create(&tid_ball, NULL, (void*) thread_func_ball, 0);
+	if (ret != 0) {
+		xil_printf("-- ERROR (%d) launching thread_time_elapsed...\r\n",
+				ret);
+	} else {
+		xil_printf("Col Thread 1 launched with ID %d \r\n", tid_col_1);
+	}
+
+
 }
 
 
@@ -309,8 +338,22 @@ void* thread_func_controller() {
 	while (1) {
 
 		/********************* TEMP SECTION FOR MS 1 ******************/
-		tft_updateScore(score++); // temp score increment per frame...
 		
+		
+		pthread_mutex_lock(&mutex_tft); // may not be needed...
+		tft_updateScore(score); // temp score increment per frame...
+		pthread_mutex_unlock(&mutex_tft);
+
+		changeBrickColour(score, colThreads);
+
+		if(score % 10 == 0) // note this is temp.. score can + 2...
+		{
+			ballSpeed += 25;
+		}
+
+		pthread_mutex_unlock(&mutex_ball); // start processing ball...
+
+		score ++;
 		/********************* TEMP SECTION FOR MS 1 ******************/
 
 
@@ -324,7 +367,6 @@ void* thread_func_controller() {
 
 		myBarrier_wait(&barrier_col); // "fire" all col threads
 
-		pthread_mutex_lock(&mutex_col);
 		if (myButton_checkLeft(&gpPB)) {
 			//xil_printf("lapsed time is : %d\r\n", myButton_checkLeft(&gpPB));
 			buttonHoldTime = myButton_checkLeft(&gpPB);
@@ -338,11 +380,9 @@ void* thread_func_controller() {
 			buttonHoldTime = myButton_checkRight(&gpPB);
 			tft_moveBarRight(&InstancePtr, buttonHoldTime);
 		}
-		pthread_mutex_unlock(&mutex_col);
 
-		sleep(10);
+		sleep(40); // sleep 40 ms
 
-		changeBrickColour(score, colThreads);
 
 	}
 
@@ -368,9 +408,14 @@ void* thread_func_time_elapsed()
 
 		if (prevGameTime != gameTime) {
 			// update time box (function needed !!!)
+			pthread_mutex_lock(&mutex_tft);
 			tft_updateTime(&InstancePtr, gameTime);
+			pthread_mutex_unlock(&mutex_tft);
+
 			prevGameTime = gameTime;
 		}
+
+		sleep(1000); // sleep 1000 ms (1 sec) 
 
 	}
 }
@@ -400,10 +445,13 @@ void* thread_func_col(int col_x) {
 
 		futureColour = updateBrickColour(currentColour);
 
-		pthread_mutex_lock(&mutex_col);
+		pthread_mutex_lock(&mutex_tft);
 		//	xil_printf ("\r\nThis is Col :  %d \r", col_x);
 		tft_updateColumn(&InstancePtr, col_x, currentBricks, futureBricks,
 				currentColour, futureColour);
+
+		pthread_mutex_unlock(&mutex_tft);
+
 
 		currentColour = futureColour;
 		currentBricks = futureBricks;
@@ -414,7 +462,6 @@ void* thread_func_col(int col_x) {
 			futureBricks = randBricks;
 
 		//		xil_printf ("\r\nend is Col :  %d \r", col_x);
-		pthread_mutex_unlock(&mutex_col);
 
 		// some msgq or semaphore to indicate completion of rebounce and bar param
 		// writeBlocking send it back.
@@ -425,6 +472,43 @@ void* thread_func_col(int col_x) {
 
 }
 
+
+void* thread_func_ball()
+{
+	ball_msg ball;
+	ball.x =  CIRCLE_X; 
+	ball.y =  CIRCLE_Y;
+	ball.dir = 90; // 90 degree
+
+	int ballSpeedPerFrame = 0;
+
+	while(1)
+	{
+		pthread_mutex_lock(&mutex_ball);
+
+		ballSpeedPerFrame = myBallControl_getBallSpeedPixel(ballSpeed); // get speed per frame
+		ball = myBallControl_getBallLocation(ballSpeedPerFrame, ball); // get end ball location..
+
+
+		// .. add some boundary so ball will bounce up and down.... irregardless of brick and 
+		if(ball.y < 228 )
+		{
+			ball.y = 228;
+			ball.dir *= -1;
+		}
+
+		if(ball.y > 557 )
+		{
+			ball.y = 557;
+			ball.dir *= -1;
+		}
+
+		pthread_mutex_lock(&mutex_tft);
+		tft_addCircle(&InstancePtr, ball.x, ball.y, CIRCLE_RADIUS); // update ball location...
+		pthread_mutex_unlock(&mutex_tft);
+	}
+
+}
 // Simple Description : Release semaphore resource for brick colour change.
 void changeBrickColour(int score, int colThreads) {
 	int i, semaRelease;

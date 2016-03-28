@@ -18,15 +18,15 @@
 
 
 int myBallControl_getNumberOfSteps(int ballSpeed_pixel);
-void myBallControl_updateBallSpeed(int speedGain);
-int myBallControl_getBallSpeedPixel(int ballSpeed);
+void myBallControl_updateBallSpeed(int ballSpeed, int speedGain);
+int myBallControl_getBallSpeedPerFrame(int ballSpeed);
 int myBallControl_getNumberOfSteps(int ballSpeed_pixel);
 
-ball_msg myBallControl_getBallLocation (ballSpeed_pixel, ball_msg currentLocation);
+ball_msg myBallControl_getBallLocation (int ballSpeed_pixel, ball_msg currentLocation);
 ball_msg myBallControl_getBallLocation_step(int numberOfSteps, int ballSpeed_pixel, ball_msg currentLocation, ball_msg endLocation);
 
 
-void myBallControl_updateBallSpeed(int speedGain)
+int myBallControl_updateBallSpeed(int ballSpeed, int speedGain)
 {
 	if(ballSpeed > MINIMUM_SPEED && ballSpeed < MAXIMUM_SPEED)
 	{
@@ -46,7 +46,7 @@ void myBallControl_updateBallSpeed(int speedGain)
 }
 
 // get ball speed based on speed in pixel and current ball location
-ball_msg myBallControl_getBallLocation (ballSpeed_pixel, ball_msg currentLocation)
+ball_msg myBallControl_getBallLocation (int ballSpeed_pixel, ball_msg currentLocation)
 {
 	ball_msg tempBall;
 
@@ -87,9 +87,9 @@ ball_msg myBallControl_getBallLocation_step(int numberOfSteps, int ballSpeed_pix
 }
 
 // return the ball speed in pixel per frame
-int myBallControl_getBallSpeedPixel(int ballSpeed)
+int myBallControl_getBallSpeedPerFrame(int ballSpeed)
 {
-	return 	ballSpeed_pixel = ballSpeed / FPS; // divide by FPS!!
+	return 	ballSpeed / FPS; // divide by FPS!!
 }
 
 // return the number of steps that the ball will move in this frame
