@@ -530,7 +530,7 @@ int tft_moveCircle(XTft *InstancePtr, int x0, int y0, int future_x0, int future_
  *
  *
  ******************************************************************************/
-int tft_moveBarLeft(XTft *InstancePtr);
+int tft_moveBarLeft(XTft *InstancePtr, unsigned int holdTime);
 
 /*****************************************************************************
  **
@@ -544,7 +544,7 @@ int tft_moveBarLeft(XTft *InstancePtr);
  *
  *
  ******************************************************************************/
-int tft_moveBarRight(XTft *InstancePtr);
+int tft_moveBarLeft(XTft *InstancePtr, unsigned int holdTime);
 
 /*****************************************************************************
  **

@@ -73,7 +73,7 @@ tid_col_10;
 /************************** Thread Synchronisation variables ****************************/
 static XMbox Mbox;
 
-pthread_mutex_t mutex_col;
+pthread_mutex_t mutex_col, mutex_timer;
 struct barrier_t barrier_col;
 sem_t sem_colour_yellow;
 sem_t sem_colour_background;
@@ -130,6 +130,11 @@ void main_prog(void *arg) {
 		xil_printf("-- ERROR (%d) init uart_mutex...\r\n", ret);
 	}
 
+	ret = pthread_mutex_init(&mutex_timer, NULL );
+	if (ret != 0) {
+		xil_printf("-- ERROR (%d) init uart_mutex...\r\n", ret);
+	}
+
 	init_myButton(&gpPB);
 
 	/************************** Mailbox Init ****************************/
@@ -151,9 +156,9 @@ void main_prog(void *arg) {
 	tft_intialDraw(&InstancePtr);
 	//	print("end init");
 
-	tft_updateSpeed(&InstancePtr, 54);
-	tft_updateBricksLeft(&InstancePtr, 0);
-	tft_updateScore(&InstancePtr, 105);
+	tft_updateSpeed(&InstancePtr, 25);
+	tft_updateBricksLeft(&InstancePtr, 80);
+	tft_updateScore(&InstancePtr, 0);
 //	int speed;
 //	while(1)
 //	{
@@ -276,8 +281,7 @@ void main_prog(void *arg) {
 	pthread_attr_setschedparam(&attr, &sched_par); // update priority attribute
 
 	//start timer thread. (SHOULD NOT BE HERE ON ACTUAL PROJECT !!! Launch ball => then start this thread..)
-	ret = pthread_create(&tid_time_elapsed, NULL,
-			(void*) thread_func_time_elapsed, 0);
+	ret = pthread_create(&tid_time_elapsed, NULL, (void*) thread_func_time_elapsed, 0);
 	if (ret != 0) {
 		xil_printf("-- ERROR (%d) launching thread_time_elapsed...\r\n",
 				ret);
@@ -292,8 +296,27 @@ void* thread_func_controller() {
 	// semaphore release
 	int score = 0;
 	int colThreads = COL_BRICKS; // Number of column threads = how many column of bricks.
+	int buttonHoldTime = 0;
+
+	/********************* TEMP SECTION FOR MS 1 ******************/
+
+	while(!myButton_checkCenter(&gpPB)); // wait for middle button to press to start game...
+	pthread_mutex_unlock(&mutex_timer); // release timer mutex to start time for game..
+
+	/********************* TEMP SECTION FOR MS 1 ******************/
+
 
 	while (1) {
+
+		/********************* TEMP SECTION FOR MS 1 ******************/
+		tft_updateScore(score++); // temp score increment per frame...
+		
+		/********************* TEMP SECTION FOR MS 1 ******************/
+
+
+
+
+
 		// mailbox should be here....
 		// update score should be here, print score somwhere else...
 
@@ -303,30 +326,35 @@ void* thread_func_controller() {
 
 		pthread_mutex_lock(&mutex_col);
 		if (myButton_checkLeft(&gpPB)) {
-			xil_printf("lapsed time is : %d\r\n", myButton_checkLeft(&gpPB));
-			tft_moveBarLeft(&InstancePtr);
+			//xil_printf("lapsed time is : %d\r\n", myButton_checkLeft(&gpPB));
+			buttonHoldTime = myButton_checkLeft(&gpPB);
+			tft_moveBarLeft(&InstancePtr, buttonHoldTime);
 			//tft_addCircle(&InstancePtr, CIRCLE_X, CIRCLE_Y, 15);
 
 		}
 
 		if (myButton_checkRight(&gpPB)) {
-			xil_printf("lapsed time is : %d\r\n", myButton_checkRight(&gpPB));
-			tft_moveBarRight(&InstancePtr);
+			//xil_printf("lapsed time is : %d\r\n", myButton_checkRight(&gpPB));
+			buttonHoldTime = myButton_checkRight(&gpPB);
+			tft_moveBarRight(&InstancePtr, buttonHoldTime);
 		}
 		pthread_mutex_unlock(&mutex_col);
 
 		sleep(10);
 
-		changeBrickColour(++score, colThreads);
+		changeBrickColour(score, colThreads);
 
 	}
 
 }
 
-void* thread_func_time_elapsed() {
+void* thread_func_time_elapsed() 
+{
 	time_t startTime, timeElapsed, gameTime, prevGameTime;
 
 	sys_time(&startTime); // get start time of the game
+
+	pthread_mutex_lock(&mutex_timer) // let's wait for game to start...
 
 	while (1) {
 		sys_time(&timeElapsed); // get time elapsed so far...

@@ -423,7 +423,21 @@ int tft_moveCircle(XTft *InstancePtr, int x0, int y0, int future_x0,
 	}
 //	}
 }
-int tft_moveBarLeft(XTft *InstancePtr) {
+int tft_moveBarLeft(XTft *InstancePtr, unsigned int holdTime) {
+
+	int pixelMove;
+
+	if(holdTime > 250) // if hold for more than 250 ms...
+	{
+		// move at 200 pixel per sec
+		pixelMove = 200/FPS;
+	}
+	else
+	{
+		// move at 25 pixel if hold time <= 250 ms
+		pixelMove = 25;
+	}
+
 
 	if (barLeftPos > OUTER_COL_START_X) {
 
@@ -431,8 +445,8 @@ int tft_moveBarLeft(XTft *InstancePtr) {
 		tft_addBar(InstancePtr, barLeftPos, BAR_START_Y, barRightPos,
 				BAR_START_Y + BAR_HEIGHT, COLOR_GREEN);
 
-		barLeftPos = barLeftPos - 25;
-		barRightPos = barRightPos - 25;
+		barLeftPos = barLeftPos - pixelMove;
+		barRightPos = barRightPos - pixelMove;
 
 		if (barLeftPos < OUTER_COL_START_X) {
 			barLeftPos = OUTER_COL_START_X + 1;
@@ -446,7 +460,22 @@ int tft_moveBarLeft(XTft *InstancePtr) {
 	}
 }
 
-int tft_moveBarRight(XTft *InstancePtr) {
+int tft_moveBarRight(XTft *InstancePtr, unsigned int holdTime) {
+
+	int pixelMove;
+
+	if(holdTime > 250) // if hold for more than 250 ms...
+	{
+		// move at 200 pixel per sec
+		pixelMove = 200/FPS;
+	}
+	else
+	{
+		// move at 25 pixel if hold time <= 250 ms
+		pixelMove = 25;
+	}
+
+
 	if (barRightPos < OUTER_COL_END_X - 1) {
 
 		// remove Bar
