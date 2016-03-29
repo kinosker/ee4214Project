@@ -52,6 +52,7 @@ void main_prog(void *arg);
 static int ballSpeed = 250;
 static char flag_colour = 0;
 static char flag_ballSpeed = 0;
+static int colThreads = 10;
 /************************** Tft variables ****************************/
 
 static XTft InstancePtr;
@@ -315,7 +316,7 @@ void* thread_func_controller() {
 
 	// semaphore release
 	int score = 0, tempScore = 0;
-	int colThreads = COL_BRICKS; // Number of column threads = how many column of bricks.
+	//int colThreads = COL_BRICKS; // Number of column threads = how many column of bricks.
 	int buttonHoldTime = 0;
 
 	/********************* TEMP SECTION FOR MS 1 ******************/
@@ -419,7 +420,8 @@ void* thread_func_time_elapsed() {
 	}
 }
 
-void* thread_func_col(int col_x) {
+void* thread_func_col(int col_x) 
+{
 	unsigned int currentColour = COLOR_GREEN; // some default color.
 	unsigned int futureColour = COLOR_GREEN; // some default color.
 
@@ -432,7 +434,8 @@ void* thread_func_col(int col_x) {
 
 	ball_msg ball; // ball param received from mailbox
 
-	while (1) {
+	do
+	{
 		// some msg q or ....... semaphore.... or .....
 		// check if ball hit brick => update score, future brick
 		// check if picked randomly => update colour
@@ -473,8 +476,16 @@ void* thread_func_col(int col_x) {
 		// writeBlocking send it back.
 
 		//pthread_exit(0);
+	}while(currentBricks != 0);
 
-	}
+	// pthread_exited...
+
+	  myBarrier_decreaseSize(&barrier_col);
+
+	  pthread_mutex_lock(&mutex_tft);
+	  colThreads --;
+	  pthread_mutex_unlock(&mutex_tft);
+
 
 }
 
