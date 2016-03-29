@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<workbench progressCount="26" version="2.0">
+<workbench progressCount="30" version="2.0">
 <workbenchAdvisor/>
 <window height="768" maximized="true" width="1024" x="152" y="152">
 <fastViewData fastViewLocation="1024"/>
@@ -33,13 +33,38 @@
 <folder appearance="1" expanded="2">
 <presentation id="org.eclipse.ui.presentations.WorkbenchPresentationFactory">
 <part id="0"/>
+<part id="1"/>
+<part id="2"/>
+<part id="3"/>
+<part id="4"/>
+<part id="5"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
 <editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="project.c" partName="project.c" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_0/src/project.c" title="project.c" tooltip="MicroBlaze_0/src/project.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_0/src/project.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="9454" selectionTopPixel="7107"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="10956" selectionTopPixel="8119"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="ballControl.c" partName="ballControl.c" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_0/src/ballControl.c" title="ballControl.c" tooltip="MicroBlaze_0/src/ballControl.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_0/src/ballControl.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1138" selectionTopPixel="647"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="ballControl.h" partName="ballControl.h" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_0/src/ballControl.h" title="ballControl.h" tooltip="MicroBlaze_0/src/ballControl.h" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_0/src/ballControl.h"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1294" selectionTopPixel="644"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="TFT_Draw.c" partName="TFT_Draw.c" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_0/src/TFT_Draw.c" title="TFT_Draw.c" tooltip="MicroBlaze_0/src/TFT_Draw.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_0/src/TFT_Draw.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="15" selectionOffset="8969" selectionTopPixel="5681"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="xparameters.h" partName="xparameters.h" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/xilkernel_bsp_0/microblaze_0/include/xparameters.h" title="xparameters.h" tooltip="xilkernel_bsp_0/microblaze_0/include/xparameters.h" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/xilkernel_bsp_0/microblaze_0/include/xparameters.h"/>
+<editorState selectionHorizontalPixel="0" selectionLength="58" selectionOffset="29895" selectionTopPixel="15272"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="TFT_Draw.h" partName="TFT_Draw.h" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_0/src/TFT_Draw.h" title="TFT_Draw.h" tooltip="MicroBlaze_0/src/TFT_Draw.h" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_0/src/TFT_Draw.h"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="0" selectionTopPixel="1794"/>
 </editor>
 </editors>
 <views>
@@ -58,10 +83,10 @@
 <view id="org.eclipse.ui.views.ProblemView" partName="Problems">
 <viewState PRIMARY_SORT_FIELD="org.eclipse.ui.ide.severityAndDescriptionField" categoryGroup="org.eclipse.ui.ide.severity" markerContentGenerator="org.eclipse.ui.ide.problemsGenerator" partName="Problems">
 <expanded>
-<category IMemento.internal.id="Errors"/>
 <category IMemento.internal.id="Warnings"/>
+<category IMemento.internal.id="Errors"/>
 </expanded>
-<columnWidths org.eclipse.ui.ide.locationField="150" org.eclipse.ui.ide.markerType="150" org.eclipse.ui.ide.pathField="200" org.eclipse.ui.ide.resourceField="150" org.eclipse.ui.ide.severityAndDescriptionField="500"/>
+<columnWidths org.eclipse.ui.ide.locationField="150" org.eclipse.ui.ide.markerType="150" org.eclipse.ui.ide.pathField="200" org.eclipse.ui.ide.resourceField="150" org.eclipse.ui.ide.severityAndDescriptionField="638"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.severityAndDescriptionField"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.resourceField"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.pathField"/>
@@ -160,7 +185,7 @@
 </info>
 <info part="org.eclipse.ui.editorss" ratio="0.24949698" ratioLeft="248" ratioRight="746" relationship="2" relative="topLeft"/>
 <info folder="true" part="bottom" ratio="0.61293983" ratioLeft="540" ratioRight="341" relationship="4" relative="org.eclipse.ui.editorss">
-<folder activePageID="org.eclipse.ui.views.ProblemView" appearance="2" expanded="2">
+<folder activePageID="org.eclipse.ui.console.ConsoleView" appearance="2" expanded="2">
 <page content="org.eclipse.ui.views.ProblemView" label="Problems"/>
 <page content="org.eclipse.ui.views.TaskList" label="Tasks"/>
 <page content="org.eclipse.ui.console.ConsoleView" label="Console"/>
@@ -208,68 +233,163 @@
 <workingSets/>
 <navigationHistory>
 <editors>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_0/src/TFT_Draw.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/xilkernel_bsp_0/microblaze_0/include/xparameters.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.xilinx.sdk.hw.ui.HwSpecXMLEditor" path="/design_1_wrapper_hw_platform_0/system.hdf"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.xilinx.sdk.hw.ui.HwSpecXMLEditor" path="/design_1_wrapper_hw_platform_1/system.hdf"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.xilinx.sdk.sw.MSSEditor" path="/xilkernel_bsp_0/system.mss"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="" path="/xilkernel_bsp_0/system.mss"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.xilinx.sdk.sw.MSSEditor" path="/xilkernel_bsp_1/system.mss"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_0/src/myButton.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_0/src/project.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_1/src/myTimer.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/xilkernel_bsp_1/microblaze_1/include/xparameters.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_0/src/ballControl.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_0/src/ballControl.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_0/src/TFT_Draw.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/xilkernel_bsp_0/microblaze_0/include/xparameters.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_0/src/ballControl.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_0/src/ballControl.h"/>
 </editors>
-<item historyLabel="TFT_Draw.h" index="0">
-<position info="not_deleted" x="0" y="0"/>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="13996" y="34"/>
 </item>
-<item historyLabel="xparameters.h" index="1">
-<position/>
+<item historyLabel="ballControl.c" index="1">
+<position info="not_deleted" x="331" y="0"/>
 </item>
-<item historyLabel="system.hdf" index="2"/>
-<item historyLabel="system.hdf" index="3"/>
-<item historyLabel="system.mss" index="4">
-<position info="not_deleted" x="0" y="0"/>
+<item historyLabel="ballControl.h" index="2">
+<position info="not_deleted" x="3483" y="0"/>
 </item>
-<item historyLabel="TFT_Draw.h" index="0">
-<position info="not_deleted" x="391" y="0"/>
+<item historyLabel="ballControl.c" index="1">
+<position info="not_deleted" x="331" y="0"/>
 </item>
-<item historyLabel="system.mss" index="5">
-<position info="not_deleted" x="0" y="0"/>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="13810" y="0"/>
 </item>
-<item historyLabel="system.mss" index="6">
-<position info="not_deleted" x="0" y="0"/>
+<item historyLabel="ballControl.c" index="1">
+<position info="not_deleted" x="331" y="0"/>
 </item>
-<item historyLabel="myButton.c" index="7">
-<position info="not_deleted" x="4" y="0"/>
+<item historyLabel="ballControl.h" index="2">
+<position info="not_deleted" x="3483" y="0"/>
 </item>
-<item historyLabel="project.c" index="8">
-<position info="not_deleted" x="0" y="0"/>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="13810" y="0"/>
 </item>
-<item historyLabel="system.mss" index="4"/>
-<item historyLabel="project.c" index="8">
-<position info="not_deleted" x="9454" y="0"/>
+<item historyLabel="TFT_Draw.c" index="3">
+<position info="not_deleted" x="6812" y="11"/>
 </item>
-<item historyLabel="myTimer.c" index="9">
-<position info="not_deleted" x="7" y="0"/>
+<item historyLabel="TFT_Draw.c" index="3">
+<position info="not_deleted" x="4472" y="0"/>
 </item>
-<item historyLabel="myButton.c" index="7">
-<position info="not_deleted" x="3005" y="1"/>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="10120" y="0"/>
 </item>
-<item historyLabel="xparameters.h" index="1">
-<position info="not_deleted" x="29619" y="58"/>
+<item historyLabel="xparameters.h" index="4">
+<position info="not_deleted" x="29895" y="58"/>
 </item>
-<item historyLabel="xparameters.h" index="10">
-<position info="not_deleted" x="28208" y="58"/>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="10120" y="0"/>
 </item>
-<item historyLabel="xparameters.h" index="1">
-<position info="not_deleted" x="29619" y="58"/>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="15197" y="0"/>
 </item>
-<item historyLabel="myButton.c" index="7">
-<position info="not_deleted" x="3005" y="1"/>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="15201" y="0"/>
 </item>
-<item active="true" historyLabel="project.c" index="8">
-<position info="not_deleted" x="9454" y="0"/>
+<item historyLabel="xparameters.h" index="4">
+<position info="not_deleted" x="29895" y="58"/>
+</item>
+<item historyLabel="ballControl.c" index="5">
+<position info="not_deleted" x="331" y="0"/>
+</item>
+<item historyLabel="ballControl.c" index="5">
+<position info="not_deleted" x="1145" y="0"/>
+</item>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="982" y="5"/>
+</item>
+<item historyLabel="ballControl.c" index="5">
+<position info="not_deleted" x="1138" y="0"/>
+</item>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="14643" y="0"/>
+</item>
+<item historyLabel="ballControl.c" index="5">
+<position info="not_deleted" x="1138" y="0"/>
+</item>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="14643" y="0"/>
+</item>
+<item historyLabel="ballControl.h" index="6">
+<position info="not_deleted" x="3483" y="0"/>
+</item>
+<item historyLabel="ballControl.h" index="6">
+<position info="not_deleted" x="1352" y="3"/>
+</item>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="14957" y="0"/>
+</item>
+<item historyLabel="ballControl.c" index="5">
+<position info="not_deleted" x="1138" y="0"/>
+</item>
+<item historyLabel="ballControl.h" index="6">
+<position info="not_deleted" x="1294" y="0"/>
+</item>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="14957" y="0"/>
+</item>
+<item historyLabel="ballControl.c" index="5">
+<position info="not_deleted" x="1138" y="0"/>
+</item>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="16283" y="0"/>
+</item>
+<item historyLabel="ballControl.c" index="5">
+<position info="not_deleted" x="1138" y="0"/>
+</item>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="16283" y="0"/>
+</item>
+<item historyLabel="xparameters.h" index="4">
+<position info="not_deleted" x="29895" y="58"/>
+</item>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="10058" y="0"/>
+</item>
+<item historyLabel="xparameters.h" index="4">
+<position info="not_deleted" x="29895" y="58"/>
+</item>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="10058" y="0"/>
+</item>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="10008" y="0"/>
+</item>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="13556" y="0"/>
+</item>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="10550" y="0"/>
+</item>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="15621" y="0"/>
+</item>
+<item historyLabel="ballControl.c" index="5">
+<position info="not_deleted" x="1138" y="0"/>
+</item>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="15621" y="0"/>
+</item>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="10541" y="11"/>
+</item>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="15456" y="17"/>
+</item>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="10552" y="0"/>
+</item>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="15456" y="17"/>
+</item>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="2612" y="0"/>
+</item>
+<item historyLabel="TFT_Draw.c" index="3">
+<position info="not_deleted" x="8969" y="15"/>
+</item>
+<item active="true" historyLabel="project.c" index="0">
+<position info="not_deleted" x="2612" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
@@ -284,7 +404,6 @@
 <trimArea IMemento.internal.id="131072">
 <trimItem IMemento.internal.id="topRight"/>
 <trimItem IMemento.internal.id="org.eclipse.ui.internal.ViewStack@bb70963"/>
-<trimItem IMemento.internal.id="org.eclipse.ui.internal.ViewStack@345292f5"/>
 </trimArea>
 <trimArea IMemento.internal.id="128">
 <trimItem IMemento.internal.id="org.eclipse.ui.internal.WorkbenchWindow.topBar"/>
@@ -298,11 +417,26 @@
 </trimLayout>
 </window>
 <mruList>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="xparameters.h" tooltip="xilkernel_bsp_1/microblaze_1/include/xparameters.h">
-<persistable path="/xilkernel_bsp_1/microblaze_1/include/xparameters.h"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="TFT_Draw.h" tooltip="MicroBlaze_0/src/TFT_Draw.h">
+<persistable path="/MicroBlaze_0/src/TFT_Draw.h"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="xparameters.h" tooltip="xilkernel_bsp_0/microblaze_0/include/xparameters.h">
 <persistable path="/xilkernel_bsp_0/microblaze_0/include/xparameters.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="TFT_Draw.c" tooltip="MicroBlaze_0/src/TFT_Draw.c">
+<persistable path="/MicroBlaze_0/src/TFT_Draw.c"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="project_bsp1_skeleton.c" tooltip="MicroBlaze_1/src/project_bsp1_skeleton.c">
+<persistable path="/MicroBlaze_1/src/project_bsp1_skeleton.c"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="ballControl.h" tooltip="MicroBlaze_0/src/ballControl.h">
+<persistable path="/MicroBlaze_0/src/ballControl.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="ballControl.c" tooltip="MicroBlaze_0/src/ballControl.c">
+<persistable path="/MicroBlaze_0/src/ballControl.c"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="xparameters.h" tooltip="xilkernel_bsp_1/microblaze_1/include/xparameters.h">
+<persistable path="/xilkernel_bsp_1/microblaze_1/include/xparameters.h"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="myTimer.c" tooltip="MicroBlaze_1/src/myTimer.c">
 <persistable path="/MicroBlaze_1/src/myTimer.c"/>
@@ -324,9 +458,6 @@
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="com.xilinx.sdk.hw.ui.HwSpecXMLEditor" name="system.hdf" tooltip="design_1_wrapper_hw_platform_0/system.hdf">
 <persistable path="/design_1_wrapper_hw_platform_0/system.hdf"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="TFT_Draw.h" tooltip="MicroBlaze_0/src/TFT_Draw.h">
-<persistable path="/MicroBlaze_0/src/TFT_Draw.h"/>
 </file>
 </mruList>
 </workbench>

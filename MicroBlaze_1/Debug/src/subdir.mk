@@ -6,6 +6,7 @@
 C_SRCS += \
 ../src/myTimer.c \
 ../src/platform.c \
+../src/project_bsp1_skeleton.c \
 ../src/project_core1.c 
 
 LD_SRCS += \
@@ -14,11 +15,13 @@ LD_SRCS += \
 OBJS += \
 ./src/myTimer.o \
 ./src/platform.o \
+./src/project_bsp1_skeleton.o \
 ./src/project_core1.o 
 
 C_DEPS += \
 ./src/myTimer.d \
 ./src/platform.d \
+./src/project_bsp1_skeleton.d \
 ./src/project_core1.d 
 
 

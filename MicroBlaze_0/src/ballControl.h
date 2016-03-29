@@ -31,6 +31,16 @@
 #define INITIAL_ANGLE					0
 #define BAR_INCREASE_DECREASE			15// the increase/decrease angle when the ball hit A+/A- will be 15
 
+
+
+// 10 pts -> Speed up by 25
+
+typedef struct {
+
+	int dir, speed, x, y;
+
+} ball_msg;
+
 /*****************************************************************************
  **																			 *
  *																			 *
@@ -75,5 +85,14 @@ int myBallControl_SpeedChange(XTft *InstancePtr, int ball_X, int ball_Y,int scor
  *
  ******************************************************************************/
 int myBallControl_AngleChange(XTft *InstancePtr, int ball_X, int ball_Y, int angle);
+
+
+int myBallControl_getNumberOfSteps(int ballSpeed_pixel);
+int myBallControl_updateBallSpeed(int ballSpeed, int speedGain);
+int myBallControl_getBallSpeedPerFrame(int ballSpeed);
+int myBallControl_getNumberOfSteps(int ballSpeed_pixel);
+
+ball_msg myBallControl_getBallLocation (int ballSpeed_pixel, ball_msg currentLocation);
+ball_msg myBallControl_getBallLocation_step(int numberOfSteps, int ballSpeed_pixel, ball_msg currentLocation, ball_msg endLocation);
 
 #endif /* BALLCONTROL_H_ */

@@ -538,7 +538,7 @@ void* thread_func_brick(int col_x)
     // 3. Send color, future bricks to controller, which in turn send it to other core via mailbox
 
     brick_send.colour = colour;
-    brick_send.bricksleft = bricksLeft;
+    brick_send.bricksLeft = bricksLeft;
     brick_send.columnNumber = 0; // temp... 
 
     if( msgsnd( msgQ_brick_id, &brick_send, sizeof(brick_msg), 0) < 0 )

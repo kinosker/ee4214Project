@@ -46,6 +46,8 @@
 #define COLOR_GREY  			0x9C9C9C		/**<  Color - GREY */
 #define COLOR_YELLOW  			0xFFFF00		/**<  Color - YELLOW */
 
+#define FPS						25
+
 #define DISPLAY_COLUMNS  		640
 #define DISPLAY_ROWS     		480
 

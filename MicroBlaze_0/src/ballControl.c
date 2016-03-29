@@ -14,18 +14,6 @@
 #define REGION_N	40
 #define INITIAL_SPEED 250	// 250 pixel per sec (10 pixel per frame) FPS is 25... change this ....
 
-// 10 pts -> Speed up by 25
-
-
-int myBallControl_getNumberOfSteps(int ballSpeed_pixel);
-void myBallControl_updateBallSpeed(int ballSpeed, int speedGain);
-int myBallControl_getBallSpeedPerFrame(int ballSpeed);
-int myBallControl_getNumberOfSteps(int ballSpeed_pixel);
-
-ball_msg myBallControl_getBallLocation (int ballSpeed_pixel, ball_msg currentLocation);
-ball_msg myBallControl_getBallLocation_step(int numberOfSteps, int ballSpeed_pixel, ball_msg currentLocation, ball_msg endLocation);
-
-
 int myBallControl_updateBallSpeed(int ballSpeed, int speedGain)
 {
 	if(ballSpeed > MINIMUM_SPEED && ballSpeed < MAXIMUM_SPEED)
@@ -50,8 +38,17 @@ ball_msg myBallControl_getBallLocation (int ballSpeed_pixel, ball_msg currentLoc
 {
 	ball_msg tempBall;
 
-	tempBall.x += ballSpeed_pixel * sin(ball.dir);
-	tempBall.y += ballSpeed_pixel * cos(ball.dir);
+	tempBall.dir = currentLocation.dir;
+
+	double radian = currentLocation.dir * M_PI/180;
+
+	xil_printf("Currball.x = %d\r\nCurrball.y = %d\r\n", currentLocation.x, currentLocation.y);
+	tempBall.x = currentLocation.x + ballSpeed_pixel * cos(radian);
+	tempBall.y = currentLocation.y - ballSpeed_pixel * sin(radian);
+
+	xil_printf("dir = %d\r\n", currentLocation.dir);
+	xil_printf("Tempball.x = %d\r\nTempball.y = %d\r\n", tempBall.x, tempBall.y);
+
 
 	// 2. boundary check...
 	//if(tempBall.x > boundary....)
@@ -79,7 +76,7 @@ ball_msg myBallControl_getBallLocation_step(int numberOfSteps, int ballSpeed_pix
 
 	if(tempBall.y > endLocation.y)
 	{
-		tempball.y = endLocation.y;
+		tempBall.y = endLocation.y;
 	}
 
 	return tempBall;
