@@ -42,12 +42,12 @@ ball_msg myBallControl_getBallLocation (int ballSpeed_pixel, ball_msg currentLoc
 
 	double radian = currentLocation.dir * M_PI/180;
 
-	//xil_printf("Currball.x = %d\r\nCurrball.y = %d\r\n", currentLocation.x, currentLocation.y);
+	xil_printf("Currball.x = %d\r\nCurrball.y = %d\r\n", currentLocation.x, currentLocation.y);
 	tempBall.x = currentLocation.x + ballSpeed_pixel * cos(radian);
 	tempBall.y = currentLocation.y - ballSpeed_pixel * sin(radian);
 
-	//xil_printf("dir = %d\r\n", currentLocation.dir);
-	//xil_printf("Tempball.x = %d\r\nTempball.y = %d\r\n", tempBall.x, tempBall.y);
+	xil_printf("dir = %d\r\n", currentLocation.dir);
+	xil_printf("Tempball.x = %d\r\nTempball.y = %d\r\n", tempBall.x, tempBall.y);
 
 
 	// 2. boundary check...

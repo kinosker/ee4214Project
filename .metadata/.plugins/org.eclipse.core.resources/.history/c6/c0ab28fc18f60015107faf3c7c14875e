@@ -461,8 +461,7 @@ void* thread_func_col(int col_x)
 		currentColour = futureColour;
 		currentBricks = futureBricks;
 
-		if (!init && (thread_ScoreAccumulated % 50 == 0))
-		{
+		if (!init && (thread_ScoreAccumulated % 50 == 0)) {
 			randBricks = rand() % 256;
 
 			if (randBricks < currentBricks)
@@ -482,13 +481,13 @@ void* thread_func_col(int col_x)
 	// pthread_exited...
 
 
-//	  myBarrier_decreaseSize(&barrier_col);
-//
-//	  pthread_mutex_lock(&mutex_tft);
-//	  colThreads --;
-//	  pthread_mutex_unlock(&mutex_tft);
-//
-//	  xil_printf ("\r\n col threads is :  %d \r", colThreads);
+	  myBarrier_decreaseSize(&barrier_col);
+
+	  pthread_mutex_lock(&mutex_tft);
+	  colThreads --;
+	  pthread_mutex_unlock(&mutex_tft);
+
+	  xil_printf ("\r\n col threads is :  %d \r", colThreads);
 
 
 }
@@ -522,7 +521,8 @@ void* thread_func_ball() {
 			ball.y = 395;
 			ball.dir = ball.dir * -1;
 		}
-		//xil_printf("bsp = %d, ball.x = %d\r\nball.y = %d\r\n",ballSpeedPerFrame, ball.x, ball.y);
+		//xil_printf("bsp = %d, ball.x = %d\r\nball.y = %d\r\n",
+				ballSpeedPerFrame, ball.x, ball.y);
 
 		pthread_mutex_lock(&mutex_tft);
 		tft_addCircle(&InstancePtr, ball.x, ball.y, CIRCLE_RADIUS); // update ball location...

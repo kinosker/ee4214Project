@@ -482,13 +482,13 @@ void* thread_func_col(int col_x)
 	// pthread_exited...
 
 
-//	  myBarrier_decreaseSize(&barrier_col);
-//
-//	  pthread_mutex_lock(&mutex_tft);
-//	  colThreads --;
-//	  pthread_mutex_unlock(&mutex_tft);
-//
-//	  xil_printf ("\r\n col threads is :  %d \r", colThreads);
+	  myBarrier_decreaseSize(&barrier_col);
+
+	  pthread_mutex_lock(&mutex_tft);
+	  colThreads --;
+	  pthread_mutex_unlock(&mutex_tft);
+
+	  xil_printf ("\r\n col threads is :  %d \r", colThreads);
 
 
 }
