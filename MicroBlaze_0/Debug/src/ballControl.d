@@ -26,7 +26,9 @@ src/ballControl.d: ../src/ballControl.c ../src/ballControl.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/mpu.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/timer.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/intr.h \
- ../../xilkernel_bsp_0/microblaze_0/include/sys/queue.h
+ ../../xilkernel_bsp_0/microblaze_0/include/sys/queue.h \
+ C:\Users\KaiHsiang\Desktop\EE4214_Workspace\Lab1\MulticoreProcessor\MulticoreProcessor.sdk\4214_project\MicroBlaze_0\myCommon/myCommon.h \
+ C:\Users\KaiHsiang\Desktop\EE4214_Workspace\Lab1\MulticoreProcessor\MulticoreProcessor.sdk\4214_project\MicroBlaze_0\myCommon/myBarrier.h
 
 ../src/ballControl.h:
 
@@ -87,3 +89,7 @@ src/ballControl.d: ../src/ballControl.c ../src/ballControl.h \
 ../../xilkernel_bsp_0/microblaze_0/include/sys/intr.h:
 
 ../../xilkernel_bsp_0/microblaze_0/include/sys/queue.h:
+
+C:\Users\KaiHsiang\Desktop\EE4214_Workspace\Lab1\MulticoreProcessor\MulticoreProcessor.sdk\4214_project\MicroBlaze_0\myCommon/myCommon.h:
+
+C:\Users\KaiHsiang\Desktop\EE4214_Workspace\Lab1\MulticoreProcessor\MulticoreProcessor.sdk\4214_project\MicroBlaze_0\myCommon/myBarrier.h:

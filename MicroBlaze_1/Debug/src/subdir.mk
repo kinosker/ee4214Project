@@ -6,7 +6,6 @@
 C_SRCS += \
 ../src/myTimer.c \
 ../src/platform.c \
-../src/project_bsp1_skeleton.c \
 ../src/project_core1.c 
 
 LD_SRCS += \
@@ -15,13 +14,11 @@ LD_SRCS += \
 OBJS += \
 ./src/myTimer.o \
 ./src/platform.o \
-./src/project_bsp1_skeleton.o \
 ./src/project_core1.o 
 
 C_DEPS += \
 ./src/myTimer.d \
 ./src/platform.d \
-./src/project_bsp1_skeleton.d \
 ./src/project_core1.d 
 
 
@@ -29,7 +26,7 @@ C_DEPS += \
 src/%.o: ../src/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: MicroBlaze gcc compiler'
-	mb-gcc -Wall -O0 -g3 -c -fmessage-length=0 -D __XMK__ -I../../xilkernel_bsp_1/microblaze_1/include -mlittle-endian -mcpu=v9.3 -mxl-soft-mul -Wl,--no-relax -ffunction-sections -fdata-sections -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+	mb-gcc -Wall -O0 -g3 -I"C:\Users\KaiHsiang\Desktop\EE4214_Workspace\Lab1\MulticoreProcessor\MulticoreProcessor.sdk\4214_project\MicroBlaze_1\myCommon" -c -fmessage-length=0 -D __XMK__ -I../../xilkernel_bsp_1/microblaze_1/include -mlittle-endian -mcpu=v9.3 -mxl-soft-mul -Wl,--no-relax -ffunction-sections -fdata-sections -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

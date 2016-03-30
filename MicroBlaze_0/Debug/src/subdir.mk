@@ -6,7 +6,6 @@
 C_SRCS += \
 ../src/TFT_Draw.c \
 ../src/ballControl.c \
-../src/myBarrier.c \
 ../src/myBoundaryChecker.c \
 ../src/myButton.c \
 ../src/platform.c \
@@ -18,7 +17,6 @@ LD_SRCS += \
 OBJS += \
 ./src/TFT_Draw.o \
 ./src/ballControl.o \
-./src/myBarrier.o \
 ./src/myBoundaryChecker.o \
 ./src/myButton.o \
 ./src/platform.o \
@@ -27,7 +25,6 @@ OBJS += \
 C_DEPS += \
 ./src/TFT_Draw.d \
 ./src/ballControl.d \
-./src/myBarrier.d \
 ./src/myBoundaryChecker.d \
 ./src/myButton.d \
 ./src/platform.d \
@@ -38,7 +35,7 @@ C_DEPS += \
 src/%.o: ../src/%.c
 	@echo 'Building file: $<'
 	@echo 'Invoking: MicroBlaze gcc compiler'
-	mb-gcc -Wall -O0 -g3 -c -fmessage-length=0 -D __XMK__ -I../../xilkernel_bsp_0/microblaze_0/include -mlittle-endian -mcpu=v9.3 -mxl-soft-mul -Wl,--no-relax -ffunction-sections -fdata-sections -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
+	mb-gcc -Wall -O0 -g3 -I"C:\Users\KaiHsiang\Desktop\EE4214_Workspace\Lab1\MulticoreProcessor\MulticoreProcessor.sdk\4214_project\MicroBlaze_0\myCommon" -c -fmessage-length=0 -D __XMK__ -I../../xilkernel_bsp_0/microblaze_0/include -mlittle-endian -mcpu=v9.3 -mxl-soft-mul -Wl,--no-relax -ffunction-sections -fdata-sections -MMD -MP -MF"$(@:%.o=%.d)" -MT"$(@:%.o=%.d)" -o "$@" "$<"
 	@echo 'Finished building: $<'
 	@echo ' '
 

@@ -27,15 +27,15 @@ Copyright 1986-2014 Xilinx, Inc. All Rights Reserved.
 
 #define CONFIG_PTHREAD_SUPPORT true
 
-#define MAX_PTHREADS 10
+#define MAX_PTHREADS 15
 
 #define PTHREAD_STACK_SIZE 1000
 
 #define CONFIG_PTHREAD_MUTEX true
 
-#define MAX_PTHREAD_MUTEX 10
+#define MAX_PTHREAD_MUTEX 15
 
-#define MAX_PTHREAD_MUTEX_WAITQ 10
+#define MAX_PTHREAD_MUTEX_WAITQ 15
 
 #define CONFIG_TIMER_PIT true
 
@@ -67,15 +67,25 @@ Copyright 1986-2014 Xilinx, Inc. All Rights Reserved.
 
 #define CONFIG_PRIOSCHED true
 
-#define MAX_READYQ 10
+#define MAX_READYQ 15
 
 #define CONFIG_SEMA true
 
-#define MAX_SEM 10
+#define MAX_SEM 15
 
-#define MAX_SEM_WAITQ 10
+#define MAX_SEM_WAITQ 15
 
 #define CONFIG_NAMED_SEMA true
+
+#define CONFIG_MSGQ true
+
+#define NUM_MSGQS 10
+
+#define MSGQ_CAPACITY 10
+
+#define CONFIG_ENHANCED_MSGQ true
+
+#define USE_MALLOC true
 
 #define CONFIG_TIME true
 

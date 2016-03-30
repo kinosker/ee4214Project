@@ -158,6 +158,9 @@ int tft_updateColumn(XTft *InstancePtr, const int col_x, int currentBricks,
 			// if current bricks is to be added....
 			row_y = ROW_Y_START + ROW_OFFSET * row_num; // position of y to draw rect.
 
+			tft_fillBrick(InstancePtr, col_x, row_y, col_x + BRICK_SIZE_LENGTH,
+								row_y + BRICK_SIZE_HEIGHT, futureColour);
+
 			tft_addBrick(InstancePtr, col_x, row_y, col_x + BRICK_SIZE_LENGTH,
 					row_y + BRICK_SIZE_HEIGHT);
 		}

@@ -1,0 +1,89 @@
+#ifndef MY_BARRIER_H
+#define MY_BARRIER_H
+
+
+#include <pthread.h>
+#include "semaphore.h"
+
+
+/*****************************************************************************
+ *																			 *
+ *																			 *
+ *					---- Start of Constant definition ----					 *
+ *																			 *
+ *																			 *
+ ******************************************************************************/
+ #define BARRIER_SUCCESS 0
+ #define BARRIER_FAILURE -1
+
+
+/*****************************************************************************
+ *																			 *
+ *																			 *
+ *					---- Start of Struct definition ----					 *
+ *																			 *
+ *																			 *
+ ******************************************************************************/
+
+typedef struct
+{
+  	int currentSize, maxSize;
+	pthread_mutex_t mutex;
+	sem_t sema;
+
+}barrier_t;
+
+
+
+
+/*****************************************************************************
+ **																			 *
+ *																			 *
+ *					---- Start of Functions Prototype ----					 *
+ *																			 *
+ *																			 *
+ *****************************************************************************/
+
+/*****************************************************************************
+ **
+ * Initialise the barrier
+ *
+ * @param  maxSize is the max numbers of threads to wait in the barrier
+ * @param  barrier is the barrier to initialise.
+ *
+ *
+ * @return
+ *   - BARRIER_SUCCESS if successful.
+ *   - BARRIER_FAILURE if unsuccessful.
+ *
+ *****************************************************************************/
+int myBarrier_init(struct barrier_t *barrier, unsigned int maxSize);
+
+
+/*****************************************************************************
+ **
+ * Wait for all threads to reach the barrier
+ *
+ * @param  barrier is the barrier to be used.
+ *
+ *
+ * @return
+ *   - NONE
+ *
+ *****************************************************************************/
+void myBarrier_wait(barrier_t *barrier);
+
+/*****************************************************************************
+ **
+ * Decrease the barrier size by 1
+ *
+ * @param  barrier is the barrier to be used.
+ *
+ *
+ * @return
+ *   - NONE
+ *
+ *****************************************************************************/
+void myBarrier_decreaseSize(barrier_t *barrier);
+
+#endif
