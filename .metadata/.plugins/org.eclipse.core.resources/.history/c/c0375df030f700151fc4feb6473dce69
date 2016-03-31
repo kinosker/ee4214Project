@@ -518,7 +518,7 @@ void* thread_func_ball() {
 		pthread_mutex_lock(&mutex_ball);
 
 		ballSpeedPerFrame = myBallControl_getBallSpeedPerFrame(ballSpeed); // get speed per frame
-
+f
 		pthread_mutex_lock(&mutex_tft);
 		tft_removeCircle(&InstancePtr, ball.x, ball.y, CIRCLE_RADIUS); // update ball location...
 		pthread_mutex_unlock(&mutex_tft);
