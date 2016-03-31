@@ -428,7 +428,7 @@ void* thread_func_controller()
       allProcessor_send.msg_Allbricks = allBricks_recv;
       allProcessor_send.msg_ball = ball_recv;
 
-      XMbox_WriteBlocking(&Mbox, &allProcessor_send, sizeof(allProcessor_msg));
+//      XMbox_WriteBlocking(&Mbox, &allProcessor_send, sizeof(allProcessor_msg));
 
   }
 
@@ -560,7 +560,7 @@ void* thread_func_brick(int col_x)
     //myBarrier_wait(&barrier_bricks); // wait for all bricks thread to update
 
     // temporary
-    thread_score = rand()  % 3 ;
+    thread_score ++;
     bricksLeft = rand() % 255 + 1;
 
     // 1.2. Update bricks/score for this thread/column

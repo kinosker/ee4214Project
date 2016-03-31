@@ -364,7 +364,7 @@ void* thread_func_controller()
 
 
       // 1. Mailbox block receive (bar location) ** Opposite side must send initial bar location
-//      XMbox_ReadBlocking(&Mbox, &bar_recv, sizeof(bar_msg));
+      XMbox_ReadBlocking(&Mbox, &bar_recv, sizeof(bar_msg));
 
       // send to ball thread, (Implicitly launch all threads.)
       if( msgsnd( msgQ_bar_id, &bar_recv, sizeof(bar_msg), 0) < 0 )
@@ -560,7 +560,7 @@ void* thread_func_brick(int col_x)
     //myBarrier_wait(&barrier_bricks); // wait for all bricks thread to update
 
     // temporary
-    thread_score = rand()  % 3 ;
+    thread_score ++;
     bricksLeft = rand() % 255 + 1;
 
     // 1.2. Update bricks/score for this thread/column

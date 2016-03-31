@@ -182,13 +182,13 @@ int main_prog(void)
 
     /************************** Semaphore Init ****************************/
 
-    if (sem_init(&sem_colour_yellow, 0, 0) < 0) // init sem_colour_yellow with 0 resource 1st
+    if (sem_init(&sem_colour_yellow, 0, COL_YELLOW) < 0) // init sem_colour_yellow with 2 resource
     {
       print("Error while initializing semaphore sem.\r\n");
     }
 
     // initialize the semaphore
-    if (sem_init(&sem_colour_background, 0, 0) < 0) // init sem_colour_background with 0 resource 1st
+    if (sem_init(&sem_colour_background, 0, COL_BACKGROUND) < 0) // init sem_colour_background with 8 resource
     {
       print("Error while initializing semaphore sem.\r\n");
     }
@@ -364,7 +364,7 @@ void* thread_func_controller()
 
 
       // 1. Mailbox block receive (bar location) ** Opposite side must send initial bar location
-//      XMbox_ReadBlocking(&Mbox, &bar_recv, sizeof(bar_msg));
+      //XMbox_ReadBlocking(&Mbox, &bar_recv, sizeof(bar_msg));
 
       // send to ball thread, (Implicitly launch all threads.)
       if( msgsnd( msgQ_bar_id, &bar_recv, sizeof(bar_msg), 0) < 0 )
@@ -421,14 +421,14 @@ void* thread_func_controller()
 
       // 7. Sleep(time left)
       //sleep(leftOverTime_ms);
-      sleep(1000);
+      sleep(10);
 
       // 8. Send all updated values via MAILBOX
       allProcessor_send.score = score;
       allProcessor_send.msg_Allbricks = allBricks_recv;
       allProcessor_send.msg_ball = ball_recv;
 
-      XMbox_WriteBlocking(&Mbox, &allProcessor_send, sizeof(allProcessor_msg));
+      //XMbox_WriteBlocking(&Mbox, &allProcessor_send, sizeof(allProcessor_msg));
 
   }
 
@@ -560,8 +560,8 @@ void* thread_func_brick(int col_x)
     //myBarrier_wait(&barrier_bricks); // wait for all bricks thread to update
 
     // temporary
-    thread_score = rand()  % 3 ;
-    bricksLeft = rand() % 255 + 1;
+    thread_score ++;
+    bricksLeft = rand() % 100;
 
     // 1.2. Update bricks/score for this thread/column
     pthread_mutex_lock(&score_mutex);
@@ -608,8 +608,8 @@ void* thread_func_brick(int col_x)
   myBarrier_decreaseSize(&barrier_ballBrick_end);
 
   // 2. A way to notify controller thread if pthread function to check failed.
-//  print("Col dead\n");
-//  colThreadsLeft --;
+  print("Col dead\n");
+  colThreadsLeft --;
 }
 
 
@@ -648,7 +648,7 @@ int msgQueue_receiveBricks(int msgQ_brick_id, int colThreads, allBricks_msg *all
       return XST_FAILURE;
     }
 
-//    	xil_printf("rcv iterator : %d\n", iterator);
+    	xil_printf("rcv iterator : %d\n", iterator);
   }
 
   allBricks_recv->size = colThreads;
