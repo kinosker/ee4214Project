@@ -71,9 +71,9 @@ Copyright 1986-2014 Xilinx, Inc. All Rights Reserved.
 
 #define CONFIG_SEMA true
 
-#define MAX_SEM 10
+#define MAX_SEM 15
 
-#define MAX_SEM_WAITQ 10
+#define MAX_SEM_WAITQ 15
 
 #define CONFIG_NAMED_SEMA true
 

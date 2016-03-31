@@ -34,7 +34,7 @@
 
 #define SEM_SUCCESS			0
 #define UPDATE_COLOUR_SCORE	10
-#define MAX_RAND_SLEEP		100 	// for snatching colour sema
+#define MAX_RAND_SLEEP		40 	// for snatching colour sema
 /************************** Function Prototypes *****************************/
 
 void* thread_func_controller();
@@ -43,7 +43,7 @@ void* thread_func_time_elapsed();
 void* thread_func_ball();
 
 void changeBrickColour(int score, int colThreads);
-unsigned int updateBrickColour(unsigned int currentColour);
+unsigned int updateBrickColour(unsigned int currentColour, int col_x) ;
 
 void main_prog(void *arg);
 
@@ -377,6 +377,8 @@ void* thread_func_controller() {
 		// score updated => update colour.. then fire all col threads.
 		myBarrier_wait(&barrier_col); // "fire" all col threads
 
+		print("I am controller\n");
+
 		if (myButton_checkLeft(&gpPB)) {
 			//xil_printf("lapsed time is : %d\r\n", myButton_checkLeft(&gpPB));
 			buttonHoldTime = myButton_checkLeft(&gpPB);
@@ -452,13 +454,15 @@ void thread_func_col(int col_x)
 		// add mailbox to blockingReceive (wait) for updated ball param to satisfy (fps)
 		//XMbox_ReadBlocking(&Mbox, &ball, sizeof(ball_msg));
 
+		print("we are waiting");
 		myBarrier_wait(&barrier_col); // wait for all col threads to reach here... and controller thread to reach wait.
+		xil_printf("I am column %d\n", col_x);
 
 		thread_ScoreAccumulated++;
 
 		if (init == 0)
 		{
-			futureColour = updateBrickColour(currentColour);
+			futureColour = updateBrickColour(currentColour, col_x);
 		}
 
 		pthread_mutex_lock(&mutex_tft);
@@ -514,7 +518,7 @@ void* thread_func_ball() {
 		pthread_mutex_lock(&mutex_ball);
 
 		ballSpeedPerFrame = myBallControl_getBallSpeedPerFrame(ballSpeed); // get speed per frame
-
+f
 		pthread_mutex_lock(&mutex_tft);
 		tft_removeCircle(&InstancePtr, ball.x, ball.y, CIRCLE_RADIUS); // update ball location...
 		pthread_mutex_unlock(&mutex_tft);
@@ -583,14 +587,14 @@ void changeBrickColour(int score, int colThreads) {
 }
 
 // Simple Description : Snatch for 2 semaphore resource, fail then colour same..
-unsigned int updateBrickColour(unsigned int currentColour) {
+unsigned int updateBrickColour(unsigned int currentColour, int col_x) {
 
 	sleep(rand() % MAX_RAND_SLEEP);
 
 
 	if (sem_trywait(&sem_colour_yellow) == SEM_SUCCESS) {
 		// resource snatched !
-		print("snatched resouce.!\n");
+		xil_printf("snatched resouce.!\n col x is : %d\n" , col_x);
 		return COLOR_YELLOW;
 	} else {
 		if (sem_trywait(&sem_colour_background) == SEM_SUCCESS) {

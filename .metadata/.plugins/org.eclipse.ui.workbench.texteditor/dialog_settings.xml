@@ -13,16 +13,16 @@
 		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="tft_moveBarLeft" key="selection"/>
+		<item value="printf" key="selection"/>
 		<list key="findhistory">
-			<item value="tft_moveBarLeft"/>
-			<item value="tft_moveBarRight"/>
-			<item value="thread_func_col"/>
-			<item value="barrier"/>
-			<item value="barrier_score"/>
-			<item value="msgget"/>
-			<item value="changeBrickColour"/>
-			<item value="changeBrickColur"/>
+			<item value="printf"/>
+			<item value="sleep"/>
+			<item value="func_bri"/>
+			<item value="update"/>
+			<item value="end"/>
+			<item value="FPS_MS"/>
+			<item value="ball loca"/>
+			<item value="func_cont"/>
 		</list>
 		<list key="replacehistory">
 		</list>
