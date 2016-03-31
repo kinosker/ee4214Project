@@ -47,17 +47,6 @@
 
  // put me in brick? display?
 
-#define ALL_COL_X   COL_1_X, \
-                    COL_2_X, \
-                    COL_3_X, \
-                    COL_4_X, \
-                    COL_5_X, \
-                    COL_6_X, \
-                    COL_7_X, \
-                    COL_8_X, \
-                    COL_9_X, \
-                    COL_10_X
-
 
 
 
@@ -80,21 +69,21 @@ typedef struct
 typedef struct
 {
 
-  int x,y;
+  int start_x, start_y, end_x, end_y;
 
 } bar_msg;
 
 typedef struct
 {
   char columnNumber;
-  int bricksLeft;
+  unsigned char bricksLeft;
   uint colour;
 
 }brick_msg;
 
 typedef struct
 {
-  int size; // how many brick msg is in the struct
+  int totalBricksLeft;      // total bricks left to be updated
   brick_msg allMsg[MAX_BRICKS_THREAD];
 
 }allBricks_msg;
@@ -132,19 +121,22 @@ pthread_mutex_t score_mutex;
 
 
 /**************** Global variables **********************/
+
 char init = 1;
 int  score = 0;                   // score that is accessible by all threads.
 ball_msg global_ballBrick;       //  tempBall location to be used by brick threads.
 int global_bricksHit = 0;         // bricks hit to be used by brick threads.
+
 const int FPS_MS = 1000*(1.0/FPS);
-//const int col_x[] = { ALL_COL_X };
+const int global_col_x[] = { ALL_COL_X };
+
 /************************** Function Prototype  ****************************/
 
 
 int main_prog(void);
 void* thread_func_controller();
 void* thread_func_ball();
-void* thread_func_brick(int columnNumber);
+void* thread_func_brick(char columnNumber);
 int init_mailBox(XMbox *MboxPtr);
 int init_threads();
 unsigned int myCommon_ticks_to_ms(unsigned int ticks);
@@ -235,7 +227,11 @@ int main_prog(void)
 
     /************************** Threads Init ****************************/
 
-    init_threads();
+    if (init_threads() != 0)
+    {
+      //  error handling...
+      print("-- Error initializing thread : Core 1--\r\n");
+    }
 
 
 
@@ -315,13 +311,7 @@ int init_threads()
   }
 
 
-  if (thread_status != 0)
-  {
-    //  error handling...
-      print("-- Error initializing thread : Bsp 1--\r\n");
-      return XST_FAILURE;
-  }
-
+  return thread_status;
 }
 
 // 1. Controller is the brain ....
@@ -366,7 +356,7 @@ void* thread_func_controller()
 
 
       // 1. Mailbox block receive (bar location) ** Opposite side must send initial bar location
-      //XMbox_ReadBlocking(&Mbox, &bar_recv, sizeof(bar_msg));
+      XMbox_ReadBlocking(&Mbox, &bar_recv, sizeof(bar_msg));
 
       // send to ball thread, (Implicitly launch all threads.)
       if( msgsnd( msgQ_bar_id, &bar_recv, sizeof(bar_msg), 0) < 0 )
@@ -427,7 +417,7 @@ void* thread_func_controller()
       allProcessor_send.msg_Allbricks = allBricks_recv;
       allProcessor_send.msg_ball = ball_recv;
 
-      //XMbox_WriteBlocking(&Mbox, &allProcessor_send, sizeof(allProcessor_msg));
+      XMbox_WriteBlocking(&Mbox, &allProcessor_send, sizeof(allProcessor_msg));
 
   }
 
@@ -507,7 +497,7 @@ void* thread_func_ball()
 }
 
 
-void* thread_func_brick(int columnNumber)
+void* thread_func_brick(char columnNumber)
 {
   brick_msg brick_send;
 
@@ -593,6 +583,8 @@ void* thread_func_brick(int columnNumber)
     }
 
 
+    // ** NOTE : AT LEAST SEND 0  BRICKS !!! **
+
 } // end of while(1) for thread
 
 
@@ -637,7 +629,7 @@ unsigned int updateBrickColour(unsigned int currentColour)
 
 int msgQueue_receiveBricks(int msgQ_brick_id, int colThreads, allBricks_msg *allBricks_recv)
 {
-  int iterator;
+  int iterator, totalBricksLeft = 0;
 
   for(iterator = 0 ; iterator < colThreads ; iterator++)
   {
@@ -645,9 +637,15 @@ int msgQueue_receiveBricks(int msgQ_brick_id, int colThreads, allBricks_msg *all
     {
       return XST_FAILURE;
     }
+
+    totalBricksLeft += allBricks_recv->allMsg[iterator].bricksLeft;
+
   }
 
-  allBricks_recv->size = colThreads;
+
+  allBricks_recv->totalBricksLeft = totalBricksLeft;
+
+
 
   return XST_SUCCESS;
 }
