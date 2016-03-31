@@ -86,7 +86,7 @@ typedef struct
 
 typedef struct
 {
-  int columnNumber;
+  char columnNumber;
   int bricksLeft;
   uint colour;
 
@@ -107,6 +107,7 @@ typedef struct
   allBricks_msg msg_Allbricks; // bricks to be updated
 
 }allProcessor_msg;
+
 
 
 
@@ -136,13 +137,14 @@ int  score = 0;                   // score that is accessible by all threads.
 ball_msg global_ballBrick;       //  tempBall location to be used by brick threads.
 int global_bricksHit = 0;         // bricks hit to be used by brick threads.
 const int FPS_MS = 1000*(1.0/FPS);
+//const int col_x[] = { ALL_COL_X };
 /************************** Function Prototype  ****************************/
 
 
 int main_prog(void);
 void* thread_func_controller();
 void* thread_func_ball();
-void* thread_func_brick(int col_x);
+void* thread_func_brick(int columnNumber);
 int init_mailBox(XMbox *MboxPtr);
 int init_threads();
 unsigned int myCommon_ticks_to_ms(unsigned int ticks);
@@ -282,8 +284,6 @@ int init_threads()
 
   int  thread_status = 0, iterator;
 
-  int col_x[] = { ALL_COL_X };
-
   /************************** Controller Thread Init ****************************/
 
   pthread_attr_init(&attr);           // get attribute for thread.
@@ -311,7 +311,7 @@ int init_threads()
 
   for (iterator = 0 ; iterator < MAX_BRICKS_THREAD ; iterator ++)
   {
-      thread_status += pthread_create(&tid_bricks[iterator], NULL, (void*) thread_func_brick, (void*)col_x[iterator] );
+      thread_status += pthread_create(&tid_bricks[iterator], NULL, (void*) thread_func_brick, (void*)iterator );
   }
 
 
@@ -507,7 +507,7 @@ void* thread_func_ball()
 }
 
 
-void* thread_func_brick(int col_x)
+void* thread_func_brick(int columnNumber)
 {
   brick_msg brick_send;
 
@@ -584,7 +584,7 @@ void* thread_func_brick(int col_x)
 
     brick_send.colour = colour;
     brick_send.bricksLeft = bricksLeft;
-    brick_send.columnNumber = 0; // temp...
+    brick_send.columnNumber = columnNumber; // temp...
 
     if( msgsnd( msgQ_brick_id, &brick_send, sizeof(brick_msg), 0) < 0 )
     {
