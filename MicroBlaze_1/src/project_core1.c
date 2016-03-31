@@ -115,11 +115,16 @@ typedef struct
 sem_t sem_colour_yellow;
 sem_t sem_colour_background;
 
-barrier_t barrier_ballBrick;  // synchronise all bricks and ballthreads.
-barrier_t barrier_bricks;  // synchronise all bricks threads.
-barrier_t barrier_score;  // synchronise all bricks threads score calculation.
-barrier_t barrier_colour;  // signal that the colours resources for the bricks is ready
+barrier_t barrier_ballBrick_start;  // synchronise all bricks and ball threads.
+barrier_t barrier_ballBrick_end;    //  ensure brick and ball threads complete execution.
 
+//barrier_t barrier_bricks;  // synchronise all bricks threads.
+
+barrier_t barrier_score;  // synchronise all bricks threads score calculation. Settled by colour end
+
+
+barrier_t barrier_colour_start;  // signal that the colours resources for the bricks is ready
+barrier_t barrier_colour_end;  // ensure threads complete execution of changing colour
 
 pthread_mutex_t score_mutex;
 
@@ -194,21 +199,32 @@ int main_prog(void)
       xil_printf("Error when initializing barrier...\r\n");
     }
 
-    if( myBarrier_init(&barrier_colour, MAX_BRICKS_THREAD + 1) != 0) // barrier to signal colour resource is ready . bricks + controller
+    if( myBarrier_init(&barrier_colour_start, MAX_BRICKS_THREAD + 1) != 0) // barrier to signal colour resource is ready . bricks + controller
     {
         xil_printf("Error when initializing barrier...\r\n");
     }
 
-    if( myBarrier_init(&barrier_ballBrick, MAX_BRICKS_THREAD + 1) != 0) // barrier to synchronise ball and brick thread. bricks + balls
+    if( myBarrier_init(&barrier_colour_end, MAX_BRICKS_THREAD + 1) != 0) // barrier to signal colour resource is ready . bricks + controller
+    {
+        xil_printf("Error when initializing barrier...\r\n");
+    }
+
+    if( myBarrier_init(&barrier_ballBrick_start, MAX_BRICKS_THREAD + 1) != 0) // barrier to synchronise ball and brick thread. bricks + balls
     {
         xil_printf("Error when initializing barrier...\r\n");
     }
 
 
-    if( myBarrier_init(&barrier_bricks, MAX_BRICKS_THREAD) != 0) // barrier to synchronise all bricks thread..
+    if( myBarrier_init(&barrier_ballBrick_end, MAX_BRICKS_THREAD + 1) != 0) // barrier to synchronise ball and brick thread. bricks + balls
     {
         xil_printf("Error when initializing barrier...\r\n");
     }
+
+
+    // if( myBarrier_init(&barrier_bricks, MAX_BRICKS_THREAD) != 0) // barrier to synchronise all bricks thread..
+    // {
+    //     xil_printf("Error when initializing barrier...\r\n");
+    // }
 
 
 
@@ -369,9 +385,8 @@ void* thread_func_controller()
 
       // 3. Change Brick Colour, release barrier for them to update colour
       changeBrickColour(score, colThreadsLeft);       // change brick colour by releasing semaphore.. based on score..
-      myBarrier_wait(&barrier_colour); // signal all bricks threads, they are ready to be updated with new colour
-
-
+      myBarrier_wait(&barrier_colour_start);  // signal all bricks threads, they are ready to be updated with new colour
+      
 
 
       // 4. Get final ball location via msg queue?
@@ -382,6 +397,8 @@ void* thread_func_controller()
       }
 
       xil_printf("At controller ball location is x : %d y : %d\n", ball_recv.x , ball_recv.y);
+
+      myBarrier_wait(&barrier_colour_end);   // wait for bricks to finish changing colour?
 
 
       // 5. Get final bricks location via msg queue? blocking!
@@ -451,14 +468,21 @@ void* thread_func_ball()
 
     // 2. send the final ball location to brick
     global_ballBrick = ball_temp; // update the global ball for brick thread..
-    myBarrier_wait(&barrier_ballBrick); // barrier to signify the completion of calculate ball location
+    myBarrier_wait(&barrier_ballBrick_start); // barrier to signify the completion of calculate ball location
 
+    // waiting ..... for result
+
+    myBarrier_wait(&barrier_ballBrick_end); // completed calculation for fast mode
 
 
 
     // if > 1 bricks hit... goto 3.1 else 3.2
 
-    myBarrier_wait(&barrier_ballBrick); // wait for calculation of how many bricks got hit...
+    myBarrier_wait(&barrier_ballBrick_start); // wait for calculation of how many bricks got hit...
+
+    // waiting for ..... result ....
+
+    myBarrier_wait(&barrier_ballBrick_end); // completed calculation for slow iteration
 
 
     // 3.1 : slow iteration of ball movement to send ...
@@ -501,7 +525,7 @@ void* thread_func_brick(int col_x)
   {
 
     // Ball location via mailbox / global / shared memory?
-	  myBarrier_wait(&barrier_ballBrick); // wait for ball location to be updated...
+	  myBarrier_wait(&barrier_ballBrick_start); // wait for ball location to be updated...
     // use  global_ballBrick for later...
 
 
@@ -511,6 +535,9 @@ void* thread_func_brick(int col_x)
     // 1. Fast boundary calculation...
     //      - receive ball location hit via mailbox / global / shared memory?
 
+
+    myBarrier_wait(&barrier_ballBrick_end); // wait for ball location to be updated...
+
     // fastBoundaryCalc (global_ballBrick, ..... )
 
     // Mutex Lock;    global_bricksHit += ??; MutexUnlock;
@@ -519,12 +546,14 @@ void* thread_func_brick(int col_x)
     // some barrier here to signify
     //  Notify total bricks hit via mailbox / global / shared memory?
     // if hit more than 2 brick. goto 1.1 else 1.2
-    myBarrier_wait(&barrier_ballBrick); // signify that the bricks hit is completed.
+    myBarrier_wait(&barrier_ballBrick_start); // signify that the bricks hit is completed.
 
 
     // 1.1. Iterative boundary calculation
     //      - send ball hit via mailbox / global / shared memory?
 
+
+    myBarrier_wait(&barrier_ballBrick_end); // signify that the bricks hit is completed.
 
     // some barrier here ? need ma? i think dont needd... blockin at controller...
     //myBarrier_wait(&barrier_bricks); // wait for all bricks thread to update
@@ -540,14 +569,16 @@ void* thread_func_brick(int col_x)
 
     // Barrier to wait for score and colour to be updated here
     myBarrier_wait(&barrier_score); // wait for all bricks thread to update score.
-    myBarrier_wait(&barrier_colour); // wait for colour resources to be available.
 
 
-    // 2. Grab colour here !! GOLD !! or ??
-    if(!init)
-    {
-    	colour = updateBrickColour(colour);
-    }
+
+    myBarrier_wait(&barrier_colour_start); // wait for colour resources to be available.
+      // 2. Grab colour here !! GOLD !! or ??
+      if(!init)
+      {
+      	colour = updateBrickColour(colour);
+      }
+   myBarrier_wait(&barrier_colour_end); // ensure that all threads ran the colour changing..
 
     // 3. Send color, future bricks to controller, which in turn send it to other core via mailbox
 
@@ -569,8 +600,11 @@ void* thread_func_brick(int col_x)
 
   // 1. decrease size of the barrier.
   myBarrier_decreaseSize(&barrier_score);
-  myBarrier_decreaseSize(&barrier_colour);
-  myBarrier_decreaseSize(&barrier_ballBrick);
+  myBarrier_decreaseSize(&barrier_colour_start);
+  myBarrier_decreaseSize(&barrier_colour_end);
+
+  myBarrier_decreaseSize(&barrier_ballBrick_start);
+  myBarrier_decreaseSize(&barrier_ballBrick_end);
 
   // 2. A way to notify controller thread if pthread function to check failed.
 
