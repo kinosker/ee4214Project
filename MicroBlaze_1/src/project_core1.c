@@ -80,6 +80,7 @@ char init = 1;
 int  score = 0;                   // score that is accessible by all threads.
 ball_msg global_ballBrick;       //  tempBall location to be used by brick threads.
 int global_bricksHit = 0;         // bricks hit to be used by brick threads.
+int global_colourFlag = 1;        // global colour flag to ensure sema only released once at score % 10 == 0
 
 const int FPS_MS = 1000*(1.0/FPS);
 const int global_col_x[] = { ALL_COL_X };
@@ -529,13 +530,14 @@ void thread_func_brick(char columnNumber)
       {
       	colour = updateBrickColour(colour);
       }
-   myBarrier_wait(&barrier_colour_end); // ensure that all threads ran the colour changing..
-
+  
     // 3. Send color, future bricks to controller, which in turn send it to other core via mailbox
 
     brick_send.colour = colour;
     brick_send.bricksLeft = bricksLeft;
     brick_send.columnNumber = columnNumber; // temp...
+
+     myBarrier_wait(&barrier_colour_end); // ensure that all threads ran the colour changing..
 
     if( msgsnd( msgQ_brick_id, &brick_send, sizeof(brick_msg), 0) < 0 )
     {
@@ -617,9 +619,11 @@ void changeBrickColour(int score, int colThreadsLeft) {
 
 	//	print("Starting Here\r\n");
 	//	xil_printf("score: %d", score);
-	if (score != 0 && score % 10 == 0)
+	if (score != 0 && score % 10 == 0 && global_colourFlag == 1)
 	{
 		init = 0;
+
+    global_colourFlag = 0;
 
 		xil_printf("score is %d\n", score);
 		//	print("inside loop liao");
