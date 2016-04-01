@@ -54,6 +54,20 @@
 #define ROW_Y_END		ROW_Y_START + ROW_OFFSET *  ROW_BRICKS - 1	// Default Endin Y value to draw smaller square
 #define ROW_1_Y					65 						// default Y value to start.
 
+
+
+#define ALL_COL_X   COL_1_X, \
+                    COL_2_X, \
+                    COL_3_X, \
+                    COL_4_X, \
+                    COL_5_X, \
+                    COL_6_X, \
+                    COL_7_X, \
+                    COL_8_X, \
+                    COL_9_X, \
+                    COL_10_X
+
+
 //bar
 #define BAR_START_X				247
 #define BAR_START_Y				405
