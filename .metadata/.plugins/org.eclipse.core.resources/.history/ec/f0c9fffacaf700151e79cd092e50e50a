@@ -205,7 +205,6 @@ void* thread_func_controller()
 		//		core 1 processor take cares of FPS 
 	    XMbox_ReadBlocking(&Mbox, &allProcessor_recv, sizeof(allProcessor_msg)); 
 
-	    xil_printf("at least here\n");
 	    // 2. Blocking receive MSG Q from bar thread?
 	    if (myButton_checkLeft(&gpPB)) {
 			buttonHoldTime = myButton_checkLeft(&gpPB);

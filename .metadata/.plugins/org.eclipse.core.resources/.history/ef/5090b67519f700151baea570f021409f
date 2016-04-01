@@ -41,6 +41,10 @@
 
 
 
+ #define FPS_MS  (1/FPS) * 1000
+
+
+
 
 #define MAX_BRICKS_THREAD 10
 
@@ -129,7 +133,7 @@ char init = 1;
 int  score = 0;                   // score that is accessible by all threads.
 ball_msg global_ballBrick;       //  tempBall location to be used by brick threads.
 int global_bricksHit = 0;         // bricks hit to be used by brick threads.
-const int FPS_MS = 1000*(1.0/FPS);
+
 /************************** Function Prototype  ****************************/
 
 
@@ -399,7 +403,7 @@ void* thread_func_controller()
       endTime_ms = myCommon_ticks_to_ms(xget_clock_ticks());
       leftOverTime_ms = FPS_MS - (endTime_ms - startTime_ms);  // time to sleep = FPS ticks - processing time.....
 
-      xil_printf("I am sleeping for %d\n fps : %d , start : %d , end %d", leftOverTime_ms, FPS_MS, startTime_ms, endTime_ms);
+      xil_printf("I am sleeping for %d\n fps : %d , start : %d , end %d", FPS_MS, leftOverTime_ms, startTime_ms, endTime_ms);
 
       // 7. Sleep(time left)
       sleep(leftOverTime_ms);
@@ -529,7 +533,7 @@ void* thread_func_brick(int col_x)
     // some barrier here ? need ma? i think dont needd... blockin at controller...
     //myBarrier_wait(&barrier_bricks); // wait for all bricks thread to update
 
-    thread_score ++;
+
 
     // 1.2. Update bricks/score for this thread/column
     pthread_mutex_lock(&score_mutex);

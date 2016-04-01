@@ -49,11 +49,6 @@
 
 
 
-
-
-
-
-
 /**************** Global Thread Synchronisation variables **********************/
 
 sem_t sem_colour_yellow;
@@ -128,13 +123,13 @@ void main_prog(void)
 
     /************************** Semaphore Init ****************************/
 
-    if (sem_init(&sem_colour_yellow, 0, 0) < 0) // init sem_colour_yellow with 0 resources 1st
+    if (sem_init(&sem_colour_yellow, 0, COL_YELLOW) < 0) // init sem_colour_yellow with 2 resource
     {
       print("Error while initializing semaphore sem.\r\n");
     }
 
     // initialize the semaphore
-    if (sem_init(&sem_colour_background, 0, 0) < 0) // init sem_colour_background with 0 resource 1st
+    if (sem_init(&sem_colour_background, 0, COL_BACKGROUND) < 0) // init sem_colour_background with 8 resource
     {
       print("Error while initializing semaphore sem.\r\n");
     }
@@ -365,7 +360,7 @@ void* thread_func_controller()
 
       // 7. Sleep(time left)
       //sleep(leftOverTime_ms);
-      sleep(1000);
+      sleep(100);
 
       // 8. Send all updated values via MAILBOX
       allProcessor_send.score = score;
@@ -386,7 +381,7 @@ void* thread_func_ball()
   ball_msg ball_send, ball_temp;
   bar_msg bar_recv;
 
-  ball_send.speed = 250;
+  ball_send.speed  = 250;
 
 
   msgQ_ball_id = msgget (MSGQ_ID_BALL, IPC_CREAT); // gain access to q or create if not yet valid.
@@ -438,15 +433,11 @@ void* thread_func_ball()
        // for (;;)
     }
 
-
+    ball_send.x = rand() % 200 + 100;
+    ball_send.y = rand() % 100 + 300;
 
     // 3.2 : send ball final location... to controller
     //ball_send = ball_temp; // final location!!!
-
-    ball_send.x = rand() % 200 + 100;
-    ball_send.y = rand() % 100 + 350;
-
-    ball_send.speed += rand() % 5;
 
     if( msgsnd( msgQ_ball_id, &ball_send, sizeof(ball_msg), 0) < 0 )
     {
@@ -510,8 +501,8 @@ void thread_func_brick(char columnNumber)
     //myBarrier_wait(&barrier_bricks); // wait for all bricks thread to update
 
     // temporary
-    thread_score = rand() % 4;
-    bricksLeft = rand() % 255 +1;
+    thread_score = rand() % 3;
+    bricksLeft = rand() % 255 + 1;
 
     // 1.2. Update bricks/score for this thread/column
     pthread_mutex_lock(&score_mutex);

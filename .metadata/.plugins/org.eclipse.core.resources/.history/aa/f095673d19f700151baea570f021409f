@@ -41,6 +41,10 @@
 
 
 
+ #define FPS_MS  1/FPS * 1000
+
+
+
 
 #define MAX_BRICKS_THREAD 10
 
@@ -129,7 +133,7 @@ char init = 1;
 int  score = 0;                   // score that is accessible by all threads.
 ball_msg global_ballBrick;       //  tempBall location to be used by brick threads.
 int global_bricksHit = 0;         // bricks hit to be used by brick threads.
-const float FPS_MS = (1.0/FPS) * 1000;
+
 /************************** Function Prototype  ****************************/
 
 

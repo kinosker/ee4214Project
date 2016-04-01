@@ -40,13 +40,13 @@
 </folder>
 </info>
 </editorArea>
-<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="project_core1.c" partName="project_core1.c" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_1/src/project_core1.c" title="project_core1.c" tooltip="MicroBlaze_1/src/project_core1.c" workbook="DefaultEditorWorkbook">
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="project_core1.c" partName="project_core1.c" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_1/src/project_core1.c" title="project_core1.c" tooltip="MicroBlaze_1/src/project_core1.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_1/src/project_core1.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="8971" selectionTopPixel="6648"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2580" selectionTopPixel="2737"/>
 </editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="project.c" partName="project.c" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_0/src/project.c" title="project.c" tooltip="MicroBlaze_0/src/project.c" workbook="DefaultEditorWorkbook">
+<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="project.c" partName="project.c" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_0/src/project.c" title="project.c" tooltip="MicroBlaze_0/src/project.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_0/src/project.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="5182" selectionTopPixel="4440"/>
+<editorState selectionHorizontalPixel="0" selectionLength="15" selectionOffset="1776" selectionTopPixel="1127"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="TFT_Draw.c" partName="TFT_Draw.c" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_0/src/TFT_Draw.c" title="TFT_Draw.c" tooltip="MicroBlaze_0/src/TFT_Draw.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_0/src/TFT_Draw.c"/>
@@ -70,7 +70,6 @@
 <view id="org.eclipse.ui.views.ProblemView" partName="Problems">
 <viewState PRIMARY_SORT_FIELD="org.eclipse.ui.ide.severityAndDescriptionField" categoryGroup="org.eclipse.ui.ide.severity" markerContentGenerator="org.eclipse.ui.ide.problemsGenerator" partName="Problems">
 <expanded>
-<category IMemento.internal.id="Warnings"/>
 <category IMemento.internal.id="Errors"/>
 </expanded>
 <columnWidths org.eclipse.ui.ide.locationField="150" org.eclipse.ui.ide.markerType="150" org.eclipse.ui.ide.pathField="200" org.eclipse.ui.ide.resourceField="150" org.eclipse.ui.ide.severityAndDescriptionField="832"/>
@@ -226,152 +225,56 @@
 <navigationHistory>
 <editors>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_0/src/project.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_0/src/TFT_Draw.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/xilkernel_bsp_0/microblaze_0/include/xmbox.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_0/src/ballControl.h"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_0/myCommon/myCommon.h"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_1/myCommon/myCommon.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/xilkernel_bsp_0/microblaze_0/include/xmbox.h"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_1/src/project_core1.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/xilkernel_bsp_1/microblaze_1/include/xparameters.h"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/xilkernel_bsp_0/microblaze_0/include/xparameters.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_0/src/project.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_0/src/project.c"/>
 </editors>
-<item historyLabel="TFT_Draw.h" index="1">
-<position info="not_deleted" x="367" y="26"/>
-</item>
-<item historyLabel="project.c" index="0">
-<position info="not_deleted" x="435" y="0"/>
-</item>
-<item historyLabel="xmbox.h" index="2">
-<position info="not_deleted" x="10122" y="0"/>
-</item>
-<item historyLabel="project.c" index="0">
-<position info="not_deleted" x="99" y="0"/>
-</item>
-<item historyLabel="TFT_Draw.h" index="1">
-<position info="not_deleted" x="44" y="0"/>
-</item>
-<item historyLabel="project.c" index="0">
-<position info="not_deleted" x="389" y="0"/>
-</item>
-<item historyLabel="TFT_Draw.h" index="1">
-<position info="not_deleted" x="42" y="0"/>
-</item>
-<item historyLabel="xmbox.h" index="2">
-<position info="not_deleted" x="9205" y="67"/>
-</item>
-<item historyLabel="project.c" index="0">
-<position info="not_deleted" x="389" y="0"/>
-</item>
-<item historyLabel="project.c" index="0">
-<position info="not_deleted" x="1492" y="11"/>
-</item>
-<item historyLabel="ballControl.h" index="3">
-<position info="not_deleted" x="0" y="0"/>
-</item>
-<item historyLabel="myCommon.h" index="4">
-<position info="not_deleted" x="176" y="0"/>
-</item>
-<item historyLabel="project.c" index="0">
-<position info="not_deleted" x="1447" y="0"/>
-</item>
-<item historyLabel="myCommon.h" index="4">
-<position info="not_deleted" x="4987" y="0"/>
-</item>
-<item historyLabel="project.c" index="0">
-<position info="not_deleted" x="1015" y="0"/>
-</item>
-<item historyLabel="myCommon.h" index="5">
-<position/>
-</item>
-<item historyLabel="myCommon.h" index="4">
-<position info="not_deleted" x="4530" y="0"/>
-</item>
-<item historyLabel="project.c" index="0">
-<position info="not_deleted" x="564" y="0"/>
-</item>
-<item historyLabel="xmbox.h" index="6">
-<position info="not_deleted" x="9205" y="67"/>
-</item>
-<item historyLabel="project_core1.c" index="7">
-<position/>
-</item>
-<item historyLabel="project_core1.c" index="7">
-<position info="not_deleted" x="5937" y="1"/>
-</item>
-<item historyLabel="project_core1.c" index="7">
-<position info="not_deleted" x="5910" y="25"/>
-</item>
-<item historyLabel="project_core1.c" index="7">
-<position info="not_deleted" x="5230" y="1"/>
-</item>
-<item historyLabel="project_core1.c" index="7">
-<position info="not_deleted" x="2132" y="0"/>
-</item>
-<item historyLabel="project_core1.c" index="7">
-<position info="not_deleted" x="16663" y="1"/>
-</item>
-<item historyLabel="project_core1.c" index="7">
-<position info="not_deleted" x="11769" y="0"/>
-</item>
-<item historyLabel="project_core1.c" index="7">
-<position info="not_deleted" x="11335" y="73"/>
-</item>
-<item historyLabel="xparameters.h" index="8">
-<position info="not_deleted" x="27932" y="58"/>
-</item>
-<item historyLabel="project_core1.c" index="7">
-<position info="not_deleted" x="8503" y="15"/>
-</item>
-<item historyLabel="project_core1.c" index="7">
-<position info="not_deleted" x="11455" y="18"/>
-</item>
-<item historyLabel="xparameters.h" index="9">
-<position/>
-</item>
-<item historyLabel="project_core1.c" index="7">
+<item historyLabel="project_core1.c" index="3">
 <position info="not_deleted" x="11764" y="0"/>
 </item>
 <item historyLabel="project.c" index="0">
 <position info="not_deleted" x="564" y="0"/>
 </item>
-<item historyLabel="xparameters.h" index="9">
+<item historyLabel="xparameters.h" index="4">
 <position info="not_deleted" x="29619" y="58"/>
 </item>
 <item historyLabel="project.c" index="0">
 <position info="not_deleted" x="2546" y="0"/>
 </item>
-<item historyLabel="xparameters.h" index="9">
+<item historyLabel="xparameters.h" index="4">
 <position info="not_deleted" x="29895" y="58"/>
 </item>
-<item historyLabel="project_core1.c" index="7">
+<item historyLabel="project_core1.c" index="3">
 <position info="not_deleted" x="11764" y="0"/>
 </item>
-<item historyLabel="project_core1.c" index="7">
+<item historyLabel="project_core1.c" index="3">
 <position info="not_deleted" x="414" y="0"/>
 </item>
-<item historyLabel="myCommon.h" index="5">
+<item historyLabel="myCommon.h" index="2">
 <position/>
 </item>
-<item historyLabel="project_core1.c" index="7">
+<item historyLabel="project_core1.c" index="3">
 <position info="not_deleted" x="923" y="0"/>
 </item>
-<item historyLabel="myCommon.h" index="5">
+<item historyLabel="myCommon.h" index="2">
 <position/>
 </item>
-<item historyLabel="myCommon.h" index="4">
+<item historyLabel="myCommon.h" index="1">
 <position info="not_deleted" x="0" y="5368"/>
 </item>
-<item historyLabel="myCommon.h" index="5">
+<item historyLabel="myCommon.h" index="2">
 <position info="not_deleted" x="5348" y="0"/>
 </item>
-<item historyLabel="project_core1.c" index="7">
+<item historyLabel="project_core1.c" index="3">
 <position info="not_deleted" x="8971" y="0"/>
 </item>
-<item historyLabel="myCommon.h" index="4">
+<item historyLabel="myCommon.h" index="1">
 <position info="not_deleted" x="0" y="5368"/>
 </item>
-<item historyLabel="project_core1.c" index="7">
+<item historyLabel="project_core1.c" index="3">
 <position info="not_deleted" x="8971" y="0"/>
 </item>
 <item historyLabel="project.c" index="0">
@@ -383,8 +286,101 @@
 <item historyLabel="project.c" index="0">
 <position info="not_deleted" x="5182" y="0"/>
 </item>
-<item active="true" historyLabel="project_core1.c" index="7">
+<item historyLabel="project_core1.c" index="3">
 <position info="not_deleted" x="8971" y="0"/>
+</item>
+<item historyLabel="project.c" index="5">
+<position info="not_deleted" x="5191" y="0"/>
+</item>
+<item historyLabel="project.c" index="5">
+<position info="not_deleted" x="2128" y="0"/>
+</item>
+<item historyLabel="project_core1.c" index="3">
+<position/>
+</item>
+<item historyLabel="project.c" index="5">
+<position info="not_deleted" x="2128" y="0"/>
+</item>
+<item historyLabel="project_core1.c" index="3">
+<position/>
+</item>
+<item historyLabel="project.c" index="5">
+<position info="not_deleted" x="2128" y="0"/>
+</item>
+<item historyLabel="project_core1.c" index="3">
+<position/>
+</item>
+<item historyLabel="project.c" index="5">
+<position info="not_deleted" x="2128" y="0"/>
+</item>
+<item historyLabel="project_core1.c" index="3">
+<position/>
+</item>
+<item historyLabel="project.c" index="5">
+<position info="not_deleted" x="6095" y="16"/>
+</item>
+<item historyLabel="project_core1.c" index="3">
+<position/>
+</item>
+<item historyLabel="project_core1.c" index="3">
+<position/>
+</item>
+<item historyLabel="project.c" index="5">
+<position info="not_deleted" x="6095" y="16"/>
+</item>
+<item historyLabel="project_core1.c" index="3">
+<position/>
+</item>
+<item historyLabel="project.c" index="5">
+<position info="not_deleted" x="6095" y="16"/>
+</item>
+<item historyLabel="project_core1.c" index="3">
+<position/>
+</item>
+<item historyLabel="project.c" index="5">
+<position info="not_deleted" x="6095" y="16"/>
+</item>
+<item historyLabel="project_core1.c" index="3">
+<position info="not_deleted" x="3547" y="0"/>
+</item>
+<item historyLabel="project.c" index="5">
+<position info="not_deleted" x="6095" y="16"/>
+</item>
+<item historyLabel="project_core1.c" index="3">
+<position info="not_deleted" x="9562" y="0"/>
+</item>
+<item historyLabel="project.c" index="5">
+<position info="not_deleted" x="6095" y="16"/>
+</item>
+<item historyLabel="project_core1.c" index="3">
+<position info="not_deleted" x="18648" y="0"/>
+</item>
+<item historyLabel="project.c" index="5">
+<position info="not_deleted" x="6095" y="16"/>
+</item>
+<item historyLabel="project_core1.c" index="3">
+<position info="not_deleted" x="2616" y="0"/>
+</item>
+<item historyLabel="project.c" index="5">
+<position info="not_deleted" x="6095" y="16"/>
+</item>
+<item historyLabel="project_core1.c" index="3">
+<position info="not_deleted" x="2616" y="0"/>
+</item>
+<item historyLabel="project.c" index="6">
+<position info="not_deleted" x="6095" y="16"/>
+</item>
+<item historyLabel="project_core1.c" index="3">
+<position info="not_deleted" x="2580" y="0"/>
+</item>
+<item historyLabel="project.c" index="6">
+<position info="not_deleted" x="6095" y="16"/>
+</item>
+<item historyLabel="project_core1.c" index="3">
+<position info="not_deleted" x="2580" y="0"/>
+</item>
+<item active="true" historyLabel="project.c" index="6">
+<position info="not_deleted" x="6095" y="16"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
@@ -407,7 +403,6 @@
 <trimItem IMemento.internal.id="org.eclise.ui.internal.FastViewBar"/>
 <trimItem IMemento.internal.id="org.eclipse.jface.action.StatusLineManager"/>
 <trimItem IMemento.internal.id="org.eclipse.ui.internal.progress.ProgressRegion"/>
-<trimItem IMemento.internal.id="bottom"/>
 </trimArea>
 </trimLayout>
 </window>
