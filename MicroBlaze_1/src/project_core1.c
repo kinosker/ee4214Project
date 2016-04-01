@@ -133,10 +133,10 @@ const int global_col_x[] = { ALL_COL_X };
 /************************** Function Prototype  ****************************/
 
 
-int main_prog(void);
+void main_prog(void);
 void* thread_func_controller();
 void* thread_func_ball();
-void* thread_func_brick(char columnNumber);
+void thread_func_brick(char columnNumber);
 int init_mailBox(XMbox *MboxPtr);
 int init_threads();
 unsigned int myCommon_ticks_to_ms(unsigned int ticks);
@@ -160,7 +160,7 @@ int main (void)
 
 }
 
-int main_prog(void)
+void main_prog(void)
 {   // This thread is statically created (as configured in the kernel configuration) and has priority 0 (This is the highest possible)
 
     /************************** Mutex Init ****************************/
@@ -262,6 +262,8 @@ int init_mailBox(XMbox *MboxPtr)
       print("-- Error initializing Mailbox : Bsp 1--\r\n");
       return XST_FAILURE;
     }
+
+    return XST_SUCCESS;
 }
 
 int init_threads()
@@ -329,7 +331,6 @@ void* thread_func_controller()
 
   bar_msg bar_recv;
   ball_msg ball_recv;
-  brick_msg brick_recv;
   allBricks_msg allBricks_recv;
 
   allProcessor_msg allProcessor_send;
@@ -497,7 +498,7 @@ void* thread_func_ball()
 }
 
 
-void* thread_func_brick(char columnNumber)
+void thread_func_brick(char columnNumber)
 {
   brick_msg brick_send;
 

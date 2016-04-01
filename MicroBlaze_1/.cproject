@@ -64,7 +64,7 @@
 									<listOptionValue builtIn="false" value="-lxilkernel"/>
 								</option>
 								<option id="xilinx.gnu.c.linker.option.lscript.1971172684" name="Linker Script" superClass="xilinx.gnu.c.linker.option.lscript" value="../src/lscript.ld" valueType="string"/>
-								<option id="xilinx.gnu.c.link.option.paths.1696980051" name="Library search path (-L)" superClass="xilinx.gnu.c.link.option.paths" valueType="libPaths"/>
+								<option id="xilinx.gnu.c.link.option.paths.1696980051" name="Library search path (-L)" superClass="xilinx.gnu.c.link.option.paths"/>
 								<inputType id="xilinx.gnu.linker.input.591495951" superClass="xilinx.gnu.linker.input">
 									<additionalInput kind="additionalinputdependency" paths="$(USER_OBJS)"/>
 									<additionalInput kind="additionalinput" paths="$(LIBS)"/>

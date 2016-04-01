@@ -13,11 +13,12 @@ BEGIN OS
  PARAMETER config_pthread_mutex = true
  PARAMETER config_sema = true
  PARAMETER config_time = true
+ PARAMETER max_pthread_mutex = 15
  PARAMETER max_pthread_mutex_waitq = 20
  PARAMETER max_pthreads = 20
  PARAMETER max_readyq = 20
- PARAMETER max_sem = 15
- PARAMETER max_sem_waitq = 15
+ PARAMETER max_sem = 20
+ PARAMETER max_sem_waitq = 20
  PARAMETER sched_type = SCHED_PRIO
  PARAMETER stdin = ps7_uart_1
  PARAMETER stdout = ps7_uart_1

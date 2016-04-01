@@ -19,9 +19,6 @@
 
 /************************** Struct Definition *****************************/
 
-#define XST_SUCCESS                     0L
-#define XST_FAILURE                     1L
-// TO DO : read and understand the xilkernel system calls as well as the driver APIs used.
 
 #define MBOX_DEVICE_ID		XPAR_MBOX_0_DEVICE_ID
 
@@ -31,10 +28,6 @@
 #define PRIO_BRICK 		3
 #define PRIO_MISC_ZONE  4
 
-#define SEM_SUCCESS			0
-#define UPDATE_COLOUR_SCORE	10
-
-
 
 #define MSGQ_ID_BALL    1
 #define MSGQ_ID_BRICK	2
@@ -42,13 +35,6 @@
 
 
 
-#define MAX_TIMER_THREAD			1 // timer thread works alone...
-
-
-#define MAX_BRICKS_THREAD			10
-#define MAX_BALL_THREAD				1
-#define MAX_CONTROLLER_THREAD		1
-#define MAX_MISC_THREAD				1
 
 
 
@@ -58,52 +44,6 @@
 #define INIT_BALLSPEED 	250
 #define INIT_SCORE		0
 
-typedef struct
-{
-
-  int dir,speed,x,y;
-
-} ball_msg;
-
-
-typedef struct
-{
-
-  int start_x, start_y, end_x, end_y;
-
-} bar_msg;
-
-typedef struct
-{
-
-  int score, ballSpeed, bricksLeft;
-
-} misc_msg;
-
-
-typedef struct
-{
-  char columnNumber;
-  int bricksLeft;
-  uint colour;
-
-}brick_msg;
-
-typedef struct
-{
-  int totalBricksLeft;      // total bricks left to be updated
-  brick_msg allMsg[MAX_BRICKS_THREAD];
-
-}allBricks_msg;
-
-
-typedef struct
-{
-  int score;                    // score to be updated
-  ball_msg msg_ball;            // ball location to be update.
-  allBricks_msg msg_Allbricks;  // bricks to be updated
-
-}allProcessor_msg;
 
 /************************** Function Prototypes *****************************/
 
@@ -172,8 +112,9 @@ void main_prog(void *arg) {
 	// initialize barrier
 	status = myBarrier_init(&barrier_SyncThreads_start, ALL_SYNC_THREADS); // barrier for all sync threads to start (Amount : ALL_SYNC_THREADS)
 	status += myBarrier_init(&barrier_SyncThreads_end, ALL_SYNC_THREADS); // barrier for all sync threads to end (Amount : ALL_SYNC_THREADS)
+	if(status != 0)
 	{
-		xil_printf("-- ERROR (%d) init barrier...\r\n", ret);
+		xil_printf("-- ERROR @ core0 init barrier...\r\n");
 	}
 
 
@@ -306,9 +247,10 @@ void* thread_func_controller()
 void* thread_func_time_elapsed() {
 	time_t startTime, timeElapsed, gameTime, prevGameTime;
 
-	sys_time(&startTime); // get start time of the game
 
 	pthread_mutex_lock(&mutex_timer); // let's wait for game to start...
+
+	sys_time(&startTime); // get start time of the game
 
 	while (1) {
 		sys_time(&timeElapsed); // get time elapsed so far...

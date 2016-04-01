@@ -33,7 +33,7 @@ Copyright 1986-2014 Xilinx, Inc. All Rights Reserved.
 
 #define CONFIG_PTHREAD_MUTEX true
 
-#define MAX_PTHREAD_MUTEX 10
+#define MAX_PTHREAD_MUTEX 15
 
 #define MAX_PTHREAD_MUTEX_WAITQ 20
 
@@ -71,9 +71,9 @@ Copyright 1986-2014 Xilinx, Inc. All Rights Reserved.
 
 #define CONFIG_SEMA true
 
-#define MAX_SEM 15
+#define MAX_SEM 20
 
-#define MAX_SEM_WAITQ 15
+#define MAX_SEM_WAITQ 20
 
 #define CONFIG_NAMED_SEMA true
 

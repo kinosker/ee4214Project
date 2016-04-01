@@ -10,6 +10,7 @@
 
 #include "myBoundaryChecker.h"
 #include "TFT_Draw.h"
+#include "myCommon.h"
 
 /*****************************************************************************
  *																			 *
@@ -32,14 +33,6 @@
 #define BAR_INCREASE_DECREASE			15// the increase/decrease angle when the ball hit A+/A- will be 15
 
 
-
-// 10 pts -> Speed up by 25
-
-typedef struct {
-
-	int dir, speed, x, y;
-
-} ball_msg;
 
 /*****************************************************************************
  **																			 *
