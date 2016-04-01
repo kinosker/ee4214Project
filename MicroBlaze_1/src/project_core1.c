@@ -137,19 +137,14 @@ static int  score = 0;                   // score that is accessible by all thre
 ball_msg global_ballBrick;       //  tempBall location to be used by brick threads.
 int global_bricksHit = 0;         // bricks hit to be used by brick threads.
 const int FPS_MS = 1000*(1.0/FPS);
-<<<<<<< HEAD
 static int colThreadsLeft = 10; // how to find this can signal? via queue?
 
-=======
-//const int col_x[] = { ALL_COL_X };
->>>>>>> 8b3bfa5d4e9481f5ffc2fc5d9d72eb5ad823aa1e
-/************************** Function Prototype  ****************************/
 
 
 int main_prog(void);
 void* thread_func_controller();
 void* thread_func_ball();
-void* thread_func_brick(int columnNumber);
+void* thread_func_brick(char columnNumber);
 int init_mailBox(XMbox *MboxPtr);
 int init_threads();
 unsigned int myCommon_ticks_to_ms(unsigned int ticks);
@@ -414,7 +409,7 @@ void* thread_func_controller()
 
       int i;
       for(i = 0; i < 10 ; i++)
-      xil_printf("At controller bricks left for %d is %d\n colour is %d\n", i , allBricks_recv.allMsg[i].bricksLeft, allBricks_recv.allMsg[i].colour);
+      xil_printf("At controller bricks left for %d is %d\n colour is %d\n", allBricks_recv.allMsg[i].columnNumber , allBricks_recv.allMsg[i].bricksLeft, allBricks_recv.allMsg[i].colour);
 
       // 6. Get current tick (after processing)
       endTime_ms = myCommon_ticks_to_ms(xget_clock_ticks());
@@ -431,7 +426,7 @@ void* thread_func_controller()
       allProcessor_send.msg_Allbricks = allBricks_recv;
       allProcessor_send.msg_ball = ball_recv;
 
-      XMbox_WriteBlocking(&Mbox, &allProcessor_send, sizeof(allProcessor_msg));
+//      XMbox_WriteBlocking(&Mbox, &allProcessor_send, sizeof(allProcessor_msg));
 
   }
 
@@ -511,7 +506,7 @@ void* thread_func_ball()
 }
 
 
-void* thread_func_brick(int columnNumber)
+void* thread_func_brick(char columnNumber)
 {
   brick_msg brick_send;
 
