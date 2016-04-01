@@ -3,26 +3,26 @@
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="353" key="DIALOG_WIDTH"/>
 		<item value="315" key="DIALOG_Y_ORIGIN"/>
-		<item value="1486" key="DIALOG_X_ORIGIN"/>
 		<item value="513" key="DIALOG_HEIGHT"/>
+		<item value="1486" key="DIALOG_X_ORIGIN"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-18|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="true" key="wrap"/>
-		<item value="false" key="casesensitive"/>
 		<item value="false" key="isRegEx"/>
+		<item value="false" key="casesensitive"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="" key="selection"/>
+		<item value="Mbox" key="selection"/>
 		<list key="findhistory">
+			<item value="mbox"/>
+			<item value="timer"/>
+			<item value="error"/>
+			<item value="thread_func_ball"/>
+			<item value="thread_func"/>
+			<item value="main_prog"/>
+			<item value="UPDATE_COLOUR"/>
 			<item value="ball_msg"/>
-			<item value="ball"/>
-			<item value="myBarrier_wait"/>
-			<item value="ALL_COL_X"/>
-			<item value="func_cont"/>
-			<item value="iterator"/>
-			<item value="columnN"/>
-			<item value="COL_X"/>
 		</list>
 		<list key="replacehistory">
 		</list>

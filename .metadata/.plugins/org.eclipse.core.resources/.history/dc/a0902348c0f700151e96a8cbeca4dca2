@@ -86,7 +86,7 @@ XGpio gpPB; //PB device instance.
 volatile int taskrunning;
 
 int main() {
-	print("-- Entering main @ core 0() --\r\n");
+	print("-- Entering main() --\r\n");
 
 	// Initialise VGA Display...
 	tft_init(TFT_DEVICE_ID, &TFT_Instance);

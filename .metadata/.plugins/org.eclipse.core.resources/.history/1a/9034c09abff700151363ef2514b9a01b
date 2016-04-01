@@ -86,7 +86,7 @@ XGpio gpPB; //PB device instance.
 volatile int taskrunning;
 
 int main() {
-	print("-- Entering main @ core 0() --\r\n");
+	print("-- Entering main() --\r\n");
 
 	// Initialise VGA Display...
 	tft_init(TFT_DEVICE_ID, &TFT_Instance);
@@ -204,8 +204,6 @@ void* thread_func_controller()
 		// 1. Read all messages to update from core 1 processor (blocking)
 		//		core 1 processor take cares of FPS 
 	    XMbox_ReadBlocking(&Mbox, &allProcessor_recv, sizeof(allProcessor_msg)); 
-
-	    xil_printf("at least after read");
 
 	    // 2. Blocking receive MSG Q from bar thread?
 	    if (myButton_checkLeft(&gpPB)) {
