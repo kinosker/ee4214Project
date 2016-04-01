@@ -47,17 +47,6 @@
 
  // put me in brick? display?
 
-#define ALL_COL_X   COL_1_X, \
-                    COL_2_X, \
-                    COL_3_X, \
-                    COL_4_X, \
-                    COL_5_X, \
-                    COL_6_X, \
-                    COL_7_X, \
-                    COL_8_X, \
-                    COL_9_X, \
-                    COL_10_X
-
 
 
 
@@ -80,21 +69,21 @@ typedef struct
 typedef struct
 {
 
-  int x,y;
+  int start_x, start_y, end_x, end_y;
 
 } bar_msg;
 
 typedef struct
 {
   char columnNumber;
-  int bricksLeft;
+  unsigned char bricksLeft;
   uint colour;
 
 }brick_msg;
 
 typedef struct
 {
-  int size; // how many brick msg is in the struct
+  int totalBricksLeft;      // total bricks left to be updated
   brick_msg allMsg[MAX_BRICKS_THREAD];
 
 }allBricks_msg;
@@ -132,13 +121,16 @@ pthread_mutex_t score_mutex;
 
 
 /**************** Global variables **********************/
-static char init = 1;
-static int  score = 0;                   // score that is accessible by all threads.
+
+char init = 1;
+int  score = 0;                   // score that is accessible by all threads.
 ball_msg global_ballBrick;       //  tempBall location to be used by brick threads.
 int global_bricksHit = 0;         // bricks hit to be used by brick threads.
-const int FPS_MS = 1000*(1.0/FPS);
-static int colThreadsLeft = 10; // how to find this can signal? via queue?
 
+const int FPS_MS = 1000*(1.0/FPS);
+const int global_col_x[] = { ALL_COL_X };
+
+/************************** Function Prototype  ****************************/
 
 
 int main_prog(void);
@@ -182,13 +174,13 @@ int main_prog(void)
 
     /************************** Semaphore Init ****************************/
 
-    if (sem_init(&sem_colour_yellow, 0, 0) < 0) // init sem_colour_yellow with 0 resource 1st
+    if (sem_init(&sem_colour_yellow, 0, COL_YELLOW) < 0) // init sem_colour_yellow with 2 resource
     {
       print("Error while initializing semaphore sem.\r\n");
     }
 
     // initialize the semaphore
-    if (sem_init(&sem_colour_background, 0, 0) < 0) // init sem_colour_background with 0 resource 1st
+    if (sem_init(&sem_colour_background, 0, COL_BACKGROUND) < 0) // init sem_colour_background with 8 resource
     {
       print("Error while initializing semaphore sem.\r\n");
     }
@@ -235,7 +227,11 @@ int main_prog(void)
 
     /************************** Threads Init ****************************/
 
-    init_threads();
+    if (init_threads() != 0)
+    {
+      //  error handling...
+      print("-- Error initializing thread : Core 1--\r\n");
+    }
 
 
 
@@ -315,13 +311,7 @@ int init_threads()
   }
 
 
-  if (thread_status != 0)
-  {
-    //  error handling...
-      print("-- Error initializing thread : Bsp 1--\r\n");
-      return XST_FAILURE;
-  }
-
+  return thread_status;
 }
 
 // 1. Controller is the brain ....
@@ -333,6 +323,9 @@ void* thread_func_controller()
 
   unsigned int startTime_ms, endTime_ms, leftOverTime_ms;
 
+  int colThreadsLeft = 10; // how to find this can signal? via queue?
+
+  // got pthread_kill(thread_id , 0) ?? if got use ESRCH to check if still alive..
 
   bar_msg bar_recv;
   ball_msg ball_recv;
@@ -340,6 +333,7 @@ void* thread_func_controller()
   allBricks_msg allBricks_recv;
 
   allProcessor_msg allProcessor_send;
+
 
 
     /************************** Mailbox Init ****************************/
@@ -362,7 +356,7 @@ void* thread_func_controller()
 
 
       // 1. Mailbox block receive (bar location) ** Opposite side must send initial bar location
-//      XMbox_ReadBlocking(&Mbox, &bar_recv, sizeof(bar_msg));
+      XMbox_ReadBlocking(&Mbox, &bar_recv, sizeof(bar_msg));
 
       // send to ball thread, (Implicitly launch all threads.)
       if( msgsnd( msgQ_bar_id, &bar_recv, sizeof(bar_msg), 0) < 0 )
@@ -396,7 +390,6 @@ void* thread_func_controller()
 
       myBarrier_wait(&barrier_colour_end);   // wait for bricks to finish changing colour?
 
-      xil_printf("after barrier");
 
       // 5. Get final bricks location via msg queue? blocking!
       if (msgQueue_receiveBricks(msgQ_brick_id, colThreadsLeft, &allBricks_recv))
@@ -405,11 +398,9 @@ void* thread_func_controller()
           print ("Error in receiving message from bricks thread");
       }
 
-
-
       int i;
       for(i = 0; i < 10 ; i++)
-      xil_printf("At controller bricks left for %d is %d\n colour is %d\n", allBricks_recv.allMsg[i].columnNumber , allBricks_recv.allMsg[i].bricksLeft, allBricks_recv.allMsg[i].colour);
+      xil_printf("At controller bricks left for %d is %d\n colour is %d\n", i , allBricks_recv.allMsg[i].bricksLeft, allBricks_recv.allMsg[i].colour);
 
       // 6. Get current tick (after processing)
       endTime_ms = myCommon_ticks_to_ms(xget_clock_ticks());
@@ -419,14 +410,14 @@ void* thread_func_controller()
 
       // 7. Sleep(time left)
       //sleep(leftOverTime_ms);
-      sleep(1000);
+      sleep(100);
 
       // 8. Send all updated values via MAILBOX
       allProcessor_send.score = score;
       allProcessor_send.msg_Allbricks = allBricks_recv;
       allProcessor_send.msg_ball = ball_recv;
 
-//      XMbox_WriteBlocking(&Mbox, &allProcessor_send, sizeof(allProcessor_msg));
+      XMbox_WriteBlocking(&Mbox, &allProcessor_send, sizeof(allProcessor_msg));
 
   }
 
@@ -558,8 +549,8 @@ void* thread_func_brick(char columnNumber)
     //myBarrier_wait(&barrier_bricks); // wait for all bricks thread to update
 
     // temporary
-    thread_score = rand()  % 3 ;
-    bricksLeft = rand() % 255 + 1;
+    thread_score ++;
+    bricksLeft = rand() % 100;
 
     // 1.2. Update bricks/score for this thread/column
     pthread_mutex_lock(&score_mutex);
@@ -592,6 +583,8 @@ void* thread_func_brick(char columnNumber)
     }
 
 
+    // ** NOTE : AT LEAST SEND 0  BRICKS !!! **
+
 } // end of while(1) for thread
 
 
@@ -606,8 +599,7 @@ void* thread_func_brick(char columnNumber)
   myBarrier_decreaseSize(&barrier_ballBrick_end);
 
   // 2. A way to notify controller thread if pthread function to check failed.
-//  print("Col dead\n");
-//  colThreadsLeft --;
+
 }
 
 
@@ -637,7 +629,7 @@ unsigned int updateBrickColour(unsigned int currentColour)
 
 int msgQueue_receiveBricks(int msgQ_brick_id, int colThreads, allBricks_msg *allBricks_recv)
 {
-  int iterator;
+  int iterator, totalBricksLeft = 0;
 
   for(iterator = 0 ; iterator < colThreads ; iterator++)
   {
@@ -646,10 +638,14 @@ int msgQueue_receiveBricks(int msgQ_brick_id, int colThreads, allBricks_msg *all
       return XST_FAILURE;
     }
 
-//    	xil_printf("rcv iterator : %d\n", iterator);
+    totalBricksLeft += allBricks_recv->allMsg[iterator].bricksLeft;
+
   }
 
-  allBricks_recv->size = colThreads;
+
+  allBricks_recv->totalBricksLeft = totalBricksLeft;
+
+
 
   return XST_SUCCESS;
 }
