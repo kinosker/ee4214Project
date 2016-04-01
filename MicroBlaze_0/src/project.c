@@ -66,6 +66,10 @@ int global_score_recv;
 int global_totalBricksLeft_recv;
 int global_ballSpeed_recv;
 
+unsigned char global_currentBricks[MAX_BRICKS_THREAD]; 	// start with 8 bricks..
+unsigned int global_currentColour[MAX_BRICKS_THREAD]; 	// start with 8 bricks..
+
+
 /************************** Tft variables ****************************/
 
 static XTft TFT_Instance;
@@ -140,9 +144,12 @@ void main_prog(void *arg) {
 	tft_updateScore(&TFT_Instance, INIT_SCORE);
 
 	for(iterator = 0 ; iterator < MAX_BRICKS_THREAD ; iterator++)
-	tft_updateColumn(&TFT_Instance, global_col_x[iterator], 0, 0b11111111, COLOR_GREEN, COLOR_GREEN); // draw all bricks...
+	{
+		tft_updateColumn(&TFT_Instance, global_col_x[iterator], 0, 0b11111111, COLOR_GREEN, COLOR_GREEN); // draw all bricks...
+		global_currentBricks[iterator] = 0b11111111;
+		global_currentColour[iterator] = COLOR_GREEN;
 
-
+	}
 
 
 	/************************** Threads Init ****************************/
@@ -279,38 +286,41 @@ void* thread_func_time_elapsed() {
 
 void thread_func_brick(int iterator)
 {
-	char columnNumber;
-	unsigned int currentColour = COLOR_GREEN; 	// some default color.
-	unsigned int futureColour = COLOR_GREEN; 	// some default color.
+	char columnNumber = 0;
 
-	unsigned char currentBricks = 0b11111111; 	// start with 8 bricks..
+
+	unsigned int futureColour = COLOR_GREEN; 	// some default color.
 	unsigned char futureBricks = 0b11111111; 	// start with 8 bricks..
 
 
 
 	ball_msg ball; // ball param received from mailbox
 
-	while(currentBricks)
+	while(1)
 	{
 
 		myBarrier_wait(&barrier_SyncThreads_start);	// wait for controller thread to launch us
 
 
 		// Get the updated value by controller 
-		futureColour = global_allBricks_recv.allMsg[iterator].colour;
-		futureBricks =	global_allBricks_recv.allMsg[iterator].bricksLeft;
 		columnNumber =  global_allBricks_recv.allMsg[iterator].columnNumber;
+		futureColour =  global_allBricks_recv.allMsg[iterator].colour;
+		futureBricks =	global_allBricks_recv.allMsg[iterator].bricksLeft;
 
 		pthread_mutex_lock(&mutex_tft);
-		tft_updateColumn(&TFT_Instance, global_col_x[columnNumber], currentBricks, futureBricks, currentColour, futureColour);
+		tft_updateColumn(&TFT_Instance, global_col_x[columnNumber], global_currentBricks[columnNumber], futureBricks, global_currentColour[columnNumber], futureColour);
 		pthread_mutex_unlock(&mutex_tft);
 
+		global_currentBricks[columnNumber] = futureBricks;
+		global_currentColour[columnNumber] =  futureColour;
 
-		currentColour = futureColour;
-		currentBricks = futureBricks;
 
 		myBarrier_wait(&barrier_SyncThreads_end);	// wait for all the threads to complete
 
+		if(global_currentBricks[columnNumber] == 0)
+		{
+			break;
+		}
 
 		//pthread_exit(0);
 	}
@@ -452,6 +462,8 @@ int init_mailBox(XMbox *MboxPtr)
       print("-- Error initializing Mailbox : core 0--\r\n");
       return XST_FAILURE;
     }
+
+    XMbox_Flush(MboxPtr);
 }
 
 

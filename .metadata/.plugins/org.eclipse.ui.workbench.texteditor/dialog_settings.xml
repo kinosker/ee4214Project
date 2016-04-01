@@ -13,16 +13,16 @@
 		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="" key="selection"/>
+		<item value="global_c" key="selection"/>
 		<list key="findhistory">
-			<item value="global_colour"/>
-			<item value="global_col"/>
+			<item value="global_c"/>
 			<item value="global"/>
-			<item value="global_colourFlag"/>
-			<item value="barrier_score"/>
+			<item value="globa"/>
+			<item value="column"/>
+			<item value="int"/>
+			<item value="columnNumber"/>
 			<item value="score"/>
-			<item value="updateSc"/>
-			<item value="changeBri"/>
+			<item value="score "/>
 		</list>
 		<list key="replacehistory">
 			<item value="//global_colourFlag"/>
