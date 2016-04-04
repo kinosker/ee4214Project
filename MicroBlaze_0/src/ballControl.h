@@ -80,12 +80,30 @@ int myBallControl_SpeedChange(XTft *InstancePtr, int ball_X, int ball_Y,int scor
 int myBallControl_AngleChange(XTft *InstancePtr, int ball_X, int ball_Y, int angle);
 
 
-int myBallControl_getNumberOfSteps(int ballSpeed_pixel);
-int myBallControl_updateBallSpeed(int ballSpeed, int speedGain);
-int myBallControl_getBallSpeedPerFrame(int ballSpeed);
-int myBallControl_getNumberOfSteps(int ballSpeed_pixel);
+/****/
 
-ball_msg myBallControl_getBallLocation (int ballSpeed_pixel, ball_msg currentLocation);
-ball_msg myBallControl_getBallLocation_step(int numberOfSteps, int ballSpeed_pixel, ball_msg currentLocation, ball_msg endLocation);
+int myBallControl_updateBallSpeed(int ballSpeed, int speedGain);
+
+
+int myBallControl_getSteps(float ballSpeed_frame, int dir);
+int myBallControl_getBackwardSteps(float ballSpeed_step, int dir);
+
+
+
+float myBallControl_getFrameSpeed(int ballSpeed);
+float myBallControl_getStepSpeed(float ballSpeed_frame, int steps);
+float myBallControl_getBackwardStepsSpeed(float ballSpeed_step, int backward_steps);
+
+
+ball_msg myBallControl_moveBall(float ballSpeed, ball_msg currentLocation);
+ball_msg myBallControl_moveBall_frame(float ballSpeed_frame, ball_msg currentLocation);
+ball_msg myBallControl_moveBall_step(float ballSpeed_step, ball_msg currentLocation);
+ball_msg myBallControl_moveBall_backward(float ballSpeed_backward, ball_msg currentLocation);
+ball_msg myBallControl_moveBall_forward(float ballSpeed_backward, ball_msg currentLocation);
+
+
+int round(float number);
+
+
 
 #endif /* BALLCONTROL_H_ */

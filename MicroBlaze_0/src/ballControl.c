@@ -12,7 +12,11 @@
 #define REGION_A	10
 #define REGION_S	10
 #define REGION_N	40
-#define INITIAL_SPEED 250	// 250 pixel per sec (10 pixel per frame) FPS is 25... change this ....
+
+#define BALL_INITIAL_SPEED 250	// Initial speed : 250 pixel per sec
+#define BALL_INITIAL_DIR 90		// Initial Direction : 90 Degree 
+
+
 
 int myBallControl_updateBallSpeed(int ballSpeed, int speedGain)
 {
@@ -33,8 +37,8 @@ int myBallControl_updateBallSpeed(int ballSpeed, int speedGain)
 
 }
 
-// get ball speed based on speed in pixel and current ball location
-ball_msg myBallControl_getBallLocation (int ballSpeed_pixel, ball_msg currentLocation)
+// move the ball to a new location based on speed and currentLocation
+ball_msg myBallControl_moveBall(float ballSpeed, ball_msg currentLocation)
 {
 	ball_msg tempBall;
 
@@ -43,63 +47,124 @@ ball_msg myBallControl_getBallLocation (int ballSpeed_pixel, ball_msg currentLoc
 	double radian = currentLocation.dir * M_PI/180;
 
 	//xil_printf("Currball.x = %d\r\nCurrball.y = %d\r\n", currentLocation.x, currentLocation.y);
-	tempBall.x = currentLocation.x + ballSpeed_pixel * cos(radian);
-	tempBall.y = currentLocation.y - ballSpeed_pixel * sin(radian);
+	tempBall.x = currentLocation.x + round(ballSpeed * cos(radian));
+	tempBall.y = currentLocation.y + round(ballSpeed * sin(radian));
 
 	//xil_printf("dir = %d\r\n", currentLocation.dir);
 	//xil_printf("Tempball.x = %d\r\nTempball.y = %d\r\n", tempBall.x, tempBall.y);
 
-
-	// 2. boundary check...
-	//if(tempBall.x > boundary....)
-
+	// 2. boundary check
+	//... not needed "will bounce"
+	
 	return tempBall; 
 }
 
 
 // this function find the location of the ball per step...
 // please update currentLocation every step..
-ball_msg myBallControl_getBallLocation_step(int numberOfSteps, int ballSpeed_pixel, ball_msg currentLocation, ball_msg endLocation)
+ball_msg myBallControl_moveBall_step(float ballSpeed_step, ball_msg currentLocation)
 {
-	int ballSpeed_step_pixel;
-	ball_msg tempBall;
+	return myBallControl_moveBall(ballSpeed_step, currentLocation);
+}
+
+// this function find the location of the ball per frame...
+// please update currentLocation every step..
+ball_msg myBallControl_moveBall_frame(float ballSpeed_frame, ball_msg currentLocation)
+{
+	return myBallControl_moveBall(ballSpeed_frame, currentLocation);
+}
 
 
-	ballSpeed_step_pixel = ballSpeed_pixel / numberOfSteps; // divide by FPS!!
-	tempBall = myBallControl_getBallLocation(ballSpeed_step_pixel, currentLocation);
+ball_msg myBallControl_moveBall_backward(float ballSpeed_backward, ball_msg currentLocation)
+{
+	currentLocation.dir = currentLocation.dir * - 1;
 
-	// 3. if more than endLocation...
-	if(tempBall.x > endLocation.x)
-	{
-		tempBall.x = endLocation.x;
-	}
+	return myBallControl_moveBall(ballSpeed_backward, currentLocation);
+}
 
-	if(tempBall.y > endLocation.y)
-	{
-		tempBall.y = endLocation.y;
-	}
 
-	return tempBall;
-
+ball_msg myBallControl_moveBall_forward(float ballSpeed_backward, ball_msg currentLocation)
+{
+	
+	return myBallControl_moveBall(ballSpeed_backward, currentLocation);
 }
 
 // return the ball speed in pixel per frame
-int myBallControl_getBallSpeedPerFrame(int ballSpeed)
+float myBallControl_getFrameSpeed(int ballSpeed)
 {
-	return 	ballSpeed / FPS; // divide by FPS!!
+	return 	((float)ballSpeed) / FPS; // divide by FPS!!
 }
 
+
+
 // return the number of steps that the ball will move in this frame
-int myBallControl_getNumberOfSteps(int ballSpeed_pixel)
+int myBallControl_getSteps(float ballSpeed_frame, int dir)
 {
+	int x_gained, y_gained;
+	ball_msg tempBall;
+
+	tempBall.dir = dir;
+	tempBall.x = 0; 
+	tempBall.y = 0;
+
+	tempBall = myBallControl_moveBall(ballSpeed_step, tempBall);
+
+	x_gained = abs(tempBall.x);
+	y_gained = abs(tempBall.y);
+
+
+	// max steps = which 1 smaller.. + 2 circle radius to completely evade the brick.s
+
 	if(BRICK_SIZE_HEIGHT < BRICK_SIZE_LENGTH)
 	{
-		return (ceil(ballSpeed_pixel / (BRICK_SIZE_HEIGHT-1)));
+		return (ceil(y_gained / (BRICK_SIZE_HEIGHT+CIRCLE_RADIUS+CIRCLE_RADIUS)));
 	}
 	else
 	{
-		return (ceil(ballSpeed_pixel / (BRICK_SIZE_LENGTH-1)));
+		return (ceil(x_gained / (BRICK_SIZE_LENGTH+CIRCLE_RADIUS+CIRCLE_RADIUS)));
 	}
+}
+
+
+// return the ball speed in pixel per step in a frame.
+float myBallControl_getStepSpeed(float ballSpeed_frame, int steps)
+{
+	return  ((float)ballSpeed_frame) / steps; 
+
+}
+
+
+
+int myBallControl_getBackwardSteps(float ballSpeed_step, int dir)
+{
+	int x_gained, y_gained;
+	ball_msg tempBall;
+
+	tempBall.dir = dir;
+	tempBall.x = 0; 
+	tempBall.y = 0;
+
+	tempBall = myBallControl_moveBall(ballSpeed_step, tempBall);
+
+	x_gained = abs(tempBall.x);
+	y_gained = abs(tempBall.y);
+
+
+	if(x_gained > y_gained)
+	{
+		return  x_gained;
+	}
+	else
+	{
+		return y_gained;
+	}
+}
+
+// return the ball speed in pixel per backward steps in a frame
+float myBallControl_getBackwardStepsSpeed(float ballSpeed_step, int backward_steps)
+{
+	return  ballSpeed_step / backward_steps; 
+
 }
 
 
@@ -154,3 +219,8 @@ int myBallControl_AngleChange(XTft *InstancePtr, int ball_X, int ball_Y,
 	return angle;
 }
 
+
+int round(float number)
+{
+    return (number >= 0) ? (int)(number + 0.5) : (int)(number - 0.5);
+}

@@ -54,8 +54,8 @@
 sem_t sem_colour_yellow;
 sem_t sem_colour_background;
 
-barrier_t barrier_ballBrick_start;  // synchronise all bricks and ball threads.
-barrier_t barrier_ballBrick_end;    //  ensure brick and ball threads complete execution.
+barrier_t barrier_bounceCheck_start;  // synchronise all bricks and ball threads.
+barrier_t barrier_bounceCheck_end;    //  ensure brick and ball threads complete execution.
 
 //barrier_t barrier_bricks;  // synchronise all bricks threads.
 
@@ -72,9 +72,9 @@ pthread_mutex_t score_mutex;
 /**************** Global variables **********************/
 
 char init = 1;
-int  score = 0;                   // score that is accessible by all threads.
-ball_msg global_ballBrick;       //  tempBall location to be used by brick threads.
-int global_bricksHit = 0;         // bricks hit to be used by brick threads.
+int  global_score = 0;                   // score that is accessible by all threads.
+ball_msg global_ballBounceCheck;        //  temp location, which the ball hit the brick.
+int global_bounceHit = 0;               //  hit bricks which causes bounce to be used by brick threads.
 int global_colourFlag = 1;
 
 const int FPS_MS = 1000*(1.0/FPS);
@@ -92,7 +92,7 @@ int init_threads();
 unsigned int myCommon_ticks_to_ms(unsigned int ticks);
 unsigned int updateBrickColour(unsigned int currentColour);
 int msgQueue_receiveBricks(int msgQ_brick_id, int colThreads, allBricks_msg *allBricks_recv);
-void changeBrickColour(int score, int colThreadsLeft);
+void changeBrickColour(int global_score, int colThreadsLeft);
 
 int main (void)
 {
@@ -153,13 +153,13 @@ void main_prog(void)
         xil_printf("Error when initializing barrier...\r\n");
     }
 
-    if( myBarrier_init(&barrier_ballBrick_start, MAX_BRICKS_THREAD + 1) != 0) // barrier to synchronise ball and brick thread. bricks + balls
+    if( myBarrier_init(&barrier_bounceCheck_start, MAX_BRICKS_THREAD + 1) != 0) // barrier to synchronise ball and brick thread. bricks + balls
     {
         xil_printf("Error when initializing barrier...\r\n");
     }
 
 
-    if( myBarrier_init(&barrier_ballBrick_end, MAX_BRICKS_THREAD + 1) != 0) // barrier to synchronise ball and brick thread. bricks + balls
+    if( myBarrier_init(&barrier_bounceCheck_end, MAX_BRICKS_THREAD + 1) != 0) // barrier to synchronise ball and brick thread. bricks + balls
     {
         xil_printf("Error when initializing barrier...\r\n");
     }
@@ -325,7 +325,7 @@ void* thread_func_controller()
       //xil_printf("At controller score is %d\n", score);
 
       // 3. Change Brick Colour, release barrier for them to update colour
-      changeBrickColour(score, colThreadsLeft);       // change brick colour by releasing semaphore.. based on score..
+      changeBrickColour(global_score, colThreadsLeft);       // change brick colour by releasing semaphore.. based on score..
       myBarrier_wait(&barrier_colour_start);  // signal all bricks threads, they are ready to be updated with new colour
       
 
@@ -365,7 +365,7 @@ void* thread_func_controller()
       sleep(4000);
 
       // 8. Send all updated values via MAILBOX
-      allProcessor_send.score = score;
+      allProcessor_send.score = global_score;
       allProcessor_send.msg_Allbricks = allBricks_recv;
       allProcessor_send.msg_ball = ball_recv;
 
@@ -377,69 +377,171 @@ void* thread_func_controller()
 
 void* thread_func_ball()
 {
-  int dir,speed,x,y;
   int msgQ_ball_id, msgQ_bar_id;
 
-  ball_msg ball_send, ball_temp;
-  bar_msg bar_recv;
+  ball_msg ball_send;
+  //ball_msg ball_temp;
+  
+  bar_msg bar_recv; // received bar msg...
+  
+  //int dir,speed,x,y;
+  
 
-  ball_send.speed  = 250;
+  // initial ball parameters
+  ball_send.speed =  BALL_INITIAL_SPEED;
+  ball_send.dir   = BALL_INITIAL_DIR;
+
+  ball_send.x     = CIRCLE_X;
+  ball_send.y     = CIRCLE_Y;
 
 
+  // MSG Q init.
   msgQ_ball_id = msgget (MSGQ_ID_BALL, IPC_CREAT); // gain access to q or create if not yet valid.
   msgQ_bar_id = msgget (MSGQ_ID_BAR, IPC_CREAT);    // gain access to q or ...
+
+  int numberOfSteps, i;
+  float ballSpeed_frame, ballSpeed_step, ballSpeed_backward;
 
   while(1)
   {
 
-    // 0. Init no bricks hit...
-    global_bricksHit = 0;
+    /********************* 0. Initialise every iteration  ****************/
+    // 0.1  : Init no bounce hit every iteration ... 
+    global_bounceHit = 0;
 
-    // msgQ wait for bar position?
+    // 0.2  : Update global_ballBounceCheck every iteration ... 
+    global_ballBounceCheck = ball_send;
+
+
+    /****************** 1. Get update bar position  *********************/
+    
+    // 1.1 :  msgQ wait for bar position from another processor
     if( msgrcv( msgQ_bar_id, &bar_recv, sizeof(bar_msg), 0,0 ) != sizeof(bar_msg) )
     {
           // Error handling.
           print ("Error in receiving message from bricks thread");
     }
 
-    // 1. calculate final ball location...
 
-    // ball location = final ball location calculated..
+    /****************** 2. Get speeds and # of step  ****************/
 
-    // 1.1 check if hit bar???!?
+    // 2.1  : Get Speed per frame, Speed per step, # of steps
+    ballSpeed_frame = myBallControl_getFrameSpeed(ballSpeed);  // get speed per frame
+    numberOfSteps = myBallControl_getSteps(ballSpeed_frame, ball_send.dir);          // get # of steps that the ball should slowly move to prevent hitting 2 bricks in 1 frame
+    ballSpeed_step = myBallControl_getStepSpeed(ballSpeed_frame, numberOfSteps); // get ball speed per frame per step..
 
+    /****************** 3. Generate ball location for each steps  ****************/
 
-    // 2. send the final ball location to brick
-    global_ballBrick = ball_temp; // update the global ball for brick thread..
-    myBarrier_wait(&barrier_ballBrick_start); // barrier to signify the completion of calculate ball location
+    // 3.1  : Get updated ball location per step.
 
-    // waiting ..... for result
-
-    myBarrier_wait(&barrier_ballBrick_end); // completed calculation for fast mode
-
-
-
-    // if > 1 bricks hit... goto 3.1 else 3.2
-
-    myBarrier_wait(&barrier_ballBrick_start); // wait for calculation of how many bricks got hit...
-
-    // waiting for ..... result ....
-
-    myBarrier_wait(&barrier_ballBrick_end); // completed calculation for slow iteration
-
-
-    // 3.1 : slow iteration of ball movement to send ...
-    if (global_bricksHit > 1)
+    // move from 1st step to last step
+    for(i = 1 ; i <= numberOfSteps ; i++)
     {
-       // slow iteration....
-       // for (;;)
+        if(i == numberOfSteps )
+        {
+          // if it is last step move to that position... 
+          //forwards step iteration used rounding may not be as accurate
+          global_ballBounceCheck = myBallControl_moveBall_frame(ballSpeed_frame, ball_send);
+
+        }
+        else
+        {
+          // forward steps iteration
+          global_ballBounceCheck = myBallControl_moveBall_step(ballSpeed_step, global_ballBounceCheck);
+        }
+
+
+      /****************** 4. Check bounce hit for each steps  ****************/
+
+
+      // 4.1  : Check if hit bar..
+        
+        // ******
+        // if(barHit) global_bounceHit = 1; break;
+
+
+
+      // 4.2  : Release barrier for bounce check to begin....
+
+      myBarrier_wait(&barrier_bounceCheck_start); // barrier to signify brick threads to start checking if bounce occurs
+
+      // 4.3  : Get barrier to ensure bounce check completed
+              
+      myBarrier_wait(&barrier_bounceCheck_end); // barrier to wait for bounce check to complete...
+
+      // 4.4  : Check global_bounceHit if > 0 go to 4.3.1... else continue
+
+        if(global_bounceHit)
+        {
+            break; 
+        }
+
+    } // end of bounce check !
+
+
+    /*********** 5. Ball Temp will be either at final position for the frame or where it got hit  ********/
+
+    // 5.  : 2 Strategies : 1. update ball_send directly, 2. backward iteration to find exact location.
+
+      // 5.1  :  Use backward (small step iteration) to find the exact ball location where it hit..
+
+    if(global_bounceHit)
+    {
+
+
+        // backward (small step iteration to just nice..) to find when it just missed hitting the brick/boundary
+        numberOfSteps = myBallControl_getBackwardSteps( ballSpeed_step, ball_send.dir);
+        ballSpeed_backward = myBallControl_getBackwardStepsSpeed(ballSpeed_backwardStep, numberOfSteps);
+
+        // Repeat Step 3 and 4...
+
+
+          // move from 1st step to last step to determine when the ball just hit the 
+          for(i = 1 ; i <= numberOfSteps ; i++)
+          {
+              
+            // backwards steps movement
+            global_ballBounceCheck = myBallControl_moveBall_backward(ballSpeed_backward, global_ballBounceCheck);
+              
+
+
+            /****************** 4. Check bounce hit for each steps  ****************/
+
+
+            // 4.1  : Release barrier for bounce check to begin....
+
+            myBarrier_wait(&barrier_bounceCheck_start); // barrier to signify brick threads to start checking if bounce occurs
+
+            // 4.2  : Get barrier to ensure bounce check completed
+                    
+            myBarrier_wait(&barrier_bounceCheck_end); // barrier to wait for bounce check to complete...
+
+            // 4.3  : Check global_bounceHit is 0 => ball almost hit the brick/boundary
+
+              if(global_bounceHit == 0)
+              {
+                  global_bounceHit = 1; // set back it really hit...
+                  break; 
+              }
+
+          } // end of bounce check !
+
     }
 
-    ball_send.x = rand() % 200 + 100;
-    ball_send.y = rand() % 100 + 300;
 
-    // 3.2 : send ball final location... to controller
-    //ball_send = ball_temp; // final location!!!
+    /*********** 6. Optimal Ball Position Found  ********/
+
+    ball_send = global_ballBounceCheck;
+
+    if(global_bounceHit)
+    {
+        // set the new direction.. (angle)
+        //ball_send.dir = ??
+    }
+
+
+    /*********** 7. Send Ball Position  ********/
+
 
     if( msgsnd( msgQ_ball_id, &ball_send, sizeof(ball_msg), 0) < 0 )
     {
@@ -471,8 +573,8 @@ void thread_func_brick(char columnNumber)
   {
 
     // Ball location via mailbox / global / shared memory?
-	  myBarrier_wait(&barrier_ballBrick_start); // wait for ball location to be updated...
-    // use  global_ballBrick for later...
+	  myBarrier_wait(&barrier_bounceCheck_start); // wait for ball location to be updated...
+    // use  global_ballBounceLocation for later...
 
 
     // 0. Init
@@ -482,24 +584,24 @@ void thread_func_brick(char columnNumber)
     //      - receive ball location hit via mailbox / global / shared memory?
 
 
-    myBarrier_wait(&barrier_ballBrick_end); // wait for ball location to be updated...
+    myBarrier_wait(&barrier_bounceCheck_end); // wait for ball location to be updated...
 
-    // fastBoundaryCalc (global_ballBrick, ..... )
+    // fastBoundaryCalc (global_ballBounceLocation, ..... )
 
-    // Mutex Lock;    global_bricksHit += ??; MutexUnlock;
+    // Mutex Lock;    global_bounceHit += ??; MutexUnlock;
 
 
     // some barrier here to signify
     //  Notify total bricks hit via mailbox / global / shared memory?
     // if hit more than 2 brick. goto 1.1 else 1.2
-    myBarrier_wait(&barrier_ballBrick_start); // signify that the bricks hit is completed.
+    myBarrier_wait(&barrier_bounceCheck_start); // signify that the bricks hit is completed.
 
 
     // 1.1. Iterative boundary calculation
     //      - send ball hit via mailbox / global / shared memory?
 
 
-    myBarrier_wait(&barrier_ballBrick_end); // signify that the bricks hit is completed.
+    myBarrier_wait(&barrier_bounceCheck_end); // signify that the bricks hit is completed.
 
     // some barrier here ? need ma? i think dont needd... blockin at controller...
     //myBarrier_wait(&barrier_bricks); // wait for all bricks thread to update
@@ -511,7 +613,7 @@ void thread_func_brick(char columnNumber)
 
     // 1.2. Update bricks/score for this thread/column
     pthread_mutex_lock(&score_mutex);
-    score += thread_score;
+    global_score += thread_score;
     pthread_mutex_unlock(&score_mutex);
 
     // Barrier to wait for score and colour to be updated here
@@ -552,8 +654,8 @@ void thread_func_brick(char columnNumber)
   myBarrier_decreaseSize(&barrier_colour_start);
   myBarrier_decreaseSize(&barrier_colour_end);
 
-  myBarrier_decreaseSize(&barrier_ballBrick_start);
-  myBarrier_decreaseSize(&barrier_ballBrick_end);
+  myBarrier_decreaseSize(&barrier_bounceCheck_start);
+  myBarrier_decreaseSize(&barrier_bounceCheck_end);
 
   // 2. A way to notify controller thread if pthread function to check failed.
 
@@ -607,18 +709,18 @@ int msgQueue_receiveBricks(int msgQ_brick_id, int colThreads, allBricks_msg *all
   return XST_SUCCESS;
 }
 
-void changeBrickColour(int score, int colThreadsLeft) {
+void changeBrickColour(int global_score, int colThreadsLeft) {
 	int i, semaRelease;
 
 
 	//	print("Starting Here\r\n");
 	//	xil_printf("score: %d", score);
-	if (score != 0 && score % 10 == 0 && global_colourFlag)
+	if (global_score != 0 && global_score % 10 == 0 && global_colourFlag)
 	{
 		init = 0;
 		global_colourFlag = 0;
 
-		xil_printf("score is %d\n", score);
+		xil_printf("score is %d\n", global_score);
 		//	print("inside loop liao");
 		//release 2 semaphore yellow colour resources!!!
 
