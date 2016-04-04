@@ -73,9 +73,13 @@ pthread_mutex_t score_mutex;
 
 char init = 1;
 int  global_score = 0;                   // score that is accessible by all threads.
+
 ball_msg global_ballBounceCheck;        //  temp location, which the ball hit the brick.
-int global_bounceHit = 0;               //  hit bricks which causes bounce to be used by brick threads.
-int global_colourFlag = 1;
+int global_bounceHit = 0;               //  hit bricks which causes bounce to be used by brick threads
+char global_bounceCompleted = 0;         //  Signal bounce have been completed
+
+
+char global_colourFlag = 1;
 
 const int FPS_MS = 1000*(1.0/FPS);
 const int global_col_x[] = { ALL_COL_X };
@@ -412,6 +416,8 @@ void* thread_func_ball()
     // 0.2  : Update global_ballBounceCheck every iteration ... 
     global_ballBounceCheck = ball_send;
 
+    // 0.3  : Init bounce check not completed.
+    global_bounceCompleted = 0;
 
     /****************** 1. Get update bar position  *********************/
     
@@ -534,6 +540,16 @@ void* thread_func_ball()
 
     /*********** 6. Signal to bricks thread that bounceHit check is completed  ********/
 
+    // bounce check completed.
+
+    global_bounceCompleted = 1;
+
+    // 6.1 :  barrier to signify brick threads to complete bounceCheck.
+    myBarrier_wait(&barrier_bounceCheck_start); 
+
+    // 6.2 :  Barrier to ensure every brick threads got the bounce completed signal.
+    myBarrier_wait(&barrier_bounceCheck_end); 
+
 
     /*********** 7. Optimal Ball Position Found  ********/
 
@@ -566,7 +582,11 @@ void thread_func_brick(char columnNumber)
 
 
   unsigned char bricksLeft = 0b11111111;    // initialize with 8 bricks per column.
+  unsigned char temp_BricksLeft = 0b11111111;    // initialize with 8 bricks per column.
+
   unsigned int  thread_score = 0;           // score for this thread.
+  unsigned int  temp_thread_score = 0;           // score for this thread.
+
 
   unsigned int colour = COLOR_GREEN; // some default color.
 
@@ -580,16 +600,33 @@ void thread_func_brick(char columnNumber)
     // 0. Init
     thread_score = 0; // reset thread_score accumulated for this frame.
 
-    // Ball location via global_ballBounceCheck
+    // 1. : Check if ball hit the brick via global_ballBounceCheck
 
-	  myBarrier_wait(&barrier_bounceCheck_start); // wait for ball location to be updated and fired by ball thread...
+    while(!global_bounceCompleted)
+    {
 
+	     myBarrier_wait(&barrier_bounceCheck_start); // wait for ball location to be updated and fired by ball thread...
 
-   
+       if(!global_bounceCompleted) // *** NOT REDUNDANT **** Dont remove me !! ensure that when bounceCompleted dont do... 
+       {
+          // check via global_ballBounceCheck
 
-    myBarrier_wait(&barrier_bounceCheck_end); // Signal that the bounceCheck is completed..
+          // some mutex among brick... to update  global_bounceHit !
+          
+          // update temp bricks left;
+          //temp_BricksLeft = ....
 
+          // update temp thread score...
 
+       }
+
+      myBarrier_wait(&barrier_bounceCheck_end); // Signal that the bounceCheck is completed..
+
+    }
+
+    // bounce check completed can update what was calculate...
+    bricksleft = temp_BricksLeft;
+    thread_score = temp_thread_score;
 
 
 
