@@ -86,20 +86,20 @@ int myBallControl_updateBallSpeed(int ballSpeed, int speedGain);
 
 
 int myBallControl_getSteps(float ballSpeed_frame, int dir);
-int myBallControl_getBackwardSteps(float ballSpeed_step, int dir);
+int myBallControl_getForwardSteps(float ballSpeed_step, int dir);
 
 
 
 float myBallControl_getFrameSpeed(int ballSpeed);
 float myBallControl_getStepSpeed(float ballSpeed_frame, int steps);
-float myBallControl_getBackwardStepsSpeed(float ballSpeed_step, int backward_steps);
+float myBallControl_getForwardStepsSpeed(float ballSpeed_step, int forward_steps);
 
 
 ball_msg myBallControl_moveBall(float ballSpeed, ball_msg currentLocation);
 ball_msg myBallControl_moveBall_frame(float ballSpeed_frame, ball_msg currentLocation);
 ball_msg myBallControl_moveBall_step(float ballSpeed_step, ball_msg currentLocation);
-ball_msg myBallControl_moveBall_backward(float ballSpeed_backward, ball_msg currentLocation);
-ball_msg myBallControl_moveBall_forward(float ballSpeed_backward, ball_msg currentLocation);
+ball_msg myBallControl_moveBall_step_backward(float ballSpeed_step, ball_msg currentLocation);
+ball_msg myBallControl_moveBall_forward(float ballSpeed_forward, ball_msg currentLocation);
 
 
 int round(float number);

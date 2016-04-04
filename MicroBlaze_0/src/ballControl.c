@@ -59,14 +59,6 @@ ball_msg myBallControl_moveBall(float ballSpeed, ball_msg currentLocation)
 	return tempBall; 
 }
 
-
-// this function find the location of the ball per step...
-// please update currentLocation every step..
-ball_msg myBallControl_moveBall_step(float ballSpeed_step, ball_msg currentLocation)
-{
-	return myBallControl_moveBall(ballSpeed_step, currentLocation);
-}
-
 // this function find the location of the ball per frame...
 // please update currentLocation every step..
 ball_msg myBallControl_moveBall_frame(float ballSpeed_frame, ball_msg currentLocation)
@@ -75,18 +67,27 @@ ball_msg myBallControl_moveBall_frame(float ballSpeed_frame, ball_msg currentLoc
 }
 
 
-ball_msg myBallControl_moveBall_backward(float ballSpeed_backward, ball_msg currentLocation)
+// this function find the location of the ball per step...
+// please update currentLocation every step..
+ball_msg myBallControl_moveBall_step(float ballSpeed_step, ball_msg currentLocation)
 {
-	currentLocation.dir = currentLocation.dir * - 1;
-
-	return myBallControl_moveBall(ballSpeed_backward, currentLocation);
+	return myBallControl_moveBall(ballSpeed_step, currentLocation);
 }
 
 
-ball_msg myBallControl_moveBall_forward(float ballSpeed_backward, ball_msg currentLocation)
+ball_msg myBallControl_moveBall_step_backward(float ballSpeed_step, ball_msg currentLocation)
+{
+	currentLocation.dir = currentLocation.dir * -1;
+	return myBallControl_moveBall(ballSpeed_step, currentLocation);
+}
+
+
+
+
+ball_msg myBallControl_moveBall_forward(float ballSpeed_forward, ball_msg currentLocation)
 {
 	
-	return myBallControl_moveBall(ballSpeed_backward, currentLocation);
+	return myBallControl_moveBall(ballSpeed_forward, currentLocation);
 }
 
 // return the ball speed in pixel per frame
@@ -135,7 +136,7 @@ float myBallControl_getStepSpeed(float ballSpeed_frame, int steps)
 
 
 
-int myBallControl_getBackwardSteps(float ballSpeed_step, int dir)
+int myBallControl_getForwardSteps(float ballSpeed_step, int dir)
 {
 	int x_gained, y_gained;
 	ball_msg tempBall;
@@ -160,10 +161,10 @@ int myBallControl_getBackwardSteps(float ballSpeed_step, int dir)
 	}
 }
 
-// return the ball speed in pixel per backward steps in a frame
-float myBallControl_getBackwardStepsSpeed(float ballSpeed_step, int backward_steps)
+// return the ball speed in pixel per forward steps in a frame
+float myBallControl_getForwardStepsSpeed(float ballSpeed_step, int forward_steps)
 {
-	return  ballSpeed_step / backward_steps; 
+	return  ballSpeed_step / forward_steps; 
 
 }
 

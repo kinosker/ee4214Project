@@ -400,7 +400,7 @@ void* thread_func_ball()
   msgQ_bar_id = msgget (MSGQ_ID_BAR, IPC_CREAT);    // gain access to q or ...
 
   int numberOfSteps, i;
-  float ballSpeed_frame, ballSpeed_step, ballSpeed_backward;
+  float ballSpeed_frame, ballSpeed_step, ballSpeed_forward;
 
   while(1)
   {
@@ -483,15 +483,20 @@ void* thread_func_ball()
 
     // 5.  : 2 Strategies : 1. update ball_send directly, 2. backward iteration to find exact location.
 
-      // 5.1  :  Use backward (small step iteration) to find the exact ball location where it hit..
+      // 5.1  :  -1 step and use forward (small step iteration) to find the exact ball location where it hit..
 
     if(global_bounceHit)
     {
 
+        // move back by 1 step..
+        global_ballBounceCheck = myBallControl_moveBall_step_backward(ballSpeed_step, global_ballBounceCheck);
 
-        // backward (small step iteration to just nice..) to find when it just missed hitting the brick/boundary
-        numberOfSteps = myBallControl_getBackwardSteps( ballSpeed_step, ball_send.dir);
-        ballSpeed_backward = myBallControl_getBackwardStepsSpeed(ballSpeed_backwardStep, numberOfSteps);
+        // reset bounceHit back to 0... so can find when it is the perfect hit
+        global_bounceHit = 0;
+
+        // forward (small step iteration to just nice..) to find when it just nice hit the brick/boundary
+        numberOfSteps = myBallControl_getForwardSteps( ballSpeed_step, ball_send.dir);
+        ballSpeed_forward = myBallControl_getForwardStepsSpeed(ballSpeed_step, numberOfSteps);
 
         // Repeat Step 3 and 4...
 
@@ -500,8 +505,8 @@ void* thread_func_ball()
           for(i = 1 ; i <= numberOfSteps ; i++)
           {
               
-            // backwards steps movement
-            global_ballBounceCheck = myBallControl_moveBall_backward(ballSpeed_backward, global_ballBounceCheck);
+            // forward steps movement
+            global_ballBounceCheck = myBallControl_moveBall_forward(ballSpeed_forward, global_ballBounceCheck);
               
 
 
@@ -518,18 +523,19 @@ void* thread_func_ball()
 
             // 4.3  : Check global_bounceHit is 0 => ball almost hit the brick/boundary
 
-              if(global_bounceHit == 0)
+              if(global_bounceHit)
               {
-                  global_bounceHit = 1; // set back it really hit...
-                  break; 
+                  break; // perfect hit !
               }
 
           } // end of bounce check !
 
     }
 
+    /*********** 6. Signal to bricks thread that bounceHit check is completed  ********/
 
-    /*********** 6. Optimal Ball Position Found  ********/
+
+    /*********** 7. Optimal Ball Position Found  ********/
 
     ball_send = global_ballBounceCheck;
 
@@ -540,7 +546,7 @@ void* thread_func_ball()
     }
 
 
-    /*********** 7. Send Ball Position  ********/
+    /*********** 8. Send Ball Position  ********/
 
 
     if( msgsnd( msgQ_ball_id, &ball_send, sizeof(ball_msg), 0) < 0 )
@@ -570,46 +576,22 @@ void thread_func_brick(char columnNumber)
 
 
   while (bricksLeft)
-  {
-
-    // Ball location via mailbox / global / shared memory?
-	  myBarrier_wait(&barrier_bounceCheck_start); // wait for ball location to be updated...
-    // use  global_ballBounceLocation for later...
-
-
+  { 
     // 0. Init
     thread_score = 0; // reset thread_score accumulated for this frame.
 
-    // 1. Fast boundary calculation...
-    //      - receive ball location hit via mailbox / global / shared memory?
+    // Ball location via global_ballBounceCheck
+
+	  myBarrier_wait(&barrier_bounceCheck_start); // wait for ball location to be updated and fired by ball thread...
 
 
-    myBarrier_wait(&barrier_bounceCheck_end); // wait for ball location to be updated...
+   
 
-    // fastBoundaryCalc (global_ballBounceLocation, ..... )
-
-    // Mutex Lock;    global_bounceHit += ??; MutexUnlock;
+    myBarrier_wait(&barrier_bounceCheck_end); // Signal that the bounceCheck is completed..
 
 
-    // some barrier here to signify
-    //  Notify total bricks hit via mailbox / global / shared memory?
-    // if hit more than 2 brick. goto 1.1 else 1.2
-    myBarrier_wait(&barrier_bounceCheck_start); // signify that the bricks hit is completed.
 
 
-    // 1.1. Iterative boundary calculation
-    //      - send ball hit via mailbox / global / shared memory?
-
-
-    myBarrier_wait(&barrier_bounceCheck_end); // signify that the bricks hit is completed.
-
-    // some barrier here ? need ma? i think dont needd... blockin at controller...
-    //myBarrier_wait(&barrier_bricks); // wait for all bricks thread to update
-
-    // temporary
-    thread_score = rand() % 3;
-
-//    bricksLeft = rand() % 255 + 1;
 
     // 1.2. Update bricks/score for this thread/column
     pthread_mutex_lock(&score_mutex);
