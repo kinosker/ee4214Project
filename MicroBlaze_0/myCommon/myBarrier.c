@@ -38,6 +38,8 @@ void myBarrier_wait(barrier_t *barrier)
 
 void myBarrier_decreaseSize(barrier_t *barrier)
 {
+	int i;
+	
 	barrier->currentSize = barrier->currentSize - 1;
 	barrier->maxSize = barrier->maxSize - 1;
 
