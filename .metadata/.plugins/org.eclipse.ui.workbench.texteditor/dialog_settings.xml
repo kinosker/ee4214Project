@@ -3,18 +3,19 @@
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog_dialogBounds">
 		<item value="353" key="DIALOG_WIDTH"/>
 		<item value="315" key="DIALOG_Y_ORIGIN"/>
-		<item value="513" key="DIALOG_HEIGHT"/>
 		<item value="1486" key="DIALOG_X_ORIGIN"/>
+		<item value="513" key="DIALOG_HEIGHT"/>
 		<item value="1|Segoe UI|9.0|0|WINDOWS|1|-18|0|0|0|400|0|0|0|1|0|0|0|0|Segoe UI" key="DIALOG_FONT_NAME"/>
 	</section>
 	<section name="org.eclipse.ui.texteditor.FindReplaceDialog">
 		<item value="true" key="wrap"/>
-		<item value="false" key="isRegEx"/>
 		<item value="false" key="casesensitive"/>
+		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="global_c" key="selection"/>
+		<item value="&#x0A;New ball iteration, dir : 90, locati" key="selection"/>
 		<list key="findhistory">
+			<item value="huat"/>
 			<item value="global_c"/>
 			<item value="global"/>
 			<item value="globa"/>
@@ -22,7 +23,6 @@
 			<item value="int"/>
 			<item value="columnNumber"/>
 			<item value="score"/>
-			<item value="score "/>
 		</list>
 		<list key="replacehistory">
 			<item value="//global_colourFlag"/>

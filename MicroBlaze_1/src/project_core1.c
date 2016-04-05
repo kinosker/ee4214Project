@@ -440,6 +440,10 @@ void* thread_func_ball()
     ballSpeed_frame = myBallControl_getFrameSpeed(global_ballBounceCheck.speed);  // get speed per frame
     //xil_printf("Ball Speed : %d, Ball Frame : %d\n" , ball_send.speed, (int)ballSpeed_frame);
     numberOfSteps = myBallControl_getSteps(ballSpeed_frame, global_ballBounceCheck.dir);          // get # of steps that the ball should slowly move to prevent hitting 2 bricks in 1 frame
+    if( numberOfSteps == 0 )
+    {
+        print("HUAT HUAT HUAH\n\n\n\n");
+    }
     //xil_printf("Steps obtained : %d\n" , numberOfSteps);
 
     ballSpeed_step = myBallControl_getStepSpeed(ballSpeed_frame, numberOfSteps); // get ball speed per frame per step..
