@@ -429,9 +429,14 @@ int tft_moveCircle(XTft *InstancePtr, int x0, int y0, int future_x0,
 	}
 //	}
 }
-int tft_moveBarLeft(XTft *InstancePtr, unsigned int holdTime) {
+
+bar_msg tft_moveBarLeft(XTft *InstancePtr, unsigned int holdTime) {
 
 	int pixelMove;
+	bar_msg bar_updated;
+
+
+
 
 	if(holdTime > 250) // if hold for more than 250 ms...
 	{
@@ -463,12 +468,24 @@ int tft_moveBarLeft(XTft *InstancePtr, unsigned int holdTime) {
 		tft_addBar(InstancePtr, barLeftPos, BAR_START_Y, barRightPos,
 				BAR_START_Y + BAR_HEIGHT, COLOR_BLACK);
 
+
 	}
+
+
+
+	bar_updated.start_x 	= barLeftPos;
+	bar_updated.start_y 	= BAR_START_Y;
+	bar_updated.end_x		= barRightPos;
+	bar_updated.end_y		= BAR_START_Y + BAR_HEIGHT;
+
+	return bar_updated;
 }
 
-int tft_moveBarRight(XTft *InstancePtr, unsigned int holdTime) {
+bar_msg tft_moveBarRight(XTft *InstancePtr, unsigned int holdTime) {
 
 	int pixelMove;
+	bar_msg bar_updated;
+
 
 	if(holdTime > 250) // if hold for more than 250 ms...
 	{
@@ -501,6 +518,13 @@ int tft_moveBarRight(XTft *InstancePtr, unsigned int holdTime) {
 				BAR_START_Y + BAR_HEIGHT, COLOR_BLACK);
 
 	}
+
+	bar_updated.start_x 	= barLeftPos;
+	bar_updated.start_y 	= BAR_START_Y;
+	bar_updated.end_x		= barRightPos;
+	bar_updated.end_y		= BAR_START_Y + BAR_HEIGHT;
+
+	return bar_updated;
 }
 
 int tft_drawLine(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,

@@ -419,12 +419,12 @@ int tft_moveCircle(XTft *InstancePtr, int x0, int y0, int future_x0, int future_
  * @param  InstancePtr is a pointer to the XTft instance.
  *
  * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
+ *   - Updated bar_msg
+ *   
  *
  *
  ******************************************************************************/
-int tft_moveBarRight(XTft *InstancePtr, unsigned int holdTime);
+bar_msg tft_moveBarRight(XTft *InstancePtr, unsigned int holdTime);
 
 /*****************************************************************************
  **
@@ -433,12 +433,11 @@ int tft_moveBarRight(XTft *InstancePtr, unsigned int holdTime);
  * @param  InstancePtr is a pointer to the XTft instance.
  *
  * @return
- *   - XST_SUCCESS if successful.
- *   - XST_FAILURE if unsuccessful.
+ *		- Update bar_msg
  *
  *
  ******************************************************************************/
-int tft_moveBarLeft(XTft *InstancePtr, unsigned int holdTime);
+bar_msg tft_moveBarLeft(XTft *InstancePtr, unsigned int holdTime);
 
 /*****************************************************************************
  **

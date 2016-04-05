@@ -214,17 +214,16 @@ void* thread_func_controller()
 	    // 2. Blocking receive MSG Q from bar thread?
 	    if (myButton_checkLeft(&gpPB)) {
 			buttonHoldTime = myButton_checkLeft(&gpPB);
-			tft_moveBarLeft(&TFT_Instance, buttonHoldTime);
+			bar_send = tft_moveBarLeft(&TFT_Instance, buttonHoldTime);
 		}
 
 		if (myButton_checkRight(&gpPB)) {
 			//xil_printf("lapsed time is : %d\r\n", myButton_checkRight(&gpPB));
 			buttonHoldTime = myButton_checkRight(&gpPB);
-			tft_moveBarRight(&TFT_Instance, buttonHoldTime);
+			bar_send = tft_moveBarRight(&TFT_Instance, buttonHoldTime);
 		}
 
 
-		// ***** get bar cordinates here......
 
 
 	    // 3. Send to core 1 for processing ...
