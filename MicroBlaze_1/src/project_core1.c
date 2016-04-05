@@ -842,9 +842,9 @@ void changeBrickColour(int global_score, int colThreadsLeft)
 
 	//	print("Starting Here\r\n");
 	//	xil_printf("score: %d", score);
-	if (global_score != prev_score && global_score % 10 == 0)
+	if ((global_score != prev_score) && (global_score % 10 == 0))
 	{
-	
+
 		xil_printf("score is %d\n", global_score);
 		//	print("inside loop liao");
 		//release 2 semaphore yellow colour resources!!!
@@ -875,9 +875,11 @@ void changeBrickColour(int global_score, int colThreadsLeft)
 				sem_post(&sem_colour_yellow);
 			}
 		}
+
 	}
 
   prev_score = global_score; // update prev score
+
 
 }
 
