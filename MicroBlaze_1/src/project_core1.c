@@ -72,7 +72,6 @@ pthread_mutex_t mutex_bricks;
 
 /**************** Global variables **********************/
 
-char init = 1;
 int  global_score = 0;                   // score that is accessible by all threads.
 
 ball_msg global_ballBounceCheck;        //  temp location, which the ball hit the brick.
@@ -82,7 +81,6 @@ char global_bounceCompleted = 0;         //  Signal bounce have been completed
 
 int global_ColThreadsLeft = 10; // how to find this can signal? via queue? change to constant later!!!
 
-char global_colourFlag = 1;
 
 const int FPS_MS = 1000*(1.0/FPS);
 const int global_col_x[] = { ALL_COL_X };
@@ -743,11 +741,10 @@ void thread_func_brick(char columnNumber)
 
 
     myBarrier_wait(&barrier_colour_start); // wait for colour resources to be available.
-      // 2. Grab colour here !! GOLD !! or ??
-      if(!init)
-      {
-      	colour = updateBrickColour(colour);
-      }
+    
+    // 2. Grab colour here !! GOLD !! or ??
+    colour = updateBrickColour(colour);
+      
    myBarrier_wait(&barrier_colour_end); // ensure that all threads ran the colour changing..
 
     // 3. Send color, future bricks to controller, which in turn send it to other core via mailbox
@@ -837,17 +834,17 @@ int msgQueue_receiveBricks(int msgQ_brick_id, int colThreads, allBricks_msg *all
   return XST_SUCCESS;
 }
 
-void changeBrickColour(int global_score, int colThreadsLeft) {
+void changeBrickColour(int global_score, int colThreadsLeft) 
+{
+  static int prev_score = 0;
 	int i, semaRelease;
 
 
 	//	print("Starting Here\r\n");
 	//	xil_printf("score: %d", score);
-	if (global_score != 0 && global_score % 10 == 0 && global_colourFlag)
+	if (global_score != prev_score && global_score % 10 == 0)
 	{
-		init = 0;
-		global_colourFlag = 0;
-
+	
 		xil_printf("score is %d\n", global_score);
 		//	print("inside loop liao");
 		//release 2 semaphore yellow colour resources!!!
@@ -879,10 +876,9 @@ void changeBrickColour(int global_score, int colThreadsLeft) {
 			}
 		}
 	}
-	else
-	{
-		global_colourFlag = 1;
-	}
+
+  prev_score = global_score; // update prev score
+
 }
 
 
