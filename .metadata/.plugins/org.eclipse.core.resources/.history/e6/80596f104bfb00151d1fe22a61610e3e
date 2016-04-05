@@ -777,11 +777,6 @@ void thread_func_brick(char columnNumber)
 
   // implicit thread exit when bricksleft = 0....
 
-  // 2. A way to notify controller thread if pthread function to check failed.
-    pthread_mutex_lock(&mutex_bricks);
-      global_ColThreadsLeft --;
-    pthread_mutex_unlock(&mutex_bricks);
-
   // 1. decrease size of the barrier.
   myBarrier_decreaseSize(&barrier_score);
   myBarrier_decreaseSize(&barrier_colour_start);
@@ -790,7 +785,10 @@ void thread_func_brick(char columnNumber)
   myBarrier_decreaseSize(&barrier_bounceCheck_start);
   myBarrier_decreaseSize(&barrier_bounceCheck_end);
 
-
+  // 2. A way to notify controller thread if pthread function to check failed.
+  pthread_mutex_lock(&mutex_bricks);
+    global_ColThreadsLeft --;
+  pthread_mutex_unlock(&mutex_bricks);
 
 }
 

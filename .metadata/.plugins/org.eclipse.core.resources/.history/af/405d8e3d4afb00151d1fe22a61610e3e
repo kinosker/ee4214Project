@@ -493,17 +493,17 @@ void* thread_func_ball()
 
 		// 4.2  : Release barrier for bounce check to begin....
 
-		print("start of bounce check start barrier\n");
+		print("start of bounce check start barrier");
 
 		      myBarrier_wait(&barrier_bounceCheck_start); // barrier to signify brick threads to start checking if bounce occurs
 
-		print("end of bounce check start barrier\n");
+		print("end of bounce check start barrier");
 
 		      // 4.3  : Get barrier to ensure bounce check completed
 
 		      myBarrier_wait(&barrier_bounceCheck_end); // barrier to wait for bounce check to complete...
 
-		print("end of bounce check end barrier\n");
+		print("end of bounce check end barrier");
 
       // 4.4  : Check global_bounceHit if > 0 go to 4.3.1... else continue
 
@@ -777,11 +777,6 @@ void thread_func_brick(char columnNumber)
 
   // implicit thread exit when bricksleft = 0....
 
-  // 2. A way to notify controller thread if pthread function to check failed.
-    pthread_mutex_lock(&mutex_bricks);
-      global_ColThreadsLeft --;
-    pthread_mutex_unlock(&mutex_bricks);
-
   // 1. decrease size of the barrier.
   myBarrier_decreaseSize(&barrier_score);
   myBarrier_decreaseSize(&barrier_colour_start);
@@ -790,7 +785,10 @@ void thread_func_brick(char columnNumber)
   myBarrier_decreaseSize(&barrier_bounceCheck_start);
   myBarrier_decreaseSize(&barrier_bounceCheck_end);
 
-
+  // 2. A way to notify controller thread if pthread function to check failed.
+  pthread_mutex_lock(&mutex_bricks);
+    global_ColThreadsLeft --;
+  pthread_mutex_unlock(&mutex_bricks);
 
 }
 
