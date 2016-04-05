@@ -40,4 +40,22 @@ void myBarrier_decreaseSize(barrier_t *barrier)
 {
 	barrier->currentSize = barrier->currentSize - 1;
 	barrier->maxSize = barrier->maxSize - 1;
+
+	// unlock others if current size is 0..
+
+	pthread_mutex_lock(&barrier->mutex);   
+
+	if(barrier->currentSize == 0)
+	{
+		for(i = 0 ; i < barrier->maxSize ; i++)
+		{
+			sem_post(&(barrier->sema));
+		}
+
+		barrier->currentSize = barrier->maxSize; // reset back to maxSize of threads to wait.
+	}	
+
+	pthread_mutex_unlock(&barrier->mutex);
+
+
 }
