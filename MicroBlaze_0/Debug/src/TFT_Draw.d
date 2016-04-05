@@ -26,7 +26,6 @@ src/TFT_Draw.d: ../src/TFT_Draw.c ../src/TFT_Draw.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/timer.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/intr.h \
  ../../xilkernel_bsp_0/microblaze_0/include/sys/queue.h \
- ../src/ballControl.h ../src/myBoundaryChecker.h \
  C:\Users\KaiHsiang\Desktop\EE4214_Workspace\Lab1\MulticoreProcessor\MulticoreProcessor.sdk\4214_project\MicroBlaze_0\myCommon/myCommon.h
 
 ../src/TFT_Draw.h:
@@ -84,9 +83,5 @@ src/TFT_Draw.d: ../src/TFT_Draw.c ../src/TFT_Draw.h \
 ../../xilkernel_bsp_0/microblaze_0/include/sys/intr.h:
 
 ../../xilkernel_bsp_0/microblaze_0/include/sys/queue.h:
-
-../src/ballControl.h:
-
-../src/myBoundaryChecker.h:
 
 C:\Users\KaiHsiang\Desktop\EE4214_Workspace\Lab1\MulticoreProcessor\MulticoreProcessor.sdk\4214_project\MicroBlaze_0\myCommon/myCommon.h:

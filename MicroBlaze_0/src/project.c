@@ -13,7 +13,6 @@
 #include "TFT_Draw.h"
 #include "myButton.h"
 #include "xmbox.h"
-#include "ballControl.h"
 #include "myCommon.h"
 #include "myBarrier.h"
 
@@ -212,7 +211,6 @@ void* thread_func_controller()
 		//		core 1 processor take cares of FPS 
 	    XMbox_ReadBlocking(&Mbox, &allProcessor_recv, sizeof(allProcessor_msg)); 
 
-	    xil_printf("at least here\n");
 	    // 2. Blocking receive MSG Q from bar thread?
 	    if (myButton_checkLeft(&gpPB)) {
 			buttonHoldTime = myButton_checkLeft(&gpPB);
@@ -331,14 +329,21 @@ void thread_func_brick(int iterator)
 
 }
 
-void* thread_func_ball() {
+void* thread_func_ball()
+{
+	ball_msg prevBall;
+	prevBall.x = CIRCLE_X;
+	prevBall.y = CIRCLE_Y;
 
 
 	while (1) 
 	{
 		myBarrier_wait(&barrier_SyncThreads_start);	// wait for controller thread to launch us
 
+		tft_removeCircle(&TFT_Instance, prevBall.x, prevBall.y, CIRCLE_RADIUS);
 		tft_addCircle(&TFT_Instance, global_ball_recv.x, global_ball_recv.y, CIRCLE_RADIUS); // update ball location...
+
+		prevBall = global_ball_recv; // update previous ball!
 
 		myBarrier_wait(&barrier_SyncThreads_end);	// wait for all the threads to complete
 

@@ -142,6 +142,10 @@
 #define MAX_CONTROLLER_THREAD		1
 #define MAX_MISC_THREAD				1
 
+#define FRAME_PER_SEC			25
+#define INITIAL_SPEED 			250/FRAME_PER_SEC	//250pixels per sec -> 25fps = 10pixels
+#define BALL_INITIAL_DIR		90
+
 
 typedef struct
 {
@@ -170,7 +174,7 @@ typedef struct
 {
   char columnNumber;
   int bricksLeft;
-  uint colour;
+  unsigned int colour;
 
 }brick_msg;
 

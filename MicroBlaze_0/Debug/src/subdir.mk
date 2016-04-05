@@ -5,8 +5,6 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../src/TFT_Draw.c \
-../src/ballControl.c \
-../src/myBoundaryChecker.c \
 ../src/myButton.c \
 ../src/platform.c \
 ../src/project.c 
@@ -16,16 +14,12 @@ LD_SRCS += \
 
 OBJS += \
 ./src/TFT_Draw.o \
-./src/ballControl.o \
-./src/myBoundaryChecker.o \
 ./src/myButton.o \
 ./src/platform.o \
 ./src/project.o 
 
 C_DEPS += \
 ./src/TFT_Draw.d \
-./src/ballControl.d \
-./src/myBoundaryChecker.d \
 ./src/myButton.d \
 ./src/platform.d \
 ./src/project.d 
