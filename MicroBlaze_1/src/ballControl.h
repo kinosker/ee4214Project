@@ -102,6 +102,7 @@ ball_msg myBallControl_moveBall_step_backward(float ballSpeed_step, ball_msg cur
 ball_msg myBallControl_moveBall_forward(float ballSpeed_forward, ball_msg currentLocation);
 
 
+int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation);
 
 
 

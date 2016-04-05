@@ -28,14 +28,8 @@
 #define HIT_2_BOUNDARY_BOTTOM_RIGHT 	8    // Hit 2 boundaries(bottom and left)
 
 //inner block
-#define HIT_INNER_LEFTBOUNDARY  				11    // Hit Left side boundary
-#define HIT_INNER_RIGHTBOUNDARY  				12    // Hit Right side boundary
-#define HIT_INNER_TOPBOUNDARY 					13    // Hit TOP side boundary
-#define HIT_INNER_BOTTOMBOUNDARY  				14    // Hit Bottom side boundary
-#define HIT_2_INNER_BOUNDARY_TOP_LEFT 			15    // Hit 2 boundaries(top and left)
-#define HIT_2_INNER_BOUNDARY_TOP_RIGHT 			16    // Hit 2 boundaries(top and right)
-#define HIT_2_INNER_BOUNDARY_BOTTOM_LEFT 		17    // Hit 2 boundaries(bottom and left)
-#define HIT_2_INNER_BOUNDARY_BOTTOM_RIGHT 		18    // Hit 2 boundaries(bottom and left)
+#define HIT_INNER_BOX  				10    // Hit Left side boundary
+#define HIT_INNER_CORNER			 		11    // Hit 2 boundaries(bottom and left)
 
 /*****************************************************************************
  **																			 *

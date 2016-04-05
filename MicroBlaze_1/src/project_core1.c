@@ -343,7 +343,7 @@ void* thread_func_controller()
           print ("Error in receiving message from bricks thread");
       }
 
-      xil_printf("At controller ball location is x : %d y : %d\n", ball_recv.x , ball_recv.y);
+//      xil_printf("At controller ball location is x : %d y : %d\n", ball_recv.x , ball_recv.y);
 
       myBarrier_wait(&barrier_colour_end);   // wait for bricks to finish changing colour?
 
@@ -355,11 +355,11 @@ void* thread_func_controller()
           print ("Error in receiving message from bricks thread");
       }
 
-      int i;
-      for(i = 0; i < 10 ; i++)
-      xil_printf("At controller bricks is %d\n colour is %d\n", allBricks_recv.allMsg[i].columnNumber, allBricks_recv.allMsg[i].colour);
-
-      xil_printf("end of 1 send \n\n\n");
+//      int i;
+//      for(i = 0; i < 10 ; i++)
+//      xil_printf("At controller bricks is %d\n colour is %d\n", allBricks_recv.allMsg[i].columnNumber, allBricks_recv.allMsg[i].colour);
+//
+//      xil_printf("end of 1 send \n\n\n");
       // 6. Get current tick (after processing)
       endTime_ms = myCommon_ticks_to_ms(xget_clock_ticks());
       leftOverTime_ms = FPS_MS - (endTime_ms - startTime_ms);  // time to sleep = FPS ticks - processing time.....
@@ -368,7 +368,7 @@ void* thread_func_controller()
 
       // 7. Sleep(time left)
       //sleep(leftOverTime_ms);
-      sleep(40);
+      sleep(1000);
 
       // 8. Send all updated values via MAILBOX
       allProcessor_send.score = global_score;
@@ -464,7 +464,7 @@ void* thread_func_ball()
           global_ballBounceCheck = myBallControl_moveBall_step(ballSpeed_step, global_ballBounceCheck);
         }
 
-        xil_printf("Step Ball Location : %d , %d\n", global_ballBounceCheck.x, global_ballBounceCheck.y);
+//        xil_printf("Step Ball Location : %d , %d\n", global_ballBounceCheck.x, global_ballBounceCheck.y);
 
 
       /****************** 4. Check bounce hit for each steps  ****************/
@@ -524,7 +524,8 @@ void* thread_func_ball()
               
             // forward steps movement
             global_ballBounceCheck = myBallControl_moveBall_forward(ballSpeed_forward, global_ballBounceCheck);
-              
+
+            xil_printf("Small step : ball = %d,%d, ballSpeed : %d\n" , global_ballBounceCheck.x, global_ballBounceCheck.y, ballSpeed_forward);
 
 
             /****************** 4. Check bounce hit for each steps  ****************/
@@ -571,12 +572,14 @@ void* thread_func_ball()
     {
         // set the new direction.. (angle)
         //ball_send.dir = ??
+    	ball_send.dir = myBallControl_ReboundAngle(global_sideHit, ball_send);
+    	xil_printf("new direction of ball = %d\n", ball_send.dir);
     }
 
 
     /*********** 8. Send Ball Position  ********/
 
-    xil_printf("Final Ball Location : %d , %d\n", ball_send.x, ball_send.y);
+//    xil_printf("Final Ball Location : %d , %d\n", ball_send.x, ball_send.y);
 
     if( msgsnd( msgQ_ball_id, &ball_send, sizeof(ball_msg), 0) < 0 )
     {
@@ -633,6 +636,8 @@ void thread_func_brick(char columnNumber)
 
     	  while(brickLoop)
     	  {
+    		  temp_thread_score = 0;
+
     		  if(brickLoop & 0b1) // if got brick then check
     		  {
   				row_y = ROW_Y_START + ROW_OFFSET * row_num; // position of y for the selected brick.
@@ -649,7 +654,7 @@ void thread_func_brick(char columnNumber)
   		    	   	   global_sideHit = temp_sideHit;
   		    	   	pthread_mutex_unlock(&mutex_bricks);
 
-  		    	   	xil_printf("sideHit : %d\n , Before : Col number : %d, bricksLeft : %d\n", temp_sideHit, columnNumber, temp_BricksLeft);
+//  		    	   	xil_printf("sideHit : %d\n , Before : Col number : %d, bricksLeft : %d\n", temp_sideHit, columnNumber, temp_BricksLeft);
 
   		    	   	temp_BricksLeft = temp_BricksLeft & (~(0b1 << row_num)); // set the brick that got hit to l'o'
 
@@ -715,7 +720,7 @@ void thread_func_brick(char columnNumber)
     brick_send.bricksLeft = bricksLeft;
     brick_send.columnNumber = columnNumber; // temp...
 
-    print("i am waiting to send\n");
+//    print("i am waiting to send\n");
 
     if( msgsnd( msgQ_brick_id, &brick_send, sizeof(brick_msg), 0) < 0 )
     {
@@ -724,7 +729,7 @@ void thread_func_brick(char columnNumber)
     }
 
 //    xil_printf("i am send finish, bricks left is %d \n", bricksLeft);
-    xil_printf("When Send : Col number : %d, bricksLeft : %d\n", columnNumber, bricksLeft);
+//    xil_printf("When Send : Col number : %d, bricksLeft : %d\n", columnNumber, bricksLeft);
 
     // ** NOTE : AT LEAST SEND 0  BRICKS !!! **
 

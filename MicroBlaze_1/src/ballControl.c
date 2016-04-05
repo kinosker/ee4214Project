@@ -44,12 +44,16 @@ ball_msg myBallControl_moveBall(float ballSpeed, ball_msg currentLocation)
 {
 	ball_msg tempBall = currentLocation;
 
+	if(tempBall.dir > 90)
+	{
+		tempBall.dir = tempBall.dir * -1;
+	}
 
-	double radian = currentLocation.dir * M_PI/180;
+	double radian = tempBall.dir * M_PI/180;
 
 	//xil_printf("Currball.x = %d\r\nCurrball.y = %d\r\n", currentLocation.x, currentLocation.y);
-	tempBall.x = currentLocation.x + round(ballSpeed * cos(radian));
-	tempBall.y = currentLocation.y - round(ballSpeed * sin(radian));
+	tempBall.x = tempBall.x + round(ballSpeed * cos(radian));
+	tempBall.y = tempBall.y - round(ballSpeed * sin(radian));
 
 	//xil_printf("dir = %d\r\n", currentLocation.dir);
 	//xil_printf("Tempball.x = %d\r\nTempball.y = %d\r\n", tempBall.x, tempBall.y);
@@ -78,7 +82,8 @@ ball_msg myBallControl_moveBall_step(float ballSpeed_step, ball_msg currentLocat
 
 ball_msg myBallControl_moveBall_step_backward(float ballSpeed_step, ball_msg currentLocation)
 {
-	currentLocation.dir = currentLocation.dir * -1;
+	ball_msg temp = currentLocation;
+	temp.dir = temp.dir * -1;
 	return myBallControl_moveBall(ballSpeed_step, currentLocation);
 }
 
@@ -114,7 +119,7 @@ int myBallControl_getSteps(float ballSpeed_frame, int dir)
 	x_gained = abs(tempBall.x);
 	y_gained = abs(tempBall.y);
 
-    xil_printf("Get Step Location : %d , %d and speed %d\n", tempBall.x, tempBall.y, (int)ballSpeed_frame);
+//    xil_printf("Get Step Location : %d , %d and speed %d\n", tempBall.x, tempBall.y, (int)ballSpeed_frame);
 
 	// max steps = which 1 smaller.. + 2 circle radius to completely evade the brick.s
 
@@ -196,6 +201,23 @@ int myBallControl_SpeedChange(int ball_X, int ball_Y,
 		}
 	}
 	return speed;
+}
+int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
+{
+	if(sideHit == HIT_INNER_BOX )
+	{
+		print("Hit inner box\n");
+		return (currentLocation.dir + 90 % 360);
+	}
+	else if (sideHit == HIT_INNER_CORNER)
+	{
+		print("Hit corner box\n");
+		return (currentLocation.dir + 180 % 360);
+	}
+	else // never hit
+	{
+		return currentLocation.dir;
+	}
 }
 
 int myBallControl_AngleChange(int ball_X, int ball_Y,
