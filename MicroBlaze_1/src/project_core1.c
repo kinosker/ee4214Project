@@ -80,6 +80,7 @@ int global_bounceHit = 0;               //  how many bricks hit which causes bou
 int global_sideHit = 0;					// determine which side (corner or ??? ) was hit by the ball
 char global_bounceCompleted = 0;         //  Signal bounce have been completed
 
+int global_ColThreadsLeft = 10; // how to find this can signal? via queue? change to constant later!!!
 
 char global_colourFlag = 1;
 
@@ -281,7 +282,6 @@ void* thread_func_controller()
 
   unsigned int startTime_ms, endTime_ms, leftOverTime_ms;
 
-  int colThreadsLeft = 10; // how to find this can signal? via queue?
 
   // got pthread_kill(thread_id , 0) ?? if got use ESRCH to check if still alive..
 
@@ -331,7 +331,7 @@ void* thread_func_controller()
       //xil_printf("At controller score is %d\n", score);
 
       // 3. Change Brick Colour, release barrier for them to update colour
-      changeBrickColour(global_score, colThreadsLeft);       // change brick colour by releasing semaphore.. based on score..
+      changeBrickColour(global_score, global_ColThreadsLeft);       // change brick colour by releasing semaphore.. based on score..
       myBarrier_wait(&barrier_colour_start);  // signal all bricks threads, they are ready to be updated with new colour
       
 
@@ -349,7 +349,7 @@ void* thread_func_controller()
 
 
       // 5. Get final bricks location via msg queue? blocking!
-      if (msgQueue_receiveBricks(msgQ_brick_id, colThreadsLeft, &allBricks_recv))
+      if (msgQueue_receiveBricks(msgQ_brick_id, global_ColThreadsLeft, &allBricks_recv))
       {
           // Error handling.
           print ("Error in receiving message from bricks thread");
@@ -783,6 +783,9 @@ void thread_func_brick(char columnNumber)
   myBarrier_decreaseSize(&barrier_bounceCheck_end);
 
   // 2. A way to notify controller thread if pthread function to check failed.
+  pthread_mutex_lock(&mutex_bricks);
+    global_ColThreadsLeft --;
+  pthread_mutex_unlock(&mutex_bricks);
 
 }
 
