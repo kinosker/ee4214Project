@@ -44,12 +44,12 @@ ball_msg myBallControl_moveBall(float ballSpeed, ball_msg currentLocation)
 {
 	ball_msg tempBall = currentLocation;
 
-	if(tempBall.dir > 90)
+	if(tempBall.dir > 180)
 	{
-		tempBall.dir = tempBall.dir * -1;
+		tempBall.dir = (tempBall.dir-180) * -1;
 	}
 
-	double radian = tempBall.dir * M_PI/180;
+	double radian = M_PI* tempBall.dir /180;
 
 	//xil_printf("Currball.x = %d\r\nCurrball.y = %d\r\n", currentLocation.x, currentLocation.y);
 	tempBall.x = tempBall.x + round(ballSpeed * cos(radian));
@@ -60,6 +60,7 @@ ball_msg myBallControl_moveBall(float ballSpeed, ball_msg currentLocation)
 
 	// 2. boundary check
 	//... not needed "will bounce"
+	tempBall.dir = currentLocation.dir;
 	
 	return tempBall; 
 }
@@ -84,7 +85,10 @@ ball_msg myBallControl_moveBall_step_backward(float ballSpeed_step, ball_msg cur
 {
 	ball_msg temp = currentLocation;
 	temp.dir = temp.dir * -1;
-	return myBallControl_moveBall(ballSpeed_step, currentLocation);
+	temp = myBallControl_moveBall(ballSpeed_step, temp);
+	// reset back the direction...
+	temp.dir = currentLocation.dir;
+	return temp;
 }
 
 
@@ -123,7 +127,7 @@ int myBallControl_getSteps(float ballSpeed_frame, int dir)
 
 	// max steps = which 1 smaller.. + 2 circle radius to completely evade the brick.s
 
-	if(BRICK_SIZE_HEIGHT < BRICK_SIZE_LENGTH || x_gained == 0)
+	if((BRICK_SIZE_HEIGHT < BRICK_SIZE_LENGTH || x_gained == 0) && y_gained != 0)
 	{
 		return (ceil(  (float)(y_gained) / (BRICK_SIZE_HEIGHT+CIRCLE_RADIUS+CIRCLE_RADIUS)));
 	}
@@ -207,12 +211,12 @@ int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 	if(sideHit == HIT_INNER_BOX )
 	{
 		print("Hit inner box\n");
-		return (currentLocation.dir + 90 % 360);
+		return ((currentLocation.dir + 90) % 360);
 	}
 	else if (sideHit == HIT_INNER_CORNER)
 	{
 		print("Hit corner box\n");
-		return (currentLocation.dir + 180 % 360);
+		return ((currentLocation.dir + 180) % 360);
 	}
 	else // never hit
 	{

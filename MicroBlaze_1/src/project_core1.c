@@ -368,7 +368,7 @@ void* thread_func_controller()
 
       // 7. Sleep(time left)
       //sleep(leftOverTime_ms);
-      sleep(1000);
+      sleep(40);
 
       // 8. Send all updated values via MAILBOX
       allProcessor_send.score = global_score;
@@ -418,6 +418,8 @@ void* thread_func_ball()
     // 0.2  : Update global_ballBounceCheck every iteration ... 
     global_ballBounceCheck = ball_send;
 
+    xil_printf("New ball iteration, dir : %d, location :  %d,%d\n", global_ballBounceCheck.dir, global_ballBounceCheck.x, global_ballBounceCheck.y);
+
     // 0.3  : Init bounce check not completed.
     global_bounceCompleted = 0;
 
@@ -437,13 +439,18 @@ void* thread_func_ball()
     /****************** 2. Get speeds and # of step  ****************/
 
     // 2.1  : Get Speed per frame, Speed per step, # of steps
-    ballSpeed_frame = myBallControl_getFrameSpeed(ball_send.speed);  // get speed per frame
+    ballSpeed_frame = myBallControl_getFrameSpeed(global_ballBounceCheck.speed);  // get speed per frame
     //xil_printf("Ball Speed : %d, Ball Frame : %d\n" , ball_send.speed, (int)ballSpeed_frame);
-    numberOfSteps = myBallControl_getSteps(ballSpeed_frame, ball_send.dir);          // get # of steps that the ball should slowly move to prevent hitting 2 bricks in 1 frame
+    numberOfSteps = myBallControl_getSteps(ballSpeed_frame, global_ballBounceCheck.dir);          // get # of steps that the ball should slowly move to prevent hitting 2 bricks in 1 frame
     //xil_printf("Steps obtained : %d\n" , numberOfSteps);
 
     ballSpeed_step = myBallControl_getStepSpeed(ballSpeed_frame, numberOfSteps); // get ball speed per frame per step..
 
+    if(global_ballBounceCheck.dir == 180)
+    {
+    	print("\n\nHUAT AHH");
+    	xil_printf("numberOfSteps is %d, speed_step is %d\n\n", numberOfSteps, (int)ballSpeed_step);
+    }
     /****************** 3. Generate ball location for each steps  ****************/
 
     // 3.1  : Get updated ball location per step.
@@ -475,7 +482,15 @@ void* thread_func_ball()
         // ******
         // if(barHit or outerboundary) global_bounceHit = 1; break;
 
+        // NOTE *** THIS HAVE MORE SIDE TO CHANGE ANGLEE **** BAR GOT DIFF REGION ***
+			global_sideHit = myBoundaryChecker_CheckBar(global_ballBounceCheck.x, global_ballBounceCheck.y, bar_recv.start_x,
+				bar_recv.start_y, bar_recv.end_x, bar_recv.end_y);
 
+		if(global_sideHit)
+		{
+			global_bounceHit ++;
+			break;
+		}
 
 
       // 4.2  : Release barrier for bounce check to begin....
@@ -505,9 +520,13 @@ void* thread_func_ball()
     if(global_bounceHit)
     {
 
+        xil_printf("BALL HIT BIG STEP, dir : %d, location :  %d,%d\n", global_ballBounceCheck.dir, global_ballBounceCheck.x, global_ballBounceCheck.y);
+
         // move back by 1 step..
         global_ballBounceCheck = myBallControl_moveBall_step_backward(ballSpeed_step, global_ballBounceCheck);
 
+
+        xil_printf("BALL HIT -1 Stp, dir : %d, location :  %d,%d\n", global_ballBounceCheck.dir, global_ballBounceCheck.x, global_ballBounceCheck.y);
         // reset bounceHit back to 0... so can find when it is the perfect hit
         global_bounceHit = 0;
 
@@ -531,6 +550,20 @@ void* thread_func_ball()
             /****************** 4. Check bounce hit for each steps  ****************/
 
             // if(barHit or outerboundary) global_bounceHit = 1; break;
+
+
+
+            // NOTE *** THIS HAVE MORE SIDE TO CHANGE ANGLEE **** BAR GOT DIFF REGION ***
+      		global_sideHit = myBoundaryChecker_CheckBar(global_ballBounceCheck.x, global_ballBounceCheck.y, bar_recv.start_x,
+            				bar_recv.start_y, bar_recv.end_x, bar_recv.end_y);
+
+
+    		if(global_sideHit)
+    		{
+    			global_bounceHit ++;
+    			break;
+    		}
+
 
             // 4.1  : Release barrier for bounce check to begin....
 
@@ -651,7 +684,10 @@ void thread_func_brick(char columnNumber)
   					// update : bounceHit, sideHit, bricksLeft, thread score.
   					pthread_mutex_lock(&mutex_bricks);
   		    	   	   global_bounceHit ++;
-  		    	   	   global_sideHit = temp_sideHit;
+  		    	   	   if(global_sideHit != HIT_INNER_CORNER)// hit inner corner should hav priority
+  		    	   	   {
+  		    	   		   global_sideHit = temp_sideHit;
+  		    	   	   }
   		    	   	pthread_mutex_unlock(&mutex_bricks);
 
 //  		    	   	xil_printf("sideHit : %d\n , Before : Col number : %d, bricksLeft : %d\n", temp_sideHit, columnNumber, temp_BricksLeft);

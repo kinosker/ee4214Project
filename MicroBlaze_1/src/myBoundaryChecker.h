@@ -77,4 +77,9 @@ int myBoundaryChecker_CheckOuter(int ball_X, int ball_Y);
 
 int myBoundaryChecker_CheckInner(int ball_X, int ball_Y, int myBoundary_Start_X,
 		int myBoundary_Start_Y, int myBoundary_End_X, int myBoundary_End_Y);
+
+
+
+int myBoundaryChecker_CheckBar(int ball_X, int ball_Y, int myBoundary_Start_X,
+		int myBoundary_Start_Y, int myBoundary_End_X, int myBoundary_End_Y);
 #endif /* BOUNDARYCHECK_H_ */

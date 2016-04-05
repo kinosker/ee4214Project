@@ -23,8 +23,8 @@
 
 // 5 Priority levels for this processor.
 #define PRIO_CONTROLLER 1
-#define PRIO_BALL		2
-#define PRIO_BRICK 		3
+#define PRIO_BALL		3
+#define PRIO_BRICK 		2
 #define PRIO_MISC_ZONE  4
 
 
