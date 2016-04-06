@@ -312,19 +312,20 @@ void thread_func_brick(int iterator)
 		global_currentColour[columnNumber] =  futureColour;
 
 
-		myBarrier_wait(&barrier_SyncThreads_end);	// wait for all the threads to complete
 
 		if(global_currentBricks[columnNumber] == 0)
 		{
-			break;
+			myBarrier_decreaseSize(&barrier_SyncThreads_start);
+			myBarrier_decreaseSize(&barrier_SyncThreads_end);
+			break; //pthread_exit(0);
 		}
 
-		//pthread_exit(0);
+		
+		myBarrier_wait(&barrier_SyncThreads_end);	// wait for all the threads to complete
+
 	}
 
 	// pthread_exited...
-	myBarrier_decreaseSize(&barrier_SyncThreads_start);
-	myBarrier_decreaseSize(&barrier_SyncThreads_end);
 
 }
 
