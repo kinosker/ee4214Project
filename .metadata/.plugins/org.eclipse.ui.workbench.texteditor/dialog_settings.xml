@@ -13,16 +13,16 @@
 		<item value="false" key="isRegEx"/>
 		<item value="false" key="incremental"/>
 		<item value="false" key="wholeword"/>
-		<item value="&#x0A;New ball iteration, dir : 90, locati" key="selection"/>
+		<item value="BALL_INITIAL_DIR" key="selection"/>
 		<list key="findhistory">
+			<item value="BALL_INITIAL_DIR"/>
+			<item value="INITIAL"/>
+			<item value="dir"/>
+			<item value="backw"/>
 			<item value="huat"/>
-			<item value="global_c"/>
+			<item value="global_sid"/>
+			<item value="globalsi"/>
 			<item value="global"/>
-			<item value="globa"/>
-			<item value="column"/>
-			<item value="int"/>
-			<item value="columnNumber"/>
-			<item value="score"/>
 		</list>
 		<list key="replacehistory">
 			<item value="//global_colourFlag"/>

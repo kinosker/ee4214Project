@@ -9,39 +9,39 @@
 #include "myCommon.h"
 
 int outerLeftBoundary(int side_ball_X) {
-	return side_ball_X <= OUTER_COL_START_X + 1;
+	return side_ball_X <= OUTER_COL_START_X;
 }
 
 int outerRightBoundary(int side_ball_X) {
-	return side_ball_X >= OUTER_COL_END_X - 1;
+	return side_ball_X >= OUTER_COL_END_X;
 }
 
 int outerTopBoundary(int side_ball_Y) {
-	return side_ball_Y <= OUTER_COL_START_Y + 1;
+	return side_ball_Y <= OUTER_COL_START_Y ;
 }
 
 int outerBottomBoundary(int side_ball_Y) {
-	return side_ball_Y >= OUTER_COL_END_Y - 1;
+	return side_ball_Y >= OUTER_COL_END_Y ;
 }
 
 int outerTopLeftCorner(int side_ball_X, int side_ball_Y) {
-	return (side_ball_X <= OUTER_COL_START_X + 1)
-			&& (side_ball_Y <= OUTER_COL_START_Y + 1);
+	return (side_ball_X <= OUTER_COL_START_X)
+			&& (side_ball_Y <= OUTER_COL_START_Y);
 }
 
 int outerTopRightCorner(int side_ball_X, int side_ball_Y) {
-	return (side_ball_X >= OUTER_COL_END_X - 1)
-			&& (side_ball_Y <= OUTER_COL_START_Y + 1);
+	return (side_ball_X >= OUTER_COL_END_X)
+			&& (side_ball_Y <= OUTER_COL_START_Y);
 }
 
 int outerBtmLeftCorner(int side_ball_X, int side_ball_Y) {
-	return (side_ball_X <= OUTER_COL_START_X + 1)
-			&& (side_ball_Y >= OUTER_COL_END_Y - 1);
+	return (side_ball_X <= OUTER_COL_START_X)
+			&& (side_ball_Y >= OUTER_COL_END_Y);
 }
 
 int outerBtmRightCorner(int side_ball_X, int side_ball_Y) {
-	return (side_ball_X >= OUTER_COL_END_X - 1)
-			&& (side_ball_Y >= OUTER_COL_END_Y - 1);
+	return (side_ball_X >= OUTER_COL_END_X )
+			&& (side_ball_Y >= OUTER_COL_END_Y);
 }
 
 int myBoundaryChecker_CheckOuter(int ball_X, int ball_Y) //speed????? angle???

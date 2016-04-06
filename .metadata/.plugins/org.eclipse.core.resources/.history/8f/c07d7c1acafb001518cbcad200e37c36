@@ -18,13 +18,18 @@
  *																			 *
  ******************************************************************************/
 
-#define HIT_OUTER_BOX  				10    // Hit Left side boundary
-#define HIT_OUTER_CORNER 			11    // Hit 2 boundaries(top and left)
-
+#define HIT_LEFTBOUNDARY  				1    // Hit Left side boundary
+#define HIT_RIGHTBOUNDARY  				2    // Hit Right side boundary
+#define HIT_TOPBOUNDARY 				3    // Hit TOP side boundary
+#define HIT_BOTTOMBOUNDARY  			4    // Hit Bottom side boundary
+#define HIT_2_BOUNDARY_TOP_LEFT 		5    // Hit 2 boundaries(top and left)
+#define HIT_2_BOUNDARY_TOP_RIGHT 		6    // Hit 2 boundaries(top and right)
+#define HIT_2_BOUNDARY_BOTTOM_LEFT 		7    // Hit 2 boundaries(bottom and left)
+#define HIT_2_BOUNDARY_BOTTOM_RIGHT 	8    // Hit 2 boundaries(bottom and left)
 
 //inner block
 #define HIT_INNER_BOX  				10    // Hit Left side boundary
-#define HIT_INNER_CORNER			11    // Hit 2 boundaries(bottom and left)
+#define HIT_INNER_CORNER			 		11    // Hit 2 boundaries(bottom and left)
 
 /*****************************************************************************
  **																			 *

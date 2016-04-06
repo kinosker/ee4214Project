@@ -419,7 +419,7 @@ void* thread_func_ball()
 
   // initial ball parameters
   ball_send.speed =  INITIAL_SPEED;
-  ball_send.dir   = BALL_INITIAL_DIR;
+  ball_send.dir   = 180;
 
   ball_send.x     = CIRCLE_X;
   ball_send.y     = CIRCLE_Y;

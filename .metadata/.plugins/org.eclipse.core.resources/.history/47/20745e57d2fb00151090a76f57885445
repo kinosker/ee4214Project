@@ -16,7 +16,7 @@
 #define REGION_N	40
 
 #define BALL_INITIAL_SPEED 250	// Initial speed : 250 pixel per sec
-#define BALL_INITIAL_DIR 90		// Initial Direction : 90 Degree
+#define BALL_INITIAL_DIR 90		// Initial Direction : 90 Degree 
 
 
 
@@ -43,25 +43,17 @@ int myBallControl_updateBallSpeed(int ballSpeed, int speedGain)
 ball_msg myBallControl_moveBall(float ballSpeed, ball_msg currentLocation)
 {
 	ball_msg tempBall = currentLocation;
-	int modifier;
-	double radian;
 
 	if(tempBall.dir > 180)
 	{
-		tempBall.dir = (tempBall.dir-180);
-		modifier = -1;
-
-	}
-	else
-	{
-		modifier = 1;
+		tempBall.dir = (tempBall.dir-180) * -1;
 	}
 
-	radian = M_PI* tempBall.dir /180;
+	double radian = M_PI* tempBall.dir /180;
 
 	//xil_printf("Currball.x = %d\r\nCurrball.y = %d\r\n", currentLocation.x, currentLocation.y);
-	tempBall.x = tempBall.x + (round(ballSpeed *( modifier * cos(radian))));
-	tempBall.y = tempBall.y - (round(ballSpeed * (modifier *  sin(radian))));
+	tempBall.x = tempBall.x + round(ballSpeed * cos(radian));
+	tempBall.y = tempBall.y - round(ballSpeed * sin(radian));
 
 	//xil_printf("dir = %d\r\n", currentLocation.dir);
 	//xil_printf("Tempball.x = %d\r\nTempball.y = %d\r\n", tempBall.x, tempBall.y);
