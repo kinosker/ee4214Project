@@ -253,7 +253,7 @@ int myBoundaryChecker_CheckBar(int ball_X, int ball_Y, int myBoundary_Start_X,
 		 // Region N
 		 if (innerBarCheck(side_ball_X, (myBoundary_Start_X + 20), (myBoundary_End_X - 20),
 				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) { 
-			return HIT_INNER_CORNER; // return 11
+			return HIT_BAR_N; // return 11
 		}
 		// Region S - 
 		else if (innerBarCheck(side_ball_X, (myBoundary_Start_X + 10), (myBoundary_Start_X + 20),

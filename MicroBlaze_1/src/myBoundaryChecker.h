@@ -18,6 +18,14 @@
  *																			 *
  ******************************************************************************/
 
+#define HIT_REFLECT_90				10
+
+ // 3 possibility to hit 180
+#define HIT_REFLECT_180_1			11
+#define HIT_REFLECT_180_2			12
+#define HIT_REFLECT_180_3			13
+
+
 #define HIT_OUTER_BOX  				10    // Hit Left side boundary
 #define HIT_OUTER_CORNER 			11    // Hit 2 boundaries(top and left)
 
@@ -25,8 +33,12 @@
 //inner block
 #define HIT_INNER_BOX  				10    // Hit Left side boundary
 #define HIT_INNER_CORNER			11    // Hit 2 boundaries(bottom and left)
+
+#define HIT_BAR_N					11	 
+
 #define HIT_SPEED_DEC				12
 #define HIT_SPEED_ACC				13
+
 #define HIT_ANGLE_DEC				14
 #define HIT_ANGLE_ACC				15
 

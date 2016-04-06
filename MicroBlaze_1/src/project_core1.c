@@ -644,27 +644,8 @@ void* thread_func_ball()
 
     }
 
-    /*********** 6. Signal to bricks thread that bounceHit check is completed  ********/
 
-    // bounce check completed.
-
-    global_bounceCompleted = 1;
-
-    // 6.1 :  barrier to signify brick threads to complete bounceCheck.
-
-//	print("start of bounce check completed barrier\n");
-    myBarrier_wait(&barrier_bounceCheck_start); 
-
-    global_stopBounceCheck = 1;
-
-    // 6.2 :  Barrier to ensure every brick threads got the bounce completed signal.
-
-//	print("end of bounce check completed start barrier\n");
-    myBarrier_wait(&barrier_bounceCheck_end); 
-
- //   print("end of bounce check completed end barrier\n");
-
-    /*********** 7. Optimal Ball Position Found  ********/
+    /*********** 6. Optimal Ball Position Found  ********/
 
     ball_send = global_ballBounceCheck;
 
@@ -674,7 +655,34 @@ void* thread_func_ball()
         //ball_send.dir = ??
     	ball_send.dir = myBallControl_ReboundAngle(global_sideHit, ball_send);
     	xil_printf("new direction of ball = %d\n", ball_send.dir);
+
+      // set rebound speed.
+      myBallControl_SetReboundSpeed(global_sideHit);
+
     }
+
+
+
+    /*********** 7. Signal to bricks thread that bounceHit check is completed  ********/
+
+    // bounce check completed.
+
+    global_bounceCompleted = 1;
+
+    // 7.1 :  barrier to signify brick threads to complete bounceCheck.
+
+    //  print("start of bounce check completed barrier\n");
+    myBarrier_wait(&barrier_bounceCheck_start); 
+
+    global_stopBounceCheck = 1;
+
+    // 7.2 :  Barrier to ensure every brick threads got the bounce completed signal.
+
+    //  print("end of bounce check completed start barrier\n");
+    myBarrier_wait(&barrier_bounceCheck_end); 
+
+    //   print("end of bounce check completed end barrier\n");
+
 
     /*********** 8. Update Ball Speed  ********/
 

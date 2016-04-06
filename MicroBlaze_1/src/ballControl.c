@@ -201,8 +201,9 @@ float myBallControl_getForwardStepsSpeed(float ballSpeed_step, int forward_steps
 
 int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 {
+	int tempAngle;
 
-	if(sideHit == HIT_INNER_BOX )
+	if(sideHit == HIT_REFLECT_90 )
 	{
 		print("Hit inner box\n");
 		
@@ -216,10 +217,40 @@ int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 			return ((currentLocation.dir + 90) % 360);
 		}
 	}
-	else if (sideHit == HIT_INNER_CORNER)
+	else if (sideHit == HIT_REFLECT_180_1 || sideHit == HIT_REFLECT_180_2 || sideHit == HIT_REFLECT_180_3)
 	{
 		print("Hit corner box\n");
 		return ((currentLocation.dir + 180) % 360);
+	}
+	else if(sideHit == HIT_ANGLE_DEC)
+	{
+		tempAngle = (currentLocation.dir + 180) % 360 ; // reflect 1st
+		tempAngle -= BAR_ANGLE_ADJUSTMENT;				// decrease angle..
+
+		// low angle threshold check.
+		if(tempAngle <= MINIMUM_ANGLE_ON_BAR)
+		{
+			return MINIMUM_ANGLE_ON_BAR;
+		}
+		else
+		{
+			return tempAngle;
+		}
+	}
+	else if (sideHit == HIT_ANGLE_ACC)
+	{
+		tempAngle = (currentLocation.dir + 180) % 360 ; // reflect 1st
+		tempAngle += BAR_ANGLE_ADJUSTMENT;				// decrease angle..
+
+		// low angle threshold check.
+		if(tempAngle >= MAXIMUM_ANGLE_ON_BAR)
+		{
+			return MAXIMUM_ANGLE_ON_BAR;
+		}
+		else
+		{
+			return tempAngle;
+		}
 	}
 	else // never hit
 	{
@@ -227,29 +258,45 @@ int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 	}
 }
 
-int myBallControl_AngleChange(int ball_X, int ball_Y,
-		int hit_Angle_Bar, int angle) {
-	//int side_ball_X = ball_X + CIRCLE_RADIUS;
-	//int side_ball_Y = ball_Y + CIRCLE_RADIUS;
-	//int prev_X = 0, prev_Y = 0;
-	//int normal_Y = 0, normal_X = 0, diff = 0;
 
-//	if (angle <= MINIMUM_ANGLE_ON_BAR) {
-//		angle = MINIMUM_ANGLE_ON_BAR;
-//	} else if (angle >= MAXIMUM_ANGLE_ON_BAR) {
-//		angle = MAXIMUM_ANGLE_ON_BAR;
-//	} else {
-		//ball hit the bar
-		if (hit_Angle_Bar == HIT_ANGLE_DEC) {
-			//side_ball_Y = BAR_START_X_A_MINUS;
-			angle -= BAR_INCREASE_DECREASE;
-		} else if (hit_Angle_Bar == HIT_ANGLE_ACC) {
-			//side_ball_Y = BAR_START_X_A_PLUS;
-			angle += BAR_INCREASE_DECREASE;
-		}
-//	}
-	return angle;
+
+void myBallControl_SetReboundSpeed(int sideHit)
+{
+	if(sideHit == HIT_SPEED_DEC)
+	{
+		myBallControl_updateBallSpeed(-BAR_SPEED_ADJUSTMENT);
+	}
+	else if (sideHit == HIT_SPEED_ACC)
+	{
+		myBallControl_updateBallSpeed(BAR_SPEED_ADJUSTMENT);
+	}
+
 }
+
+
+// int myBallControl_AngleChange(int ball_X, int ball_Y,
+// 		int hit_Angle_Bar, int angle) {
+// 	//int side_ball_X = ball_X + CIRCLE_RADIUS;
+// 	//int side_ball_Y = ball_Y + CIRCLE_RADIUS;
+// 	//int prev_X = 0, prev_Y = 0;
+// 	//int normal_Y = 0, normal_X = 0, diff = 0;
+
+// //	if (angle <= MINIMUM_ANGLE_ON_BAR) {
+// //		angle = MINIMUM_ANGLE_ON_BAR;
+// //	} else if (angle >= MAXIMUM_ANGLE_ON_BAR) {
+// //		angle = MAXIMUM_ANGLE_ON_BAR;
+// //	} else {
+// 		//ball hit the bar
+// 		if (hit_Angle_Bar == HIT_ANGLE_DEC) {
+// 			//side_ball_Y = BAR_START_X_A_MINUS;
+// 			angle -= BAR_INCREASE_DECREASE;
+// 		} else if (hit_Angle_Bar == HIT_ANGLE_ACC) {
+// 			//side_ball_Y = BAR_START_X_A_PLUS;
+// 			angle += BAR_INCREASE_DECREASE;
+// 		}
+// //	}
+// 	return angle;
+// }
 
 
 
