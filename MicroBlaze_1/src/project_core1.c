@@ -66,6 +66,10 @@ barrier_t barrier_score;  // synchronise all bricks threads score calculation. S
 barrier_t barrier_colour_start;  // signal that the colours resources for the bricks is ready
 barrier_t barrier_colour_end;  // ensure threads complete execution of changing colour
 
+
+barrier_t barrier_all_threads;  // ensure all threads complete execution each iteration
+
+
 pthread_mutex_t mutex_bricks;
 
 
@@ -78,6 +82,7 @@ ball_msg global_ballBounceCheck;        //  temp location, which the ball hit th
 int global_bounceHit = 0;               //  how many bricks hit which causes bounce to be used by brick threads
 int global_sideHit = 0;					// determine which side (corner or ??? ) was hit by the ball
 char global_bounceCompleted = 0;         //  Signal bounce have been completed
+char global_stopBounceCheck	= 0;
 
 int global_ColThreadsLeft = 10; // how to find this can signal? via queue? change to constant later!!!
 
@@ -143,17 +148,17 @@ void main_prog(void)
 
     /************************** Barrier Init ****************************/
 
-    if( myBarrier_init(&barrier_score, MAX_BRICKS_THREAD + 1) != 0) // barrier to signal that score is updated.
+    if( myBarrier_init(&barrier_score, MAX_BRICKS_THREAD + MAX_CONTROLLER_THREAD) != 0) // barrier to signal that score is updated.
     {
       xil_printf("Error when initializing barrier...\r\n");
     }
 
-    if( myBarrier_init(&barrier_colour_start, MAX_BRICKS_THREAD + 1) != 0) // barrier to signal colour resource is ready . bricks + controller
+    if( myBarrier_init(&barrier_colour_start, MAX_BRICKS_THREAD + MAX_CONTROLLER_THREAD) != 0) // barrier to signal colour resource is ready . bricks + controller
     {
         xil_printf("Error when initializing barrier...\r\n");
     }
 
-    if( myBarrier_init(&barrier_colour_end, MAX_BRICKS_THREAD + 1) != 0) // barrier to signal colour resource is ready . bricks + controller
+    if( myBarrier_init(&barrier_colour_end, MAX_BRICKS_THREAD + MAX_CONTROLLER_THREAD) != 0) // barrier to signal colour resource is ready . bricks + controller
     {
         xil_printf("Error when initializing barrier...\r\n");
     }
@@ -164,16 +169,16 @@ void main_prog(void)
     }
 
 
-    if( myBarrier_init(&barrier_bounceCheck_end, MAX_BRICKS_THREAD + 1) != 0) // barrier to synchronise ball and brick thread. bricks + balls
+    if( myBarrier_init(&barrier_bounceCheck_end, MAX_BRICKS_THREAD + MAX_CONTROLLER_THREAD) != 0) // barrier to synchronise ball and brick thread. bricks + balls
     {
         xil_printf("Error when initializing barrier...\r\n");
     }
 
 
-    // if( myBarrier_init(&barrier_bricks, MAX_BRICKS_THREAD) != 0) // barrier to synchronise all bricks thread..
-    // {
-    //     xil_printf("Error when initializing barrier...\r\n");
-    // }
+     if( myBarrier_init(&barrier_all_threads, MAX_BRICKS_THREAD + MAX_CONTROLLER_THREAD + MAX_BALL_THREAD) != 0) // barrier to synchronise all bricks thread..
+     {
+         xil_printf("Error when initializing barrier...\r\n");
+     }
 
 
 
@@ -325,14 +330,24 @@ void* thread_func_controller()
 
 
       // 2. Wait for score to be updated using mutex_bricks
+
+      xil_printf("Controller : Waiting for all score \n");
+
       myBarrier_wait(&barrier_score); // wait for score to be updated by bricks thread.
       //xil_printf("At controller score is %d\n", score);
 
+      xil_printf("Controller : End of wait for all score \n");
+
       // 3. Change Brick Colour, release barrier for them to update colour
       changeBrickColour(global_score, global_ColThreadsLeft);       // change brick colour by releasing semaphore.. based on score..
+
+      xil_printf("Controller : Waiting for colour  \n");
+
       myBarrier_wait(&barrier_colour_start);  // signal all bricks threads, they are ready to be updated with new colour
       
+      xil_printf("Controller : End for colour  \n");
 
+      xil_printf("Controller : Waiting for ball \n");
 
       // 4. Get final ball location via msg queue?
       if( msgrcv( msgQ_ball_id, &ball_recv, sizeof(ball_msg), 0,0 ) != sizeof(ball_msg) )
@@ -343,9 +358,13 @@ void* thread_func_controller()
 
 //      xil_printf("At controller ball location is x : %d y : %d\n", ball_recv.x , ball_recv.y);
 
+
+      xil_printf("Controller : Waiting for colour update \n");
+
       myBarrier_wait(&barrier_colour_end);   // wait for bricks to finish changing colour?
 
 
+      xil_printf("Controller : Waiting for all bricks, globalThreadsLeft : %d \n",global_ColThreadsLeft );
       // 5. Get final bricks location via msg queue? blocking!
       if (msgQueue_receiveBricks(msgQ_brick_id, global_ColThreadsLeft, &allBricks_recv))
       {
@@ -366,14 +385,19 @@ void* thread_func_controller()
 
       // 7. Sleep(time left)
       //sleep(leftOverTime_ms);
-      sleep(40);
+      sleep(10);
 
       // 8. Send all updated values via MAILBOX
       allProcessor_send.score = global_score;
       allProcessor_send.msg_Allbricks = allBricks_recv;
       allProcessor_send.msg_ball = ball_recv;
 
+      xil_printf("Ready to send to another processor\n");
       XMbox_WriteBlocking(&Mbox, &allProcessor_send, sizeof(allProcessor_msg));
+
+      xil_printf("Controller : Waiting for all threads \n");
+      myBarrier_wait(&barrier_all_threads);
+      xil_printf("Controller : End of waiting for all threads \n");
 
   }
 
@@ -420,6 +444,7 @@ void* thread_func_ball()
 
     // 0.3  : Init bounce check not completed.
     global_bounceCompleted = 0;
+    global_stopBounceCheck = 0;
 
     // 0.4 	: Init side hit to 0.
     global_sideHit = 0;
@@ -427,11 +452,15 @@ void* thread_func_ball()
     /****************** 1. Get update bar position  *********************/
     
     // 1.1 :  msgQ wait for bar position from another processor
+    xil_printf("Ball is waiting for bar msg \n");
+
     if( msgrcv( msgQ_bar_id, &bar_recv, sizeof(bar_msg), 0,0 ) != sizeof(bar_msg) )
     {
           // Error handling.
           print ("Error in receiving message from bricks thread");
     }
+
+    xil_printf("bar msg receive\n");
 
 
     /****************** 2. Get speeds and # of step  ****************/
@@ -497,17 +526,17 @@ void* thread_func_ball()
 
 		// 4.2  : Release barrier for bounce check to begin....
 
-		print("start of bounce check start barrier\n");
+		print("start of big bounce check start barrier\n");
 
 		      myBarrier_wait(&barrier_bounceCheck_start); // barrier to signify brick threads to start checking if bounce occurs
 
-		print("end of bounce check start barrier\n");
+		print("end of big bounce check start barrier\n");
 
 		      // 4.3  : Get barrier to ensure bounce check completed
 
 		      myBarrier_wait(&barrier_bounceCheck_end); // barrier to wait for bounce check to complete...
 
-		print("end of bounce check end barrier\n");
+		print("end of big bounce check end barrier\n");
 
       // 4.4  : Check global_bounceHit if > 0 go to 4.3.1... else continue
 
@@ -574,12 +603,16 @@ void* thread_func_ball()
 
 
             // 4.1  : Release barrier for bounce check to begin....
+    		print("start of small bounce check start barrier\n");
 
             myBarrier_wait(&barrier_bounceCheck_start); // barrier to signify brick threads to start checking if bounce occurs
 
             // 4.2  : Get barrier to ensure bounce check completed
-                    
+     		print("end of small bounce check start barrier\n");
+
             myBarrier_wait(&barrier_bounceCheck_end); // barrier to wait for bounce check to complete...
+
+     		print("end of small bounce check end barrier\n");
 
             // 4.3  : Check global_bounceHit is 0 => ball almost hit the brick/boundary
 
@@ -599,11 +632,18 @@ void* thread_func_ball()
     global_bounceCompleted = 1;
 
     // 6.1 :  barrier to signify brick threads to complete bounceCheck.
+
+	print("start of bounce check completed barrier\n");
     myBarrier_wait(&barrier_bounceCheck_start); 
 
+    global_stopBounceCheck = 1;
+
     // 6.2 :  Barrier to ensure every brick threads got the bounce completed signal.
+
+	print("end of bounce check completed start barrier\n");
     myBarrier_wait(&barrier_bounceCheck_end); 
 
+    print("end of bounce check completed end barrier\n");
 
     /*********** 7. Optimal Ball Position Found  ********/
 
@@ -628,7 +668,11 @@ void* thread_func_ball()
           print ("Error in sending message from ball thread");
     }
 
+
+    myBarrier_wait(&barrier_all_threads);
+
   }
+
 }
 
 
@@ -662,7 +706,7 @@ void thread_func_brick(char columnNumber)
 
     // 1. : Check if ball hit the brick via global_ballBounceCheck
 
-    while(!global_bounceCompleted)
+    while(!global_bounceCompleted || !global_stopBounceCheck)
     {
 
 	     myBarrier_wait(&barrier_bounceCheck_start); // wait for ball location to be updated and fired by ball thread...
@@ -772,9 +816,36 @@ void thread_func_brick(char columnNumber)
     }
 
 //    xil_printf("i am send finish, bricks left is %d \n", bricksLeft);
-//    xil_printf("When Send : Col number : %d, bricksLeft : %d\n", columnNumber, bricksLeft);
+    xil_printf("When Send : Col number : %d, bricksLeft : %d\n", columnNumber, bricksLeft);
 
+    if(!bricksLeft)
+    {
+    	  pthread_mutex_lock(&mutex_bricks);
+
+    	  xil_printf("Thread exiting\n");
+
+    	  global_ColThreadsLeft --;
+
+    	  // 1. decrease size of the barrier.
+    	  myBarrier_decreaseSize(&barrier_colour_start);
+    	  myBarrier_decreaseSize(&barrier_colour_end);
+    	  myBarrier_decreaseSize(&barrier_score);
+
+    	  myBarrier_decreaseSize(&barrier_bounceCheck_start);
+    	  myBarrier_decreaseSize(&barrier_bounceCheck_end);
+    	  myBarrier_decreaseSize(&barrier_all_threads);
+
+    	  pthread_mutex_unlock(&mutex_bricks);
+
+    	  xil_printf("Thread exiting2\n");
+
+    	  break;
+
+    }
     // ** NOTE : AT LEAST SEND 0  BRICKS !!! **
+
+
+    myBarrier_wait(&barrier_all_threads);
 
 } // end of while(1) for thread
 
@@ -782,19 +853,6 @@ void thread_func_brick(char columnNumber)
   // implicit thread exit when bricksleft = 0....
 
   // 2. A way to notify controller thread if pthread function to check failed.
-    pthread_mutex_lock(&mutex_bricks);
-      global_ColThreadsLeft --;
-    pthread_mutex_unlock(&mutex_bricks);
-
-  // 1. decrease size of the barrier.
-  myBarrier_decreaseSize(&barrier_score);
-  myBarrier_decreaseSize(&barrier_colour_start);
-  myBarrier_decreaseSize(&barrier_colour_end);
-
-  myBarrier_decreaseSize(&barrier_bounceCheck_start);
-  myBarrier_decreaseSize(&barrier_bounceCheck_end);
-
-
 
 }
 
@@ -835,7 +893,7 @@ int msgQueue_receiveBricks(int msgQ_brick_id, int colThreads, allBricks_msg *all
     }
 
     totalBricksLeft += allBricks_recv->allMsg[iterator].bricksLeft;
-
+    xil_printf("receive all bricks : %d, leftover : %d\n", iterator, (colThreads - iterator));
   }
 
 

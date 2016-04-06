@@ -38,12 +38,19 @@ void myBarrier_wait(barrier_t *barrier)
 
 void myBarrier_decreaseSize(barrier_t *barrier)
 {
-	barrier->currentSize = barrier->currentSize - 1;
-	barrier->maxSize = barrier->maxSize - 1;
+	int i = 0;
 
+	pthread_mutex_lock(&barrier->mutex);
+	barrier->maxSize = barrier->maxSize - 1;
 	// unlock others if current size is 0..
 
-	pthread_mutex_lock(&barrier->mutex);   
+	if(barrier->currentSize > barrier->maxSize)
+	{
+		barrier->currentSize = barrier->maxSize;
+	}
+
+	barrier->currentSize = barrier->currentSize - 1;
+
 
 	if(barrier->currentSize == 0)
 	{
