@@ -103,6 +103,8 @@ unsigned int myCommon_ticks_to_ms(unsigned int ticks);
 unsigned int updateBrickColour(unsigned int currentColour);
 int msgQueue_receiveBricks(int msgQ_brick_id, int colThreads, allBricks_msg *allBricks_recv);
 void changeBrickColour(int global_score, int colThreadsLeft);
+int getNumberOfBricksLeft(int bricksleft);
+
 
 int main (void)
 {
