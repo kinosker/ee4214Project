@@ -249,65 +249,30 @@ int myBoundaryChecker_CheckBar(int ball_X, int ball_Y, int myBoundary_Start_X,
 
 
 
-		//	}
-
-		/*******************************************four corners checking****************************************/
-		// left and top boundary
-		if (leftTopBoundaryCheck(side_ball_X, myBoundary_Start_X, side_ball_Y,
-				myBoundary_Start_Y)) {
-
-			//side_ball_X = myBoundary_Start_X;
-			//side_ball_Y = myBoundary_Start_Y;
+		
+		 // Region N
+		 if (innerBarCheck(side_ball_X, (myBoundary_Start_X + 20), (myBoundary_End_X - 20),
+				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) { 
 			return HIT_INNER_CORNER; // return 11
 		}
-
-		// right and top boundary
-		else if (rightTopBoundaryCheck(side_ball_X, myBoundary_End_X, side_ball_Y,
-				myBoundary_Start_Y)) {
-			//side_ball_X = myBoundary_End_X;
-			//side_ball_Y = myBoundary_Start_Y;
-
-			//xil_printf("sideball : %d,%d , bound_x_start : %d, bound_ystart : %d\n bound_x_end : %d, bound_yend : %d\n", side_ball_X, side_ball_Y, myBoundary_Start_X, myBoundary_Start_Y, myBoundary_End_X, myBoundary_End_Y);
-
-			return HIT_INNER_CORNER; // return 11
-		}
-		// left and bottom boundary
-		else if (leftBottomBoundaryCheck(side_ball_X, myBoundary_Start_X,
-				side_ball_Y, myBoundary_End_Y)) {
-			//side_ball_X = myBoundary_Start_X;
-			//side_ball_Y = myBoundary_End_Y;
-			return HIT_INNER_CORNER; // return 11
-		}
-		// right and bottom boundary
-		else if (rightBottomBoundaryCheck(side_ball_X, myBoundary_End_X,
-				side_ball_Y, myBoundary_End_Y)) {
-			//side_ball_X = myBoundary_End_X;
-			//side_ball_Y = myBoundary_End_Y;
-			return HIT_INNER_CORNER; // return 11
-		}
-		else if (innerBarCheck(side_ball_X, myBoundary_Start_X, myBoundary_End_X,
-				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) { // left boundary
-			//side_ball_X = myBoundary_Start_X;
-			return HIT_INNER_CORNER; // return 11
-		}
+		// Region S - 
 		else if (innerBarCheck(side_ball_X, (myBoundary_Start_X + 10), (myBoundary_Start_X + 20),
-				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) { // left boundary
-			//side_ball_X = myBoundary_Start_X;
+				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) { 
 			return HIT_SPEED_DEC; // return 12
 		}
+		// Region S+
 		else if (innerBarCheck(side_ball_X, (myBoundary_End_X - 20), (myBoundary_End_X - 10),
-				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) { // left boundary
-			//side_ball_X = myBoundary_Start_X;
+				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) { 
 			return HIT_SPEED_ACC; // return 13
 		}
+		// Region  A-
 		else if (innerBarCheck(side_ball_X, myBoundary_Start_X, (myBoundary_Start_X + 10),
-				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) { // left boundary
-			//side_ball_X = myBoundary_Start_X;
+				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) { /
 			return HIT_ANGLE_DEC; // return 14
 		}
+		// Region A+
 		else if (innerBarCheck(side_ball_X, (myBoundary_End_X - 10), myBoundary_End_X,
-				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) { // left boundary
-			//side_ball_X = myBoundary_Start_X;
+				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) { 
 			return HIT_ANGLE_ACC; // return 15
 		}
 	}
