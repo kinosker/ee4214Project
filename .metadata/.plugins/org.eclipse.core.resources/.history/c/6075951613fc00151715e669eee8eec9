@@ -21,7 +21,6 @@
 
 
 
-
 // move the ball to a new location based on speed and currentLocation
 ball_msg myBallControl_moveBall(float ballSpeed, ball_msg currentLocation)
 {

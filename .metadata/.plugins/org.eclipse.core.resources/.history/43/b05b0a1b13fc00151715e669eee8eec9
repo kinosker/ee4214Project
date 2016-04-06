@@ -17,7 +17,7 @@
 #define REGION_N	40
 
 #define BALL_INITIAL_DIR 			90		// Initial Direction : 90 Degree
-
+#define BALL_INITIAL_SPEED			250
 
 
 

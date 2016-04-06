@@ -5,6 +5,7 @@
 # Add inputs and outputs from these tool invocations to the build variables 
 C_SRCS += \
 ../src/ballControl.c \
+../src/myBallSpeed.c \
 ../src/myBoundaryChecker.c \
 ../src/myTimer.c \
 ../src/platform.c \
@@ -15,6 +16,7 @@ LD_SRCS += \
 
 OBJS += \
 ./src/ballControl.o \
+./src/myBallSpeed.o \
 ./src/myBoundaryChecker.o \
 ./src/myTimer.o \
 ./src/platform.o \
@@ -22,6 +24,7 @@ OBJS += \
 
 C_DEPS += \
 ./src/ballControl.d \
+./src/myBallSpeed.d \
 ./src/myBoundaryChecker.d \
 ./src/myTimer.d \
 ./src/platform.d \

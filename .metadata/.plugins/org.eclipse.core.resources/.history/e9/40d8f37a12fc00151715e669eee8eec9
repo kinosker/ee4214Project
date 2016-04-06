@@ -1,0 +1,33 @@
+
+#ifndef BALLSPEED_H_
+#define BALLSPEED_H_
+
+
+/*****************************************************************************
+ *																			 *
+ *																			 *
+ *					---- Start of constant definition ----					 *
+ *																			 *
+ *																			 *
+ ******************************************************************************/
+
+#define BALL_INITIAL_SPEED 			250	// Initial speed : 250 pixel per sec
+#define BALL_AUTO_SPEED_INCREMENT	25 	// Increment of 25 speed every 10 score
+#define BALL_MINIMUM_SPEED			50
+#define BALL_MAXIMUM_SPEED			1000
+
+/*****************************************************************************
+ *																			 *
+ *																			 *
+ *					---- Start of Function Protoype ----					 *
+ *																			 *
+ *																			 *
+ ******************************************************************************/
+int myBallControl_getBallSpeed();
+void myBallControl_updateBallSpeed(int speedGain);
+
+void myBallControl_updateAutoSpeed(int score);
+
+
+
+#endif /* BALLSPEED_H_ */
