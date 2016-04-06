@@ -228,9 +228,9 @@ int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 }
 
 int myBallControl_AngleChange(int ball_X, int ball_Y,
-		int hit_Angle_Bar, int angle) {
+		int hit_Angle_Bar) {
 	//int side_ball_X = ball_X + CIRCLE_RADIUS;
-	//int side_ball_Y = ball_Y + CIRCLE_RADIUS;
+	int side_ball_Y = ball_Y + CIRCLE_RADIUS;
 	//int prev_X = 0, prev_Y = 0;
 	//int normal_Y = 0, normal_X = 0, diff = 0;
 
@@ -240,10 +240,10 @@ int myBallControl_AngleChange(int ball_X, int ball_Y,
 //		angle = MAXIMUM_ANGLE_ON_BAR;
 //	} else {
 		//ball hit the bar
-		if (hit_Angle_Bar == HIT_ANGLE_DEC) {
+		if (side_ball_Y == HIT_ANGLE_DEC) {
 			//side_ball_Y = BAR_START_X_A_MINUS;
 			angle -= BAR_INCREASE_DECREASE;
-		} else if (hit_Angle_Bar == HIT_ANGLE_ACC) {
+		} else if (side_ball_Y == HIT_ANGLE_ACC) {
 			//side_ball_Y = BAR_START_X_A_PLUS;
 			angle += BAR_INCREASE_DECREASE;
 		}

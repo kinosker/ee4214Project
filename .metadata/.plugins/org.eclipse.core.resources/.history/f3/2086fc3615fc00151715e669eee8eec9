@@ -74,8 +74,7 @@ int myBallControl_SpeedChange(int ball_X, int ball_Y,int score, int speed);
  *
  *
  ******************************************************************************/
-int myBallControl_AngleChange(int ball_X, int ball_Y,
-		int hit_Angle_Bar, int angle);
+int myBallControl_AngleChange(int ball_X, int ball_Y, int angle);
 
 
 /****/
