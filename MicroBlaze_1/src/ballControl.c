@@ -200,10 +200,20 @@ float myBallControl_getForwardStepsSpeed(float ballSpeed_step, int forward_steps
 
 int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 {
+
 	if(sideHit == HIT_INNER_BOX )
 	{
 		print("Hit inner box\n");
-		return ((currentLocation.dir + 90) % 360);
+		
+		if(currentLocation.dir % 90 == 0)
+		{
+			// if flying vertical or horizontally perfectly... should rebounce 180 deg instead of 90 deg
+			return ((currentLocation.dir + 180) % 360);
+		}
+		else
+		{
+			return ((currentLocation.dir + 90) % 360);
+		}
 	}
 	else if (sideHit == HIT_INNER_CORNER)
 	{
