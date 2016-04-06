@@ -19,10 +19,7 @@
  *																			 *
  ******************************************************************************/
 #define FRAME_PER_SEC			25
-#define MINIMUM_SPEED			50
-#define MAXIMUM_SPEED			1000
-#define INITIAL_SPEED 			250
-
+#
 #define BAR_AC_DECELERATION 	100/FRAME_PER_SEC	//100pixels per sec -> 25fps = 4pixels (+4 when hit S+ part of bar, -4 when hit S- part of bar)
 #define SCORE_ACCELERATION		25/FRAME_PER_SEC	//25pixels per sec -> 25fps = 1pixels (+1 when the score is increase by 10)
 

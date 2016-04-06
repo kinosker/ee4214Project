@@ -71,7 +71,7 @@ barrier_t barrier_all_threads;  // ensure all threads complete execution each it
 
 
 pthread_mutex_t mutex_bricks;
-
+pthread_mutex_t mutex_speed;    // used as "barrier" to update speed
 
 
 /**************** Global variables **********************/
@@ -132,6 +132,12 @@ void main_prog(void)
       print ("Error when initializing mutex");
     }
 
+    if (pthread_mutex_init (&mutex_speed, NULL) != 0)
+    {
+      print ("Error when initializing mutex");
+    }
+
+    pthread_mutex_lock(&mutex_speed); // start with lock ~!
 
 
     /************************** Semaphore Init ****************************/
@@ -342,6 +348,10 @@ void* thread_func_controller()
 
       // 3. Change Brick Colour, release barrier for them to update colour
       changeBrickColour(global_score, global_ColThreadsLeft);       // change brick colour by releasing semaphore.. based on score..
+      myBallControl_updateAutoSpeed(global_score);                  // update auto speed increment .. based on score .. 
+
+      pthread_mutex_unlock(&mutex_speed); // signal to ball thead that speed is updated
+
 
 //      xil_printf("Controller : Waiting for colour  \n");
 
@@ -358,7 +368,7 @@ void* thread_func_controller()
           print ("Error in receiving message from bricks thread");
       }
 
-//      xil_printf("At controller ball location is x : %d y : %d\n", ball_recv.x , ball_recv.y);
+//      xil_printf("At controller ball location is x : %d y : %d, speed is %d\n", ball_recv.x , ball_recv.y, ball_recv.speed);
 
 
 //      xil_printf("Controller : Waiting for colour update \n");
@@ -420,7 +430,7 @@ void* thread_func_ball()
   
 
   // initial ball parameters
-  ball_send.speed =  INITIAL_SPEED;
+  ball_send.speed = BALL_INITIAL_SPEED;
   ball_send.dir   = BALL_INITIAL_DIR;
 
   ball_send.x     = CIRCLE_X;
@@ -666,8 +676,13 @@ void* thread_func_ball()
     	xil_printf("new direction of ball = %d\n", ball_send.dir);
     }
 
+    /*********** 8. Update Ball Speed  ********/
 
-    /*********** 8. Send Ball Position  ********/
+    pthread_mutex_lock(&mutex_speed); // wait for speed to update by controller!
+    ball_send.speed = myBallControl_getBallSpeed();
+    
+
+    /*********** 9. Send Ball Position  ********/
 
 //    xil_printf("Final Ball Location : %d , %d\n", ball_send.x, ball_send.y);
 

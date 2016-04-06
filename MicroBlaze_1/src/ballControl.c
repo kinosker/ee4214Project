@@ -10,34 +10,16 @@
 #include "math.h"
 #include "stdlib.h"
 #include "xmk.h"
+#include "myBallSpeed.h"
 
 #define REGION_A	10
 #define REGION_S	10
 #define REGION_N	40
 
-#define BALL_INITIAL_SPEED 250	// Initial speed : 250 pixel per sec
-#define BALL_INITIAL_DIR 90		// Initial Direction : 90 Degree
+#define BALL_INITIAL_DIR 			90		// Initial Direction : 90 Degree
 
 
 
-int myBallControl_updateBallSpeed(int ballSpeed, int speedGain)
-{
-	if(ballSpeed > MINIMUM_SPEED && ballSpeed < MAXIMUM_SPEED)
-	{
-		ballSpeed += speedGain;
-	}
-
-	if(ballSpeed < MINIMUM_SPEED)
-	{
-		ballSpeed = MINIMUM_SPEED;
-	}
-
-	if(ballSpeed > MAXIMUM_SPEED)
-	{
-		ballSpeed = MAXIMUM_SPEED;
-	}
-
-}
 
 // move the ball to a new location based on speed and currentLocation
 ball_msg myBallControl_moveBall(float ballSpeed, ball_msg currentLocation)
@@ -188,32 +170,34 @@ float myBallControl_getForwardStepsSpeed(float ballSpeed_step, int forward_steps
 }
 
 
-int myBallControl_SpeedChange(int ball_X, int ball_Y,
-		int score, int speed) {
-	//int side_ball_X = ball_X + CIRCLE_RADIUS;
-	int side_ball_Y = ball_Y + CIRCLE_RADIUS;
-	int curr_Score = score;
-	int prev_Score = 0;
+// int myBallControl_SpeedChange(int ball_X, int ball_Y,
+// 		int score, int speed) {
+// 	//int side_ball_X = ball_X + CIRCLE_RADIUS;
+// 	int side_ball_Y = ball_Y + CIRCLE_RADIUS;
+// 	int curr_Score = score;
+// 	int prev_Score = 0;
 
-	if (speed <= MINIMUM_SPEED) {
-		speed = MINIMUM_SPEED;
-	} else if (speed >= MAXIMUM_SPEED) {
-		speed = MAXIMUM_SPEED;
-	} else {
-		//When ball hit S+/S- of the bar the ball speed will increase/decrease by 10pixel
-		if (side_ball_Y >= BAR_START_X_S_MINUS + BAR_LENGTH_S) {
-			speed -= BAR_AC_DECELERATION;
-		} else if (side_ball_Y >= BAR_START_X_S_PLUS + BAR_LENGTH_S) {
-			speed += BAR_AC_DECELERATION;
-		}
+// 	if (speed <= MINIMUM_SPEED) {
+// 		speed = MINIMUM_SPEED;
+// 	} else if (speed >= MAXIMUM_SPEED) {
+// 		speed = MAXIMUM_SPEED;
+// 	} else {
+// 		//When ball hit S+/S- of the bar the ball speed will increase/decrease by 10pixel
+// 		if (side_ball_Y >= BAR_START_X_S_MINUS + BAR_LENGTH_S) {
+// 			speed -= BAR_AC_DECELERATION;
+// 		} else if (side_ball_Y >= BAR_START_X_S_PLUS + BAR_LENGTH_S) {
+// 			speed += BAR_AC_DECELERATION;
+// 		}
 
-		if ((curr_Score - prev_Score) >= 10) {
-			speed += SCORE_ACCELERATION;
-			prev_Score = curr_Score;
-		}
-	}
-	return speed;
-}
+// 		if ((curr_Score - prev_Score) >= 10) {
+// 			speed += SCORE_ACCELERATION;
+// 			prev_Score = curr_Score;
+// 		}
+// 	}
+// 	return speed;
+// }
+
+
 int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 {
 	if(sideHit == HIT_INNER_BOX )
