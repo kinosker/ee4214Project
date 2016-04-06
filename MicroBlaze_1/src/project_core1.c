@@ -899,7 +899,7 @@ int msgQueue_receiveBricks(int msgQ_brick_id, int colThreads, allBricks_msg *all
       return XST_FAILURE;
     }
 
-    totalBricksLeft += allBricks_recv->allMsg[iterator].bricksLeft;
+    totalBricksLeft += getNumberOfBricksLeft(allBricks_recv->allMsg[iterator].bricksLeft);
 //    xil_printf("receive all bricks : %d, leftover : %d\n", iterator, (colThreads - iterator));
   }
 
@@ -909,6 +909,24 @@ int msgQueue_receiveBricks(int msgQ_brick_id, int colThreads, allBricks_msg *all
 
 
   return XST_SUCCESS;
+}
+
+int getNumberOfBricksLeft(int bricksleft)
+{
+  int count = 0;
+
+  while(bricksleft)
+  {
+      if(bricksleft & 0b1 )
+      {
+        count ++;
+      }
+
+      bricksleft = bricksleft >> 1; // move to next brick to check
+  }
+
+  return count;
+
 }
 
 void changeBrickColour(int global_score, int colThreadsLeft) 
