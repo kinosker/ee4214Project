@@ -917,15 +917,18 @@ unsigned int updateBrickColour(unsigned int currentColour)
 int msgQueue_receiveBricks(int msgQ_brick_id, int colThreads, allBricks_msg *allBricks_recv)
 {
   int iterator, totalBricksLeft = 0;
+  brick_msg temp_recv;
 
   for(iterator = 0 ; iterator < colThreads ; iterator++)
   {
-    if( msgrcv( msgQ_brick_id, &(allBricks_recv->allMsg[iterator]), sizeof(brick_msg), 0,0 ) != sizeof(brick_msg))
+    if( msgrcv( msgQ_brick_id, &(temp_recv), sizeof(brick_msg), 0,0 ) != sizeof(brick_msg))
     {
       return XST_FAILURE;
     }
 
-    totalBricksLeft += getNumberOfBricksLeft(allBricks_recv->allMsg[iterator].bricksLeft);
+    totalBricksLeft += getNumberOfBricksLeft(temp_recv.bricksLeft);
+    allBricks_recv->allMsg[temp_recv.columnNumber] = temp_recv;
+   
 //    xil_printf("receive all bricks : %d, leftover : %d\n", iterator, (colThreads - iterator));
   }
 
