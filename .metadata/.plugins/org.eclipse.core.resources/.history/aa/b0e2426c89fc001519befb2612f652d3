@@ -16,7 +16,7 @@
 #include "myCommon.h"
 #include "myBarrier.h"
 
-/************************** Struct Definition ****************************/
+/************************** Struct Definition *****************************/
 
 
 #define MBOX_DEVICE_ID		XPAR_MBOX_0_DEVICE_ID

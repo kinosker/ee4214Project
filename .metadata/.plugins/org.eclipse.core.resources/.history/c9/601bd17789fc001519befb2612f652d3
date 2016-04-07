@@ -267,7 +267,7 @@ int myBoundaryChecker_CheckBar(int ball_X, int ball_Y, int myBoundary_Start_X,
 		}
 		// Region  A-
 		else if (innerBarCheck(side_ball_X, myBoundary_Start_X, (myBoundary_Start_X + 10),
-				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) {
+				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) { /
 			return HIT_ANGLE_DEC; // return 14
 		}
 		// Region A+
