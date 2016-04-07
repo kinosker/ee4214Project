@@ -149,7 +149,7 @@
 typedef struct
 {
 
-  int dir,speed；
+  int dir,speed;
   float x,y;
   
 } ball_msg;

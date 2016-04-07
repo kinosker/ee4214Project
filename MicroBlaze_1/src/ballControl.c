@@ -52,7 +52,7 @@ ball_msg myBallControl_moveBall(float ballSpeed, ball_msg currentLocation)
 	// 2. boundary check
 	//... not needed "will bounce"
 	tempBall.dir = currentLocation.dir;
-	
+
 	return tempBall; 
 }
 
@@ -87,7 +87,7 @@ ball_msg myBallControl_moveBall_step_backward(float ballSpeed_step, ball_msg cur
 
 ball_msg myBallControl_moveBall_forward(float ballSpeed_forward, ball_msg currentLocation)
 {
-	
+
 	return myBallControl_moveBall(ballSpeed_forward, currentLocation);
 }
 
@@ -110,21 +110,21 @@ int myBallControl_getSteps(float ballSpeed_frame, int dir)
 	tempBall.y = 0;
 
 	tempBall = myBallControl_moveBall(ballSpeed_frame, tempBall);
-
-	x_gained = abs( ((int) ((round)tempBall.x) ) );
-	y_gained = abs( ((int) ((round)tempBall.y) ) );
-
-//    xil_printf("Get Step Location : %d , %d and speed %d\n", tempBall.x, tempBall.y, (int)ballSpeed_frame);
+	xil_printf("tempX: %d, tempY: %d\n", (int)tempBall.x, (int)tempBall.y);
+	x_gained = abs( ((int) (round(tempBall.x)) ) );
+	y_gained = abs( ((int) (round(tempBall.y)) ) );
+	xil_printf("gainedX: %d, gainedY: %d\n", x_gained, y_gained);
+	//    xil_printf("Get Step Location : %d , %d and speed %d\n", tempBall.x, tempBall.y, (int)ballSpeed_frame);
 
 	// max steps = which 1 smaller.. + 2 circle radius to completely evade the brick.s
 
 	if((BRICK_SIZE_HEIGHT < BRICK_SIZE_LENGTH || x_gained == 0) && y_gained != 0)
 	{
-		return (ceil(  (y_gained) / (BRICK_SIZE_HEIGHT+CIRCLE_RADIUS+CIRCLE_RADIUS)));
+		return (ceil(  ((float)(y_gained)) / (BRICK_SIZE_HEIGHT+CIRCLE_RADIUS+CIRCLE_RADIUS)));
 	}
 	else
 	{
-		return (ceil( (x_gained) / (BRICK_SIZE_LENGTH+CIRCLE_RADIUS+CIRCLE_RADIUS)));
+		return (ceil( ((float)(x_gained)) / (BRICK_SIZE_LENGTH+CIRCLE_RADIUS+CIRCLE_RADIUS)));
 	}
 }
 
@@ -150,8 +150,8 @@ int myBallControl_getForwardSteps(float ballSpeed_step, int dir)
 	tempBall = myBallControl_moveBall(ballSpeed_step, tempBall);
 
 
-	x_gained = abs( ((int) ((round)tempBall.x) ) );
-	y_gained = abs( ((int) ((round)tempBall.y) ) );
+	x_gained = abs( ((int) (round(tempBall.x)) ) );
+	y_gained = abs( ((int) (round(tempBall.y)) ) );
 
 
 
@@ -205,18 +205,26 @@ int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 {
 	int tempAngle;
 
-	if(sideHit == HIT_REFLECT_90 )
+	if(sideHit == HIT_REFLECT_SIDE || sideHit == HIT_REFLECT_TOP || sideHit == HIT_REFLECT_BTM || sideHit == HIT_OUTER_BOX_BTM) //remove sideHit == HIT_OUTER_BOX_BOX after testing
 	{
 		print("Hit inner box\n");
-		
+		xil_printf("Inside rebound angle is %d\n", currentLocation.dir);
 		if(currentLocation.dir % 90 == 0)
 		{
 			// if flying vertical or horizontally perfectly... should rebounce 180 deg instead of 90 deg
+			xil_printf("reflect 90 but 180 is %d\n\n\n", currentLocation.dir);
 			return ((currentLocation.dir + 180) % 360);
+
+		}
+		else if(sideHit == HIT_REFLECT_SIDE)
+		{
+			xil_printf("reflect 90 is %d\n\n", currentLocation.dir);
+			return ((360 - currentLocation.dir) % 360);
 		}
 		else
 		{
-			return ((currentLocation.dir + 90) % 360);
+			xil_printf("reflect 90 is %d\n\n", currentLocation.dir);
+			return ((180 - currentLocation.dir) % 360);
 		}
 	}
 	else if (sideHit == HIT_REFLECT_180_1 || sideHit == HIT_REFLECT_180_2 || sideHit == HIT_REFLECT_180_3)

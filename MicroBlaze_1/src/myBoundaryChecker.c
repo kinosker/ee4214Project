@@ -9,19 +9,19 @@
 #include "myCommon.h"
 
 int outerLeftBoundary(int side_ball_X) {
-	return side_ball_X <= OUTER_COL_START_X + 1;
+	return side_ball_X <= OUTER_COL_START_X + 2;
 }
 
 int outerRightBoundary(int side_ball_X) {
-	return side_ball_X >= OUTER_COL_END_X - 1;
+	return side_ball_X >= OUTER_COL_END_X - 2;
 }
 
 int outerTopBoundary(int side_ball_Y) {
-	return side_ball_Y <= OUTER_COL_START_Y + 1;
+	return side_ball_Y <= OUTER_COL_START_Y + 2;
 }
 
 int outerBottomBoundary(int side_ball_Y) {
-	return side_ball_Y >= OUTER_COL_END_Y - 1;
+	return side_ball_Y >= OUTER_COL_END_Y - 2;
 }
 
 int outerTopLeftCorner(int side_ball_X, int side_ball_Y) {
@@ -64,19 +64,19 @@ int myBoundaryChecker_CheckOuter(int ball_X, int ball_Y) //speed????? angle???
 		side_ball_Y = quad_y[i];
 		if (outerLeftBoundary(side_ball_X)) { // left boundary
 			//side_ball_X = myBoundary_Start_X;
-			return HIT_OUTER_BOX; // return 10
+			return HIT_OUTER_BOX_SIDE; // return 10
 		}
 		else if (outerRightBoundary(side_ball_X)) {	//right boundary
 			//side_ball_X = myBoundary_End_X;
-			return HIT_OUTER_BOX;		// return 1
+			return HIT_OUTER_BOX_SIDE;		// return 10
 		}
 		else if (outerTopBoundary(side_ball_Y)) { // top boundary
 			//side_ball_Y = myBoundary_Start_Y;
-			return HIT_OUTER_BOX; // return 3
+			return HIT_OUTER_BOX_TOP; // return 10
 		}
 		else if (outerBottomBoundary(side_ball_Y)) { // bottom boundary
 			//side_ball_Y = myBoundary_End_Y;
-			return HIT_OUTER_BOX;		// return 4
+			return HIT_OUTER_BOX_BTM;		// return 10
 		}
 
 		/*******************************************four corners checking****************************************/
@@ -84,13 +84,13 @@ int myBoundaryChecker_CheckOuter(int ball_X, int ball_Y) //speed????? angle???
 		else if (outerTopLeftCorner(side_ball_X, side_ball_Y)) {
 			//side_ball_X = myBoundary_Start_X;
 			//side_ball_Y = myBoundary_Start_Y;
-			return HIT_OUTER_CORNER; // return 5
+			return HIT_OUTER_CORNER; // return 11
 		}
 		// right and top boundary
 		else if (outerTopRightCorner(side_ball_X, side_ball_Y)) {
 			//side_ball_X = myBoundary_End_X;
 			//side_ball_Y = myBoundary_Start_Y;
-			return HIT_OUTER_CORNER; // return 6
+			return HIT_OUTER_CORNER; // return 11
 		}
 		// left and bottom boundary
 		else if (outerBtmLeftCorner(side_ball_X, side_ball_Y)) {
@@ -157,6 +157,22 @@ int rightBottomBoundaryCheck(int side_ball_X, int myBoundary_End_X,
 			&& (side_ball_Y >= myBoundary_End_Y - CIRCLE_RADIUS);
 }
 
+int innerLeftBoundary(int side_ball_X, int myBoundary_Start_X) {
+	return side_ball_X <= myBoundary_Start_X;
+}
+
+int innerRightBoundary(int side_ball_X, int myBoundary_End_X) {
+	return side_ball_X >= myBoundary_End_X;
+}
+
+int innerTopBoundary(int side_ball_Y, int myBoundary_Start_Y) {
+	return side_ball_Y <= myBoundary_Start_Y;
+}
+
+int innerBottomBoundary(int side_ball_Y, int myBoundary_End_Y) {
+	return side_ball_Y >= myBoundary_End_Y;
+}
+
 int myBoundaryChecker_CheckInner(int ball_X, int ball_Y, int myBoundary_Start_X,
 		int myBoundary_Start_Y, int myBoundary_End_X, int myBoundary_End_Y) //speed????? angle???
 {
@@ -219,7 +235,22 @@ int myBoundaryChecker_CheckInner(int ball_X, int ball_Y, int myBoundary_Start_X,
 		else if (innerBoundaryCheck(side_ball_X, myBoundary_Start_X, myBoundary_End_X,
 				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) { // left boundary
 			//side_ball_X = myBoundary_Start_X;
-			return HIT_INNER_BOX; // return 10
+			if( innerLeftBoundary(side_ball_X, myBoundary_Start_X)) {
+				return HIT_INNER_BOX_SIDE;
+			}
+
+			if( innerRightBoundary(side_ball_X, myBoundary_End_X)) {
+				return HIT_INNER_BOX_SIDE;
+			}
+
+			if(innerTopBoundary(side_ball_Y, myBoundary_Start_Y)) {
+				return HIT_INNER_BOX_TOP;
+			}
+
+			if(innerBottomBoundary(side_ball_Y, myBoundary_End_Y)) {
+				return HIT_INNER_BOX_BTM;
+			}
+
 		}
 	}
 	return 0;

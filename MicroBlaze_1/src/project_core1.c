@@ -653,6 +653,7 @@ void* thread_func_ball()
     {
         // set the new direction.. (angle)
         //ball_send.dir = ??
+    	xil_printf("Boundary: %d \n\n\n\n\n\n\n\n", global_sideHit);
     	ball_send.dir = myBallControl_ReboundAngle(global_sideHit, ball_send);
     	xil_printf("new direction of ball = %d\n", ball_send.dir);
 

@@ -446,7 +446,7 @@ bar_msg tft_moveBarLeft(XTft *InstancePtr, unsigned int holdTime) {
 	else
 	{
 		// move at 25 pixel if hold time <= 250 ms
-		pixelMove = 25/FPS;
+		pixelMove = 25;
 	}
 
 
@@ -495,7 +495,7 @@ bar_msg tft_moveBarRight(XTft *InstancePtr, unsigned int holdTime) {
 	else
 	{
 		// move at 25 pixel if hold time <= 250 ms
-		pixelMove = 25/FPS;
+		pixelMove = 25;
 	}
 
 

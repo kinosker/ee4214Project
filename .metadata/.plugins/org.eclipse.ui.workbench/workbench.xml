@@ -38,33 +38,48 @@
 <part id="3"/>
 <part id="4"/>
 <part id="5"/>
+<part id="6"/>
+<part id="7"/>
+<part id="8"/>
 </presentation>
 </folder>
 </info>
 </editorArea>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="project_core1.c" partName="project_core1.c" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_1/src/project_core1.c" title="project_core1.c" tooltip="MicroBlaze_1/src/project_core1.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_1/src/project_core1.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="37" selectionOffset="13524" selectionTopPixel="9609"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="21832" selectionTopPixel="14858"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="project.c" partName="project.c" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_0/src/project.c" title="project.c" tooltip="MicroBlaze_0/src/project.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_0/src/project.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="0" selectionTopPixel="0"/>
+<editorState selectionHorizontalPixel="0" selectionLength="15" selectionOffset="5538" selectionTopPixel="4715"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="myCommon.h" partName="myCommon.h" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_0/myCommon/myCommon.h" title="myCommon.h" tooltip="MicroBlaze_0/myCommon/myCommon.h" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_0/myCommon/myCommon.h"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="4813" selectionTopPixel="391"/>
+</editor>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="myCommon.h" partName="myCommon.h" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_1/myCommon/myCommon.h" title="myCommon.h" tooltip="MicroBlaze_1/myCommon/myCommon.h" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_1/myCommon/myCommon.h"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="4823" selectionTopPixel="3243"/>
+</editor>
+<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="ballControl.c" partName="ballControl.c" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_1/src/ballControl.c" title="ballControl.c" tooltip="MicroBlaze_1/src/ballControl.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_1/src/ballControl.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="6062" selectionTopPixel="5268"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="myBoundaryChecker.c" partName="myBoundaryChecker.c" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_1/src/myBoundaryChecker.c" title="myBoundaryChecker.c" tooltip="MicroBlaze_1/src/myBoundaryChecker.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_1/src/myBoundaryChecker.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="10325" selectionTopPixel="6395"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="8617" selectionTopPixel="5222"/>
 </editor>
-<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="myBoundaryChecker.h" partName="myBoundaryChecker.h" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_1/src/myBoundaryChecker.h" title="myBoundaryChecker.h" tooltip="MicroBlaze_1/src/myBoundaryChecker.h" workbook="DefaultEditorWorkbook">
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="myBoundaryChecker.h" partName="myBoundaryChecker.h" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_1/src/myBoundaryChecker.h" title="myBoundaryChecker.h" tooltip="MicroBlaze_1/src/myBoundaryChecker.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_1/src/myBoundaryChecker.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="986" selectionTopPixel="437"/>
+<editorState selectionHorizontalPixel="0" selectionLength="17" selectionOffset="902" selectionTopPixel="345"/>
 </editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="ballControl.c" partName="ballControl.c" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_1/src/ballControl.c" title="ballControl.c" tooltip="MicroBlaze_1/src/ballControl.c" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_1/src/ballControl.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="86" selectionOffset="5565" selectionTopPixel="5107"/>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="myButton.c" partName="myButton.c" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_0/src/myButton.c" title="myButton.c" tooltip="MicroBlaze_0/src/myButton.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_0/src/myButton.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="18" selectionOffset="1183" selectionTopPixel="966"/>
 </editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="ballControl.h" partName="ballControl.h" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_1/src/ballControl.h" title="ballControl.h" tooltip="MicroBlaze_1/src/ballControl.h" workbook="DefaultEditorWorkbook">
-<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_1/src/ballControl.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="2772" selectionTopPixel="1403"/>
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="TFT_Draw.c" partName="TFT_Draw.c" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_0/src/TFT_Draw.c" title="TFT_Draw.c" tooltip="MicroBlaze_0/src/TFT_Draw.c" workbook="DefaultEditorWorkbook">
+<input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_0/src/TFT_Draw.c"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="16211" selectionTopPixel="11109"/>
 </editor>
 </editors>
 <views>
@@ -113,7 +128,7 @@
 <viewState/>
 </view>
 </views>
-<perspectives activePart="org.eclipse.cdt.ui.editor.CEditor" activePerspective="org.eclipse.cdt.ui.CPerspective">
+<perspectives activePart="org.eclipse.ui.console.ConsoleView" activePerspective="org.eclipse.cdt.ui.CPerspective">
 <perspective editorAreaTrimState="2" editorAreaVisible="1" fixed="0" version="0.016">
 <descriptor class="org.eclipse.cdt.internal.ui.CPerspectiveFactory" id="org.eclipse.cdt.ui.CPerspective" label="C/C++"/>
 <alwaysOnActionSet id="org.eclipse.ui.cheatsheets.actionSet"/>
@@ -241,163 +256,164 @@
 <workingSets/>
 <navigationHistory>
 <editors>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_0/src/project.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_1/src/project_core1.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_0/myCommon/myCommon.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_1/src/ballControl.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_1/src/myBoundaryChecker.c"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_1/src/myBoundaryChecker.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_1/src/myBallSpeed.h"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_1/src/myBallSpeed.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_1/src/ballControl.c"/>
-<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_1/src/ballControl.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_0/src/myButton.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_0/src/TFT_Draw.c"/>
 </editors>
-<item historyLabel="myBallSpeed.h" index="3">
-<position info="not_deleted" x="1038" y="0"/>
+<item historyLabel="myBoundaryChecker.c" index="4">
+<position info="not_deleted" x="2336" y="14"/>
 </item>
-<item historyLabel="myBallSpeed.c" index="4">
-<position info="not_deleted" x="30" y="0"/>
-</item>
-<item historyLabel="ballControl.c" index="5">
+<item historyLabel="myBoundaryChecker.h" index="5">
 <position/>
 </item>
-<item historyLabel="myBallSpeed.c" index="4">
-<position info="not_deleted" x="143" y="29"/>
+<item historyLabel="myBoundaryChecker.c" index="4">
+<position info="not_deleted" x="2336" y="14"/>
 </item>
-<item historyLabel="ballControl.c" index="5">
+<item historyLabel="project_core1.c" index="1">
+<position info="not_deleted" x="15392" y="22"/>
+</item>
+<item historyLabel="myBoundaryChecker.c" index="4">
+<position info="not_deleted" x="2336" y="14"/>
+</item>
+<item historyLabel="project_core1.c" index="1">
+<position info="not_deleted" x="21837" y="0"/>
+</item>
+<item historyLabel="myBoundaryChecker.h" index="5">
 <position/>
 </item>
-<item historyLabel="myBallSpeed.c" index="4">
-<position info="not_deleted" x="143" y="29"/>
+<item historyLabel="project_core1.c" index="1">
+<position info="not_deleted" x="21832" y="0"/>
 </item>
-<item historyLabel="ballControl.c" index="5">
+<item historyLabel="myBoundaryChecker.c" index="4">
+<position info="not_deleted" x="2336" y="14"/>
+</item>
+<item historyLabel="myBoundaryChecker.h" index="5">
 <position/>
 </item>
-<item historyLabel="myBallSpeed.c" index="4">
-<position info="not_deleted" x="143" y="29"/>
+<item historyLabel="ballControl.c" index="3">
+<position info="not_deleted" x="2596" y="8"/>
 </item>
-<item historyLabel="myBallSpeed.h" index="3">
-<position info="not_deleted" x="1038" y="0"/>
+<item historyLabel="ballControl.c" index="3">
+<position info="not_deleted" x="5935" y="0"/>
 </item>
-<item historyLabel="myBallSpeed.c" index="4">
-<position info="not_deleted" x="111" y="0"/>
+<item historyLabel="myCommon.h" index="2">
+<position info="not_deleted" x="4813" y="0"/>
 </item>
-<item historyLabel="ballControl.h" index="6">
-<position info="not_deleted" x="4" y="0"/>
+<item historyLabel="project_core1.c" index="1">
+<position info="not_deleted" x="21832" y="0"/>
 </item>
-<item historyLabel="myBallSpeed.c" index="4">
-<position info="not_deleted" x="111" y="0"/>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="5446" y="18"/>
 </item>
-<item historyLabel="ballControl.h" index="6">
-<position info="not_deleted" x="2772" y="29"/>
+<item historyLabel="myButton.c" index="6">
+<position info="not_deleted" x="1183" y="18"/>
 </item>
-<item historyLabel="myBallSpeed.c" index="4">
-<position info="not_deleted" x="111" y="0"/>
+<item historyLabel="project.c" index="0">
+<position info="not_deleted" x="5538" y="15"/>
 </item>
-<item historyLabel="ballControl.c" index="5">
-<position/>
+<item historyLabel="TFT_Draw.c" index="7">
+<position info="not_deleted" x="16211" y="0"/>
 </item>
-<item historyLabel="myBallSpeed.c" index="4">
-<position info="not_deleted" x="111" y="0"/>
+<item historyLabel="myCommon.h" index="2">
+<position info="not_deleted" x="4813" y="0"/>
 </item>
-<item historyLabel="ballControl.h" index="6">
-<position info="not_deleted" x="2768" y="0"/>
+<item historyLabel="project_core1.c" index="1">
+<position info="not_deleted" x="21832" y="0"/>
 </item>
-<item historyLabel="project_core1.c" index="0">
-<position info="not_deleted" x="13542" y="18"/>
+<item historyLabel="myBoundaryChecker.c" index="4">
+<position info="not_deleted" x="2336" y="14"/>
 </item>
-<item historyLabel="ballControl.h" index="6">
-<position info="not_deleted" x="572" y="0"/>
+<item historyLabel="myBoundaryChecker.h" index="5">
+<position info="not_deleted" x="496" y="0"/>
 </item>
-<item historyLabel="project_core1.c" index="0">
-<position info="not_deleted" x="13542" y="18"/>
+<item historyLabel="myBoundaryChecker.c" index="4">
+<position info="not_deleted" x="1809" y="0"/>
 </item>
-<item historyLabel="myBallSpeed.h" index="3">
-<position info="not_deleted" x="1038" y="0"/>
+<item historyLabel="myBoundaryChecker.h" index="5">
+<position info="not_deleted" x="924" y="0"/>
 </item>
-<item historyLabel="ballControl.h" index="6">
-<position info="not_deleted" x="572" y="0"/>
+<item historyLabel="myBoundaryChecker.c" index="4">
+<position info="not_deleted" x="1809" y="0"/>
 </item>
-<item historyLabel="project_core1.c" index="0">
-<position info="not_deleted" x="13542" y="18"/>
+<item historyLabel="myBoundaryChecker.h" index="5">
+<position info="not_deleted" x="1065" y="0"/>
 </item>
-<item historyLabel="ballControl.h" index="6">
-<position info="not_deleted" x="572" y="0"/>
+<item historyLabel="myBoundaryChecker.c" index="4">
+<position info="not_deleted" x="1809" y="0"/>
 </item>
-<item historyLabel="ballControl.c" index="5">
-<position info="not_deleted" x="299" y="64"/>
+<item historyLabel="myBoundaryChecker.h" index="5">
+<position info="not_deleted" x="842" y="17"/>
 </item>
-<item historyLabel="project_core1.c" index="0">
-<position info="not_deleted" x="13524" y="37"/>
+<item historyLabel="myBoundaryChecker.c" index="4">
+<position info="not_deleted" x="1881" y="18"/>
 </item>
-<item historyLabel="ballControl.c" index="5">
-<position info="not_deleted" x="365" y="0"/>
+<item historyLabel="myBoundaryChecker.h" index="5">
+<position info="not_deleted" x="775" y="18"/>
 </item>
-<item historyLabel="ballControl.h" index="6">
-<position info="not_deleted" x="569" y="0"/>
+<item historyLabel="myBoundaryChecker.c" index="4">
+<position info="not_deleted" x="2050" y="0"/>
 </item>
-<item historyLabel="ballControl.c" index="5">
-<position info="not_deleted" x="365" y="0"/>
+<item historyLabel="myBoundaryChecker.h" index="5">
+<position info="not_deleted" x="842" y="17"/>
 </item>
-<item historyLabel="project_core1.c" index="0">
-<position info="not_deleted" x="13524" y="37"/>
+<item historyLabel="myBoundaryChecker.c" index="4">
+<position info="not_deleted" x="2353" y="0"/>
 </item>
-<item historyLabel="myBoundaryChecker.c" index="1">
-<position info="not_deleted" x="8951" y="0"/>
+<item historyLabel="myBoundaryChecker.h" index="5">
+<position info="not_deleted" x="842" y="17"/>
 </item>
-<item historyLabel="myBoundaryChecker.h" index="2">
-<position info="not_deleted" x="855" y="0"/>
+<item historyLabel="myBoundaryChecker.c" index="4">
+<position info="not_deleted" x="2353" y="0"/>
 </item>
-<item historyLabel="myBoundaryChecker.c" index="1">
-<position info="not_deleted" x="10578" y="0"/>
+<item historyLabel="myBoundaryChecker.c" index="4">
+<position info="not_deleted" x="8299" y="0"/>
 </item>
-<item historyLabel="myBoundaryChecker.h" index="2">
-<position info="not_deleted" x="755" y="13"/>
+<item historyLabel="myBoundaryChecker.h" index="5">
+<position info="not_deleted" x="1104" y="18"/>
 </item>
-<item historyLabel="myBoundaryChecker.c" index="1">
-<position info="not_deleted" x="10827" y="0"/>
+<item historyLabel="myBoundaryChecker.c" index="4">
+<position info="not_deleted" x="8617" y="0"/>
 </item>
-<item historyLabel="myBoundaryChecker.h" index="2">
-<position info="not_deleted" x="755" y="13"/>
+<item historyLabel="ballControl.c" index="3">
+<position info="not_deleted" x="5935" y="0"/>
 </item>
-<item historyLabel="myBoundaryChecker.c" index="1">
-<position info="not_deleted" x="10918" y="0"/>
+<item historyLabel="myBoundaryChecker.h" index="5">
+<position info="not_deleted" x="476" y="16"/>
 </item>
-<item historyLabel="ballControl.c" index="5">
-<position info="not_deleted" x="6042" y="0"/>
+<item historyLabel="myBoundaryChecker.c" index="4">
+<position info="not_deleted" x="8617" y="0"/>
 </item>
-<item historyLabel="myBoundaryChecker.h" index="2">
-<position info="not_deleted" x="813" y="13"/>
+<item historyLabel="ballControl.c" index="3">
+<position info="not_deleted" x="5393" y="0"/>
 </item>
-<item historyLabel="ballControl.c" index="5">
-<position info="not_deleted" x="6167" y="0"/>
+<item historyLabel="myBoundaryChecker.h" index="5">
+<position info="not_deleted" x="476" y="16"/>
 </item>
-<item historyLabel="myBoundaryChecker.h" index="2">
-<position info="not_deleted" x="842" y="13"/>
+<item historyLabel="myBoundaryChecker.c" index="4">
+<position info="not_deleted" x="8617" y="0"/>
 </item>
-<item historyLabel="ballControl.c" index="5">
-<position info="not_deleted" x="6042" y="0"/>
+<item historyLabel="myCommon.h" index="2">
+<position info="not_deleted" x="4813" y="0"/>
 </item>
-<item historyLabel="myBoundaryChecker.h" index="2">
-<position info="not_deleted" x="813" y="13"/>
+<item historyLabel="ballControl.c" index="3">
+<position info="not_deleted" x="5393" y="0"/>
 </item>
-<item historyLabel="ballControl.c" index="5">
-<position info="not_deleted" x="6167" y="0"/>
+<item historyLabel="myBoundaryChecker.h" index="5">
+<position info="not_deleted" x="902" y="18"/>
 </item>
-<item historyLabel="myBoundaryChecker.h" index="2">
-<position info="not_deleted" x="842" y="13"/>
+<item historyLabel="ballControl.c" index="3">
+<position info="not_deleted" x="5393" y="0"/>
 </item>
-<item historyLabel="ballControl.c" index="5">
-<position info="not_deleted" x="5565" y="86"/>
+<item historyLabel="myBoundaryChecker.h" index="5">
+<position info="not_deleted" x="902" y="17"/>
 </item>
-<item historyLabel="ballControl.h" index="6">
-<position info="not_deleted" x="2772" y="0"/>
-</item>
-<item historyLabel="myBoundaryChecker.h" index="2">
-<position info="not_deleted" x="842" y="13"/>
-</item>
-<item historyLabel="myBoundaryChecker.c" index="1">
-<position info="not_deleted" x="10325" y="0"/>
-</item>
-<item active="true" historyLabel="myBoundaryChecker.h" index="2">
-<position info="not_deleted" x="842" y="13"/>
+<item active="true" historyLabel="ballControl.c" index="3">
+<position info="not_deleted" x="5393" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>
@@ -424,26 +440,11 @@
 </trimLayout>
 </window>
 <mruList>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="ballControl.h" tooltip="MicroBlaze_1/src/ballControl.h">
-<persistable path="/MicroBlaze_1/src/ballControl.h"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="ballControl.c" tooltip="MicroBlaze_1/src/ballControl.c">
-<persistable path="/MicroBlaze_1/src/ballControl.c"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="myBallSpeed.c" tooltip="MicroBlaze_1/src/myBallSpeed.c">
-<persistable path="/MicroBlaze_1/src/myBallSpeed.c"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="myBallSpeed.h" tooltip="MicroBlaze_1/src/myBallSpeed.h">
-<persistable path="/MicroBlaze_1/src/myBallSpeed.h"/>
-</file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="TFT_Draw.c" tooltip="MicroBlaze_0/src/TFT_Draw.c">
 <persistable path="/MicroBlaze_0/src/TFT_Draw.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="TFT_Draw.h" tooltip="MicroBlaze_0/src/TFT_Draw.h">
-<persistable path="/MicroBlaze_0/src/TFT_Draw.h"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="myCommon.h" tooltip="MicroBlaze_0/myCommon/myCommon.h">
-<persistable path="/MicroBlaze_0/myCommon/myCommon.h"/>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="myButton.c" tooltip="MicroBlaze_0/src/myButton.c">
+<persistable path="/MicroBlaze_0/src/myButton.c"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="myBoundaryChecker.h" tooltip="MicroBlaze_1/src/myBoundaryChecker.h">
 <persistable path="/MicroBlaze_1/src/myBoundaryChecker.h"/>
@@ -451,23 +452,38 @@
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="myBoundaryChecker.c" tooltip="MicroBlaze_1/src/myBoundaryChecker.c">
 <persistable path="/MicroBlaze_1/src/myBoundaryChecker.c"/>
 </file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="ballControl.c" tooltip="MicroBlaze_1/src/ballControl.c">
+<persistable path="/MicroBlaze_1/src/ballControl.c"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="myCommon.h" tooltip="MicroBlaze_1/myCommon/myCommon.h">
+<persistable path="/MicroBlaze_1/myCommon/myCommon.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="myCommon.h" tooltip="MicroBlaze_0/myCommon/myCommon.h">
+<persistable path="/MicroBlaze_0/myCommon/myCommon.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="myBallSpeed.c" tooltip="MicroBlaze_1/src/myBallSpeed.c">
+<persistable path="/MicroBlaze_1/src/myBallSpeed.c"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="myButton.h" tooltip="MicroBlaze_0/src/myButton.h">
+<persistable path="/MicroBlaze_0/src/myButton.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="ballControl.h" tooltip="MicroBlaze_1/src/ballControl.h">
+<persistable path="/MicroBlaze_1/src/ballControl.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="myBallSpeed.h" tooltip="MicroBlaze_1/src/myBallSpeed.h">
+<persistable path="/MicroBlaze_1/src/myBallSpeed.h"/>
+</file>
+<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="TFT_Draw.h" tooltip="MicroBlaze_0/src/TFT_Draw.h">
+<persistable path="/MicroBlaze_0/src/TFT_Draw.h"/>
+</file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="myBarrier.c" tooltip="MicroBlaze_0/myCommon/myBarrier.c">
 <persistable path="/MicroBlaze_0/myCommon/myBarrier.c"/>
 </file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="myBarrier.c" tooltip="MicroBlaze_1/myCommon/myBarrier.c">
 <persistable path="/MicroBlaze_1/myCommon/myBarrier.c"/>
 </file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="myCommon.h" tooltip="MicroBlaze_1/myCommon/myCommon.h">
-<persistable path="/MicroBlaze_1/myCommon/myCommon.h"/>
-</file>
 <file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="xparameters.h" tooltip="xilkernel_bsp_1/microblaze_1/include/xparameters.h">
 <persistable path="/xilkernel_bsp_1/microblaze_1/include/xparameters.h"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="xparameters.h" tooltip="xilkernel_bsp_0/microblaze_0/include/xparameters.h">
-<persistable path="/xilkernel_bsp_0/microblaze_0/include/xparameters.h"/>
-</file>
-<file factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" name="ballControl.h" tooltip="MicroBlaze_0/src/ballControl.h">
-<persistable path="/MicroBlaze_0/src/ballControl.h"/>
 </file>
 </mruList>
 </workbench>
