@@ -43,8 +43,8 @@ ball_msg myBallControl_moveBall(float ballSpeed, ball_msg currentLocation)
 	radian = M_PI* tempBall.dir /180;
 
 	//xil_printf("Currball.x = %d\r\nCurrball.y = %d\r\n", currentLocation.x, currentLocation.y);
-	tempBall.x = tempBall.x + (round(ballSpeed *( modifier * cos(radian))));
-	tempBall.y = tempBall.y - (round(ballSpeed * (modifier *  sin(radian))));
+	tempBall.x = tempBall.x + (ballSpeed *( modifier * cos(radian)));
+	tempBall.y = tempBall.y - (ballSpeed * (modifier *  sin(radian)));
 
 	//xil_printf("dir = %d\r\n", currentLocation.dir);
 	//xil_printf("Tempball.x = %d\r\nTempball.y = %d\r\n", tempBall.x, tempBall.y);
@@ -111,8 +111,8 @@ int myBallControl_getSteps(float ballSpeed_frame, int dir)
 
 	tempBall = myBallControl_moveBall(ballSpeed_frame, tempBall);
 
-	x_gained = abs(tempBall.x);
-	y_gained = abs(tempBall.y);
+	x_gained = abs( ((int) ((round)tempBall.x) ) );
+	y_gained = abs( ((int) ((round)tempBall.y) ) );
 
 //    xil_printf("Get Step Location : %d , %d and speed %d\n", tempBall.x, tempBall.y, (int)ballSpeed_frame);
 
@@ -120,11 +120,11 @@ int myBallControl_getSteps(float ballSpeed_frame, int dir)
 
 	if((BRICK_SIZE_HEIGHT < BRICK_SIZE_LENGTH || x_gained == 0) && y_gained != 0)
 	{
-		return (ceil(  (float)(y_gained) / (BRICK_SIZE_HEIGHT+CIRCLE_RADIUS+CIRCLE_RADIUS)));
+		return (ceil(  (y_gained) / (BRICK_SIZE_HEIGHT+CIRCLE_RADIUS+CIRCLE_RADIUS)));
 	}
 	else
 	{
-		return (ceil( (float)(x_gained) / (BRICK_SIZE_LENGTH+CIRCLE_RADIUS+CIRCLE_RADIUS)));
+		return (ceil( (x_gained) / (BRICK_SIZE_LENGTH+CIRCLE_RADIUS+CIRCLE_RADIUS)));
 	}
 }
 
@@ -149,8 +149,10 @@ int myBallControl_getForwardSteps(float ballSpeed_step, int dir)
 
 	tempBall = myBallControl_moveBall(ballSpeed_step, tempBall);
 
-	x_gained = abs(tempBall.x);
-	y_gained = abs(tempBall.y);
+
+	x_gained = abs( ((int) ((round)tempBall.x) ) );
+	y_gained = abs( ((int) ((round)tempBall.y) ) );
+
 
 
 	if(x_gained > y_gained)

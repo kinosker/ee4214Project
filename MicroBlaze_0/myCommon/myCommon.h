@@ -149,10 +149,10 @@
 typedef struct
 {
 
-  int dir,speed,x,y;
-
+  int dir,speed；
+  float x,y;
+  
 } ball_msg;
-
 
 typedef struct
 {

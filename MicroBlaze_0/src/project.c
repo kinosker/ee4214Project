@@ -341,7 +341,7 @@ void* thread_func_ball()
 		myBarrier_wait(&barrier_SyncThreads_start);	// wait for controller thread to launch us
 
 		tft_removeCircle(&TFT_Instance, prevBall.x, prevBall.y, CIRCLE_RADIUS);
-		tft_addCircle(&TFT_Instance, global_ball_recv.x, global_ball_recv.y, CIRCLE_RADIUS); // update ball location...
+		tft_addCircle(&TFT_Instance, (int)global_ball_recv.x, (int)global_ball_recv.y, CIRCLE_RADIUS); // update ball location...
 
 		prevBall = global_ball_recv; // update previous ball!
 

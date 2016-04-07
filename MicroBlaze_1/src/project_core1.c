@@ -454,7 +454,7 @@ void* thread_func_ball()
     // 0.2  : Update global_ballBounceCheck every iteration ... 
     global_ballBounceCheck = ball_send;
 
-    xil_printf("New ball iteration, dir : %d, location :  %d,%d\n", global_ballBounceCheck.dir, global_ballBounceCheck.x, global_ballBounceCheck.y);
+    xil_printf("New ball iteration, dir : %d, location :  %d,%d\n", global_ballBounceCheck.dir, (int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y);
 
     // 0.3  : Init bounce check not completed.
     global_bounceCompleted = 0;
@@ -528,9 +528,9 @@ void* thread_func_ball()
         // if(barHit or outerboundary) global_bounceHit = 1; break;
 
         // NOTE *** THIS HAVE MORE SIDE TO CHANGE ANGLEE **** BAR GOT DIFF REGION ***
-        barHit = myBoundaryChecker_CheckBar(global_ballBounceCheck.x, global_ballBounceCheck.y, bar_recv.start_x,
+        barHit = myBoundaryChecker_CheckBar((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y, bar_recv.start_x,
 				bar_recv.start_y, bar_recv.end_x, bar_recv.end_y);
-			outerBoxHit = myBoundaryChecker_CheckOuter(global_ballBounceCheck.x, global_ballBounceCheck.y);
+			outerBoxHit = myBoundaryChecker_CheckOuter((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y);
 
 		global_sideHit = (barHit | outerBoxHit);
 
@@ -574,13 +574,13 @@ void* thread_func_ball()
     if(global_bounceHit)
     {
 
-        xil_printf("BALL HIT BIG STEP, dir : %d, location :  %d,%d\n", global_ballBounceCheck.dir, global_ballBounceCheck.x, global_ballBounceCheck.y);
+        xil_printf("BALL HIT BIG STEP, dir : %d, location :  %d,%d\n", global_ballBounceCheck.dir, (int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y);
 
         // move back by 1 step..
         global_ballBounceCheck = myBallControl_moveBall_step_backward(ballSpeed_step, global_ballBounceCheck);
 
 
-        xil_printf("BALL HIT -1 Stp, dir : %d, location :  %d,%d\n", global_ballBounceCheck.dir, global_ballBounceCheck.x, global_ballBounceCheck.y);
+        xil_printf("BALL HIT -1 Stp, dir : %d, location :  %d,%d\n", global_ballBounceCheck.dir, (int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y);
         // reset bounceHit back to 0... so can find when it is the perfect hit
         global_bounceHit = 0;
 
@@ -598,7 +598,7 @@ void* thread_func_ball()
             // forward steps movement
             global_ballBounceCheck = myBallControl_moveBall_forward(ballSpeed_forward, global_ballBounceCheck);
 
-            xil_printf("Small step : ball = %d,%d, ballSpeed : %d\n" , global_ballBounceCheck.x, global_ballBounceCheck.y, ballSpeed_forward);
+            xil_printf("Small step : ball = %d,%d, ballSpeed : %d\n" , (int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y, ballSpeed_forward);
 
 
             /****************** 4. Check bounce hit for each steps  ****************/
@@ -608,9 +608,9 @@ void* thread_func_ball()
 
 
             // NOTE *** THIS HAVE MORE SIDE TO CHANGE ANGLEE **** BAR GOT DIFF REGION ***
-            barHit = myBoundaryChecker_CheckBar(global_ballBounceCheck.x, global_ballBounceCheck.y, bar_recv.start_x,
+            barHit = myBoundaryChecker_CheckBar((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y, bar_recv.start_x,
     				bar_recv.start_y, bar_recv.end_x, bar_recv.end_y);
-    			outerBoxHit = myBoundaryChecker_CheckOuter(global_ballBounceCheck.x, global_ballBounceCheck.y);
+    			outerBoxHit = myBoundaryChecker_CheckOuter((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y);
 
     		global_sideHit = (barHit | outerBoxHit);
 
@@ -760,7 +760,7 @@ void thread_func_brick(char columnNumber)
   				row_y = ROW_Y_START + ROW_OFFSET * row_num; // position of y for the selected brick.
 
 
-  				temp_sideHit = myBoundaryChecker_CheckInner(global_ballBounceCheck.x, global_ballBounceCheck.y, col_x,
+  				temp_sideHit = myBoundaryChecker_CheckInner((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y, col_x,
     				row_y, col_x + BRICK_SIZE_LENGTH, row_y + BRICK_SIZE_HEIGHT);
 
   				if(temp_sideHit > 0)
