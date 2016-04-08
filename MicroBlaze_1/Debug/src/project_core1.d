@@ -24,11 +24,17 @@ src/project_core1.d: ../src/project_core1.c \
  ../../xilkernel_bsp_1/microblaze_1/include/arch/microblaze/arch.h \
  ../../xilkernel_bsp_1/microblaze_1/include/sys/shm.h \
  ../../xilkernel_bsp_1/microblaze_1/include/config/config_cparam.h \
+ ../../xilkernel_bsp_1/microblaze_1/include/sys/process.h \
+ ../../xilkernel_bsp_1/microblaze_1/include/sys/queue.h \
+ ../../xilkernel_bsp_1/microblaze_1/include/sys/stats.h \
+ ../../xilkernel_bsp_1/microblaze_1/include/sys/kpthread.h \
  ../../xilkernel_bsp_1/microblaze_1/include/sys/init.h \
  ../../xilkernel_bsp_1/microblaze_1/include/sys/mpu.h \
  C:\Users\KaiHsiang\Desktop\EE4214_Workspace\Lab1\MulticoreProcessor\MulticoreProcessor.sdk\4214_project\MicroBlaze_1\myCommon/myCommon.h \
  C:\Users\KaiHsiang\Desktop\EE4214_Workspace\Lab1\MulticoreProcessor\MulticoreProcessor.sdk\4214_project\MicroBlaze_1\myCommon/myBarrier.h \
- ../src/ballControl.h ../src/myBoundaryChecker.h
+ ../src/ballControl.h ../src/myBoundaryChecker.h \
+ ../../xilkernel_bsp_1/microblaze_1/include/xmutex.h \
+ ../../xilkernel_bsp_1/microblaze_1/include/xmutex_hw.h
 
 ../../xilkernel_bsp_1/microblaze_1/include/xmk.h:
 
@@ -80,6 +86,14 @@ src/project_core1.d: ../src/project_core1.c \
 
 ../../xilkernel_bsp_1/microblaze_1/include/config/config_cparam.h:
 
+../../xilkernel_bsp_1/microblaze_1/include/sys/process.h:
+
+../../xilkernel_bsp_1/microblaze_1/include/sys/queue.h:
+
+../../xilkernel_bsp_1/microblaze_1/include/sys/stats.h:
+
+../../xilkernel_bsp_1/microblaze_1/include/sys/kpthread.h:
+
 ../../xilkernel_bsp_1/microblaze_1/include/sys/init.h:
 
 ../../xilkernel_bsp_1/microblaze_1/include/sys/mpu.h:
@@ -91,3 +105,7 @@ C:\Users\KaiHsiang\Desktop\EE4214_Workspace\Lab1\MulticoreProcessor\MulticorePro
 ../src/ballControl.h:
 
 ../src/myBoundaryChecker.h:
+
+../../xilkernel_bsp_1/microblaze_1/include/xmutex.h:
+
+../../xilkernel_bsp_1/microblaze_1/include/xmutex_hw.h:

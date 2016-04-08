@@ -28,7 +28,8 @@
 #define MAXIMUM_ANGLE_ON_BAR			165
 #define INITIAL_ANGLE					90
 #define BAR_ANGLE_ADJUSTMENT			15 		// the increase/decrease angle when the ball hit A+/A- will be 15
-#define BAR_SPEED_ADJUSTMENT			100		// the adjustment to be made at S region	
+#define BAR_SPEED_ADJUSTMENT_UP			100		// the adjustment to be made at S region
+#define BAR_SPEED_ADJUSTMENT_DOWN		-100		// the adjustment to be made at S region
 
 
 /*****************************************************************************

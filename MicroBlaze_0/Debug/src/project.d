@@ -32,7 +32,9 @@ src/project.d: ../src/project.c \
  ../src/myButton.h ../../xilkernel_bsp_0/microblaze_0/include/xmbox.h \
  ../../xilkernel_bsp_0/microblaze_0/include/xmbox_hw.h \
  ../../xilkernel_bsp_0/microblaze_0/include/fsl.h \
- C:\Users\KaiHsiang\Desktop\EE4214_Workspace\Lab1\MulticoreProcessor\MulticoreProcessor.sdk\4214_project\MicroBlaze_0\myCommon/myBarrier.h
+ C:\Users\KaiHsiang\Desktop\EE4214_Workspace\Lab1\MulticoreProcessor\MulticoreProcessor.sdk\4214_project\MicroBlaze_0\myCommon/myBarrier.h \
+ ../../xilkernel_bsp_0/microblaze_0/include/xmutex.h \
+ ../../xilkernel_bsp_0/microblaze_0/include/xmutex_hw.h
 
 ../../xilkernel_bsp_0/microblaze_0/include/xmk.h:
 
@@ -105,3 +107,7 @@ C:\Users\KaiHsiang\Desktop\EE4214_Workspace\Lab1\MulticoreProcessor\MulticorePro
 ../../xilkernel_bsp_0/microblaze_0/include/fsl.h:
 
 C:\Users\KaiHsiang\Desktop\EE4214_Workspace\Lab1\MulticoreProcessor\MulticoreProcessor.sdk\4214_project\MicroBlaze_0\myCommon/myBarrier.h:
+
+../../xilkernel_bsp_0/microblaze_0/include/xmutex.h:
+
+../../xilkernel_bsp_0/microblaze_0/include/xmutex_hw.h:

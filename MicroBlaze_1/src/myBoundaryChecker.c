@@ -270,6 +270,7 @@ int myBoundaryChecker_CheckBar(int ball_X, int ball_Y, int myBoundary_Start_X,
 
 	int quad_x[] = {side_ball_X_Left, side_ball_X_Left, side_ball_X_Right, side_ball_X_Right};
 	int quad_y[] = {side_ball_Y_Top, side_ball_Y_Bottom, side_ball_Y_Top, side_ball_Y_Bottom};
+
 	int i =0;
 	//	xil_printf("bound_x_start : %d, bound_ystart : %d\n bound_x_end : %d, bound_yend : %d\n", myBoundary_Start_X, myBoundary_Start_Y, myBoundary_End_X, myBoundary_End_Y);
 
@@ -289,21 +290,25 @@ int myBoundaryChecker_CheckBar(int ball_X, int ball_Y, int myBoundary_Start_X,
 		// Region S - 
 		else if (innerBarCheck(side_ball_X, (myBoundary_Start_X + 10), (myBoundary_Start_X + 20),
 				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) { 
+			xil_printf("S- : x : %d, y : %d\n\n\n\n", ball_X, side_ball_Y_Bottom);
 			return HIT_SPEED_DEC; // return 12
 		}
 		// Region S+
 		else if (innerBarCheck(side_ball_X, (myBoundary_End_X - 20), (myBoundary_End_X - 10),
 				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) { 
+			xil_printf("S+ : x : %d, y : %d\n\n\n\n", ball_X, side_ball_Y_Bottom);
 			return HIT_SPEED_ACC; // return 13
 		}
 		// Region  A-
 		else if (innerBarCheck(side_ball_X, myBoundary_Start_X, (myBoundary_Start_X + 10),
 				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) {
+			xil_printf("A-  : x : %d, y : %d\n\n\n\n", ball_X, side_ball_Y_Bottom);
 			return HIT_ANGLE_DEC; // return 14
 		}
 		// Region A+
 		else if (innerBarCheck(side_ball_X, (myBoundary_End_X - 10), myBoundary_End_X,
-				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) { 
+				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) {
+			xil_printf("A+ : x : %d, y : %d\n\n\n\n", ball_X, side_ball_Y_Bottom);
 			return HIT_ANGLE_ACC; // return 15
 		}
 	}

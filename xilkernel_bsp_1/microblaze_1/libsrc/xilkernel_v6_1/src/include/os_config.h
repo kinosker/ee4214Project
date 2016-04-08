@@ -25,6 +25,10 @@ Copyright 1986-2014 Xilinx, Inc. All Rights Reserved.
 
 #define CONFIG_BASE_VECTORS 0x00000000
 
+#define CONFIG_KILL true
+
+#define CONFIG_YIELD true
+
 #define CONFIG_PTHREAD_SUPPORT true
 
 #define MAX_PTHREADS 15
@@ -41,7 +45,7 @@ Copyright 1986-2014 Xilinx, Inc. All Rights Reserved.
 
 #define SYSTMR_BASEADDR 0x41C00000
 
-#define SYSTMR_INTERVAL 1000000
+#define SYSTMR_INTERVAL 100000
 
 #define SYSTMR_CLK_FREQ 100000000
 

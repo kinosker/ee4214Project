@@ -110,10 +110,10 @@ int myBallControl_getSteps(float ballSpeed_frame, int dir)
 	tempBall.y = 0;
 
 	tempBall = myBallControl_moveBall(ballSpeed_frame, tempBall);
-	xil_printf("tempX: %d, tempY: %d\n", (int)tempBall.x, (int)tempBall.y);
+	//xil_printf("tempX: %d, tempY: %d\n", (int)tempBall.x, (int)tempBall.y);
 	x_gained = abs( ((int) (round(tempBall.x)) ) );
 	y_gained = abs( ((int) (round(tempBall.y)) ) );
-	xil_printf("gainedX: %d, gainedY: %d\n", x_gained, y_gained);
+	//xil_printf("gainedX: %d, gainedY: %d\n", x_gained, y_gained);
 	//    xil_printf("Get Step Location : %d , %d and speed %d\n", tempBall.x, tempBall.y, (int)ballSpeed_frame);
 
 	// max steps = which 1 smaller.. + 2 circle radius to completely evade the brick.s
@@ -207,18 +207,18 @@ int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 
 	if(sideHit == HIT_REFLECT_SIDE || sideHit == HIT_REFLECT_TOP || sideHit == HIT_REFLECT_BTM || sideHit == HIT_OUTER_BOX_BTM) //remove sideHit == HIT_OUTER_BOX_BOX after testing
 	{
-		print("Hit inner box\n");
-		xil_printf("Inside rebound angle is %d\n", currentLocation.dir);
+		//print("Hit inner box\n");
+		//xil_printf("Inside rebound angle is %d\n", currentLocation.dir);
 		if(currentLocation.dir % 90 == 0)
 		{
 			// if flying vertical or horizontally perfectly... should rebounce 180 deg instead of 90 deg
-			xil_printf("reflect 90 but 180 is %d\n\n\n", currentLocation.dir);
+			//xil_printf("reflect 90 but 180 is %d\n\n\n", currentLocation.dir);
 			return ((currentLocation.dir + 180) % 360);
 
 		}
 		else if(sideHit == HIT_REFLECT_SIDE)
 		{
-			xil_printf("reflect 90 is %d\n\n", currentLocation.dir);
+			//xil_printf("Angle reflect side hit is %d\n\n", sideHit);
 
 			return ((180 - currentLocation.dir) % 360); //editted
 
@@ -226,18 +226,19 @@ int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 		}
 		else
 		{
-			xil_printf("reflect 90 is %d\n\n", currentLocation.dir);
+			//xil_printf("reflect 90 is %d\n\n", currentLocation.dir);
 			//return ((180 - currentLocation.dir) % 360); //inital
 			return ((360 - currentLocation.dir) % 360); //editted
 		}
 	}
 	else if (sideHit == HIT_REFLECT_180_1 || sideHit == HIT_REFLECT_180_2 || sideHit == HIT_REFLECT_180_3)
 	{
-		print("Hit corner box\n");
+		//print("Hit corner box\n");
 		return ((currentLocation.dir + 180) % 360);
 	}
 	else if(sideHit == HIT_ANGLE_DEC)
 	{
+		xil_printf("Angle reflect DECREASE CONSTANT is %d\n\n", sideHit);
 		tempAngle = (currentLocation.dir + 180) % 360 ; // reflect 1st
 		tempAngle -= BAR_ANGLE_ADJUSTMENT;				// decrease angle..
 
@@ -253,6 +254,7 @@ int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 	}
 	else if (sideHit == HIT_ANGLE_ACC)
 	{
+		xil_printf("Angle reflect increase CONSTANT is %d\n\n", sideHit);
 		tempAngle = (currentLocation.dir + 180) % 360 ; // reflect 1st
 		tempAngle += BAR_ANGLE_ADJUSTMENT;				// decrease angle..
 
@@ -278,11 +280,13 @@ void myBallControl_SetReboundSpeed(int sideHit)
 {
 	if(sideHit == HIT_SPEED_DEC)
 	{
-		myBallControl_updateBallSpeed(-BAR_SPEED_ADJUSTMENT);
+		xil_printf("Speed decrease CONSTANT is %d\n\n", sideHit);
+		myBallControl_updateBallSpeed(BAR_SPEED_ADJUSTMENT_DOWN);
 	}
 	else if (sideHit == HIT_SPEED_ACC)
 	{
-		myBallControl_updateBallSpeed(BAR_SPEED_ADJUSTMENT);
+		xil_printf("Speed increase CONSTANT is %d\n\n", sideHit);
+		myBallControl_updateBallSpeed(BAR_SPEED_ADJUSTMENT_UP);
 	}
 
 }

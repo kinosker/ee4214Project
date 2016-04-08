@@ -141,7 +141,7 @@ int tft_updateColumn(XTft *InstancePtr, const int col_x, int currentBricks,
 			row_y = ROW_Y_START + ROW_OFFSET * row_num; // position of y to draw rect.
 
 			tft_fillBrick(InstancePtr, col_x, row_y, col_x + BRICK_SIZE_LENGTH,
-											row_y + BRICK_SIZE_HEIGHT, COLOR_GREEN);
+					row_y + BRICK_SIZE_HEIGHT, COLOR_GREEN);
 
 			tft_removeBrick(InstancePtr, col_x, row_y,
 					col_x + BRICK_SIZE_LENGTH, row_y + BRICK_SIZE_HEIGHT);
@@ -162,7 +162,7 @@ int tft_updateColumn(XTft *InstancePtr, const int col_x, int currentBricks,
 			row_y = ROW_Y_START + ROW_OFFSET * row_num; // position of y to draw rect.
 
 			tft_fillBrick(InstancePtr, col_x, row_y, col_x + BRICK_SIZE_LENGTH,
-								row_y + BRICK_SIZE_HEIGHT, futureColour);
+					row_y + BRICK_SIZE_HEIGHT, futureColour);
 
 			tft_addBrick(InstancePtr, col_x, row_y, col_x + BRICK_SIZE_LENGTH,
 					row_y + BRICK_SIZE_HEIGHT);
@@ -256,9 +256,51 @@ int tft_updateTime(XTft *InstancePtr, int gameTime) {
 
 }
 
-int tft_updateSpeed(XTft *InstancePtr, int speed) {
-	tft_writeInteger(InstancePtr, BALL_SPEED_START_X + 50,
-			BALL_SPEED_START_Y + 5, speed, COLOR_BLACK, COLOR_GREY);
+int tft_updateSpeed(XTft *InstancePtr, int speed)
+{
+	static prev_speed = INITIAL_SPEED;
+
+	int temp_speed = speed, count = 0, prev_count = 0;
+
+	if(prev_speed == speed)
+	{
+		return 1;
+
+	}
+
+
+	while ((temp_speed /= 10) != 0) {
+		count++;
+	}
+
+	while ((prev_speed /= 10) != 0) {
+			prev_count++;
+		}
+
+
+	if(prev_count != count)
+	{
+		tft_fillRect(InstancePtr, BALL_SPEED_START_X + 5, BALL_SPEED_START_Y+5,
+					BALL_SPEED_END_X - 5, BALL_SPEED_END_Y-5, COLOR_GREY);
+
+	}
+
+	switch (count) {
+	case 0:
+		tft_writeInteger(InstancePtr, BALL_SPEED_START_X + 53,
+				BALL_SPEED_START_Y + 5, speed, COLOR_BLACK, COLOR_GREY);
+		break;
+	case 1:
+		tft_writeInteger(InstancePtr, BALL_SPEED_START_X + 53,
+				BALL_SPEED_START_Y + 5, speed, COLOR_BLACK, COLOR_GREY);
+		break;
+	case 2:
+		tft_writeInteger(InstancePtr, BALL_SPEED_START_X + 50,
+				BALL_SPEED_START_Y + 5, speed, COLOR_BLACK, COLOR_GREY);
+		break;
+	}
+
+	prev_speed = speed;
 }
 
 int tft_updateBricksLeft(XTft *InstancePtr, int bricksLeft) {
@@ -380,9 +422,25 @@ int tft_fillBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 
 int tft_addBar(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 		u32 ColEndPos, u32 RowEndPos, unsigned int colour) {
-	tft_drawRect(InstancePtr, ColStartPos, RowStartPos, ColEndPos, RowEndPos,
-			colour); // line color = black
 
+	//N-region
+
+	tft_fillRect(InstancePtr, (ColStartPos + 20), RowStartPos, (ColEndPos - 20), RowEndPos,
+			COLOR_GREY);
+	//S- region
+	tft_fillRect(InstancePtr, (ColStartPos + 10), RowStartPos, (ColStartPos + 20), RowEndPos,
+			COLOR_LIGHT_BLUE);
+	//S+ region
+	tft_fillRect(InstancePtr, (ColEndPos - 20), RowStartPos, (ColEndPos - 10), RowEndPos,
+			COLOR_LIGHT_BLUE);
+	//A- region
+	tft_fillRect(InstancePtr, ColStartPos, RowStartPos, (ColStartPos + 10), RowEndPos,
+			COLOR_RED);
+	//A+ region
+	tft_fillRect(InstancePtr, (ColEndPos - 10), RowStartPos, ColEndPos, RowEndPos,
+			COLOR_RED);
+	tft_drawRect(InstancePtr, ColStartPos, RowStartPos, ColEndPos, RowEndPos,
+			COLOR_BLACK);
 	// tft_fillRect(InstancePtr, ColStartPos, RowStartPos, ColEndPos, RowEndPos,
 	// 		colour); // line color = black
 
@@ -390,9 +448,9 @@ int tft_addBar(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 
 int tft_moveCircle(XTft *InstancePtr, int x0, int y0, int future_x0,
 		int future_y0, int speed) {
-//	int speedX = 0, speedY = 0;
-//	if(angle == 0)
-//	{
+	//	int speedX = 0, speedY = 0;
+	//	if(angle == 0)
+	//	{
 	int diff_X = 0, diff_Y = 0, number_of_Steps_X = 0, number_of_Steps_Y = 0,
 			i = 0, j =0;
 	diff_X = future_x0 - x0;
@@ -427,7 +485,7 @@ int tft_moveCircle(XTft *InstancePtr, int x0, int y0, int future_x0,
 		}
 
 	}
-//	}
+	//	}
 }
 
 bar_msg tft_moveBarLeft(XTft *InstancePtr, unsigned int holdTime) {
@@ -453,8 +511,9 @@ bar_msg tft_moveBarLeft(XTft *InstancePtr, unsigned int holdTime) {
 	if (barLeftPos > OUTER_COL_START_X) {
 
 		// remove Bar
-		tft_addBar(InstancePtr, barLeftPos, BAR_START_Y, barRightPos,
+		tft_fillRect(InstancePtr, barLeftPos, BAR_START_Y, barRightPos,
 				BAR_START_Y + BAR_HEIGHT, COLOR_GREEN);
+
 
 		barLeftPos = barLeftPos - pixelMove;
 		barRightPos = barRightPos - pixelMove;
@@ -502,7 +561,7 @@ bar_msg tft_moveBarRight(XTft *InstancePtr, unsigned int holdTime) {
 	if (barRightPos < OUTER_COL_END_X - 1) {
 
 		// remove Bar
-		tft_addBar(InstancePtr, barLeftPos, BAR_START_Y, barRightPos,
+		tft_fillRect(InstancePtr, barLeftPos, BAR_START_Y, barRightPos,
 				BAR_START_Y + BAR_HEIGHT, COLOR_GREEN);
 
 		barLeftPos = barLeftPos + 25;

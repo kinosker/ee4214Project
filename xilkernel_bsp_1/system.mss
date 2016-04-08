@@ -8,11 +8,14 @@ BEGIN OS
  PARAMETER OS_NAME = xilkernel
  PARAMETER OS_VER = 6.1
  PARAMETER PROC_INSTANCE = microblaze_1
+ PARAMETER config_kill = true
  PARAMETER config_msgq = true
  PARAMETER config_named_sema = true
  PARAMETER config_pthread_mutex = true
  PARAMETER config_sema = true
  PARAMETER config_time = true
+ PARAMETER config_yield = true
+ PARAMETER enhanced_features = true
  PARAMETER max_pthread_mutex = 15
  PARAMETER max_pthread_mutex_waitq = 15
  PARAMETER max_pthreads = 15
@@ -24,6 +27,7 @@ BEGIN OS
  PARAMETER stdout = ps7_uart_1
  PARAMETER sysintc_spec = microblaze_1_axi_intc
  PARAMETER systmr_dev = axi_timer_1
+ PARAMETER systmr_interval = 1
  PARAMETER use_malloc = true
 END
 
