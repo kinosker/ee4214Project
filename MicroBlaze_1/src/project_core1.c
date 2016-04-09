@@ -601,6 +601,8 @@ void* thread_func_ball()
 			// NOTE *** THIS HAVE MORE SIDE TO CHANGE ANGLEE **** BAR GOT DIFF REGION ***
 			barHit = myBoundaryChecker_CheckBar((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y, bar_recv.start_x,
 					bar_recv.start_y, bar_recv.end_x, bar_recv.end_y);
+
+
 			outerBoxHit = myBoundaryChecker_CheckOuter((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y);
 
 			global_sideHit = (barHit | outerBoxHit);
@@ -679,8 +681,11 @@ void* thread_func_ball()
 
 
 				// NOTE *** THIS HAVE MORE SIDE TO CHANGE ANGLEE **** BAR GOT DIFF REGION ***
-				barHit = myBoundaryChecker_CheckBar((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y, bar_recv.start_x,
+
+				// old 1 not used..
+				barHit = myBoundaryChecker_checkHitBar((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y, bar_recv.start_x,
 						bar_recv.start_y, bar_recv.end_x, bar_recv.end_y);
+
 				outerBoxHit = myBoundaryChecker_CheckOuter((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y);
 
 				global_sideHit = (barHit | outerBoxHit);
@@ -822,58 +827,78 @@ void thread_func_brick(char columnNumber)
 				// initialise loop variables
 				temp_BricksLeft = brickLoop = bricksLeft;
 				row_num = 0;
+				temp_thread_score = 0;
 
-				while(brickLoop)
+
+				if( myBoundaryChecker_checkBrick_horizontal((int)global_ballBounceCheck.x, col_x, col_x + BRICK_SIZE_LENGTH) == 0)
 				{
-					temp_thread_score = 0;
+						// if ball not within this brick column x axis => wont hit any brick at this column.
+						// do nth
+				}
+				else
+				{
+					// ball in this column x axis boundary...
 
-					if(brickLoop & 0b1) // if got brick then check
+					while(brickLoop)
 					{
-						row_y = ROW_Y_START + ROW_OFFSET * row_num; // position of y for the selected brick.
 
 
-						temp_sideHit = myBoundaryChecker_CheckInner((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y, col_x,
-								row_y, col_x + BRICK_SIZE_LENGTH, row_y + BRICK_SIZE_HEIGHT);
 
-						if(temp_sideHit > 0)
+						if(brickLoop & 0b1) // if got brick then check
 						{
-							// update : bounceHit, sideHit, bricksLeft, thread score.
-							pthread_mutex_lock(&mutex_bricks);
-							global_bounceHit ++;
-							if(global_sideHit != HIT_INNER_CORNER)// hit inner corner should hav priority
+							row_y = ROW_Y_START + ROW_OFFSET * row_num; // position of y for the selected brick.
+
+							if( myBoundaryChecker_checkBrick_vertical( (int)global_ballBounceCheck.y,  row_y,  row_y + BRICK_SIZE_HEIGHT) == 1 )
 							{
-								global_sideHit = temp_sideHit;
-							}
-							pthread_mutex_unlock(&mutex_bricks);
+								// brief overlap check... used ball as square to check overlap... unable to confirm...
 
-							//  		    	   	xil_printf("sideHit : %d\n , Before : Col number : %d, bricksLeft : %d\n", temp_sideHit, columnNumber, temp_BricksLeft);
+								temp_sideHit = myBoundaryChecker_checkHitBrick((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y, col_x,
+									row_y, col_x + BRICK_SIZE_LENGTH, row_y + BRICK_SIZE_HEIGHT);
 
-							temp_BricksLeft = temp_BricksLeft & (~(0b1 << row_num)); // set the brick that got hit to l'o'
-
-							//	xil_printf("After : Col number : %d, bricksLeft : %d\n", columnNumber, temp_BricksLeft);
-
-							if(colour == COLOR_GREEN)
-							{
-								temp_thread_score ++;
-							}
-							else if(colour == COLOR_YELLOW)
-							{
-								temp_thread_score += 2;
 							}
 
-							temp_sideHit = 0; // reset temp side hit to find next bricks that may get hit..
+
+
+							if(temp_sideHit > 0)
+							{
+								// update : bounceHit, sideHit, bricksLeft, thread score.
+								pthread_mutex_lock(&mutex_bricks);
+								global_bounceHit ++;
+								if(global_sideHit != HIT_INNER_CORNER)// hit inner corner should hav priority
+								{
+									global_sideHit = temp_sideHit;
+								}
+								pthread_mutex_unlock(&mutex_bricks);
+
+								//  		    	   	xil_printf("sideHit : %d\n , Before : Col number : %d, bricksLeft : %d\n", temp_sideHit, columnNumber, temp_BricksLeft);
+
+								temp_BricksLeft = temp_BricksLeft & (~(0b1 << row_num)); // set the brick that got hit to l'o'
+
+								//	xil_printf("After : Col number : %d, bricksLeft : %d\n", columnNumber, temp_BricksLeft);
+
+								if(colour == COLOR_GREEN)
+								{
+									temp_thread_score ++;
+								}
+								else if(colour == COLOR_YELLOW)
+								{
+									temp_thread_score += 2;
+								}
+
+								temp_sideHit = 0; // reset temp side hit to find next bricks that may get hit..
+
+							}
 
 						}
 
-					}
 
+						row_num++; // move to next row
+						brickLoop = brickLoop >> 1; // move to next brick to check
 
-					row_num++; // move to next row
-					brickLoop = brickLoop >> 1; // move to next brick to check
+						//xil_printf("brick loop : %d\n", brickLoop);
 
-					//xil_printf("brick loop : %d\n", brickLoop);
-
-				} // completed checking all the bricks
+					} // completed checking all the bricks
+				}
 
 
 			}

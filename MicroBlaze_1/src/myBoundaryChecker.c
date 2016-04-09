@@ -173,6 +173,198 @@ int innerBottomBoundary(int side_ball_Y, int myBoundary_End_Y) {
 	return side_ball_Y >= myBoundary_End_Y;
 }
 
+
+
+int myBoundaryChecker_checkHitBrick(int bricksLeft, int ball_X, int ball_Y, int myBoundary_Start_X,
+		int myBoundary_Start_Y, int myBoundary_End_X, int myBoundary_End_Y)
+{
+	int bricksHit = 0, sideHit = 0;
+
+	while(bricksLeft)
+	{
+		if( myBoundaryChecker_checkBrick_horizontal(ball_X, myBoundary_Start_X, myBoundary_End_X) == 0)
+		{
+			// if ball not within this brick column x axis => wont hit any brick here.
+			return 0;
+		}
+
+		if( myBoundaryChecker_checkBrick_vertical( ball_Y,  myBoundary_Start_Y,  myBoundary_End_Y) == 1 )
+		{
+
+			// ball(square) overLap brick...
+			bricksHit ++;
+		}
+
+
+
+	}
+
+
+}
+
+int myBoundaryChecker_getClosestX(int ball_X, int myBoundary_Start_X, int myBoundary_End_X)
+{
+	if (ball_X  < myBoundary_Start_X)
+	{
+	    return  myBoundary_Start_X;
+	}
+	else if (ball_X  > myBoundary_End_X)
+	{
+		return myBoundary_End_X;
+	}
+	else
+	{
+		return ball_X;
+	}
+}
+
+
+int myBoundaryChecker_getClosestY(int ball_Y, int myBoundary_Start_Y, int myBoundary_End_Y)
+{
+	if (ball_Y  < myBoundary_Start_Y)
+	{
+	    return  myBoundary_Start_Y;
+	}
+	else if (ball_Y  > myBoundary_End_Y)
+	{
+		return myBoundary_End_Y;
+	}
+	else
+	{
+		return ball_Y;
+	}
+}
+
+int myBoundaryChecker_getDistanceBtwThem(int dist_X, int dist_Y)
+{
+
+	// use pythagoras to find distance.
+
+	float distanceBtwThem = sqrt (  ( ((float)dist_X * dist_X)  + (dist_Y * dist_Y) ) );
+
+	
+	return (int)distanceBtwThem; // rnd down distance.
+
+}
+
+
+// return the side that it HIT!, if 
+int myBoundaryChecker_checkHitBrick(int ball_X, int ball_Y, 
+	int myBoundary_Start_X, int myBoundary_Start_Y, int myBoundary_End_X, int myBoundary_End_Y)
+{
+
+	int closest_X, closest_Y;
+	int dist_X, dist_Y, distanceBtwThem; 
+
+
+	// get closest point btw them. 
+	closest_X = myBoundaryChecker_getClosestX(ball_X, myBoundary_Start_X, myBoundary_End_X);
+	closest_Y = myBoundaryChecker_getClosestY(int ball_Y, int myBoundary_Start_Y, int myBoundary_End_Y);
+
+	dist_X =  abs(ball_X - closest_X);
+	dist_Y =  abs(ball_Y - closest_Y);
+
+
+	// get dist btw brick and ball
+	distanceBtwThem = myBoundaryChecker_getDistanceBtwThem(int dist_X, int dist_Y);
+
+	if (distance < CIRCLE_RADIUS)
+	{
+		// collided into brick...
+
+		if(CIRCLE_RADIUS - distance <= CORNER_TOLERANCE)
+		{
+			// distance between brick and ball is very near... likely to be corner
+			// NOTE : Why cannot be ball inside brick and near..?
+			// NOTE : How do u confirm!?!? => Small steps algorithm... 
+
+			return HIT_INNER_CORNER; // return 11
+		}
+		else
+		{
+			// determine : hit side or top/bottom
+
+			if(dist_X < dist_Y)
+			{
+				// distance for x is closer...
+				return HIT_INNER_BOX_SIDE;
+			}
+			else
+			{
+				// distance for y is closer... either btm or top .. no difference
+				HIT_INNER_BOX_BTM
+			}
+		}
+	}
+	else
+	{
+		return 0;
+	}
+
+}
+
+
+// return 1 if x axis is within the brick side boundary
+// Return 0 if not...
+int myBoundaryChecker_checkBrick_horizontal(int ball_X, int myBoundary_Start_X, int myBoundary_End_X)
+{
+	side_ball_X_Right = ball_X + CIRCLE_RADIUS + 1;
+	side_ball_X_Left = ball_X + CIRCLE_RADIUS - 1;
+
+
+	if((side_ball_X_Right >= myBoundary_Start_X) &&  (side_ball_X_Right <= myBoundary_End_X))
+	{
+		// right of ball x inside boundary
+		return 1;
+	}
+
+	else if((side_ball_X_Left >= myBoundary_Start_X) &&  (side_ball_X_Left <= myBoundary_End_X))
+	{
+		// left of ball x inside boundary
+		return 1;
+	}
+
+	else
+	{
+
+		return 0
+	}
+
+}
+
+
+int myBoundaryChecker_checkBrick_vertical(int ball_Y, int myBoundary_Start_Y, int myBoundary_End_Y)
+{
+	side_ball_Y_Top = ball_Y + CIRCLE_RADIUS + 1;
+	side_ball_Y_Bottom = ball_Y + CIRCLE_RADIUS - 1;
+
+
+	if((side_ball_Y_Top >= myBoundary_Start_Y) &&  (side_ball_Y_Top <= myBoundary_End_Y))
+	{
+		// top of ball y inside boundary
+		return 1;
+	}
+
+	else if((side_ball_Y_Bottom >= myBoundary_Start_Y) &&  (side_ball_Y_Bottom <= myBoundary_End_Y))
+	{
+		// btm of ball y inside boundary
+		return 1;
+	}
+
+	else
+	{
+
+		return 0
+	}
+
+}
+
+
+
+
+
+
+
 int myBoundaryChecker_CheckInner(int ball_X, int ball_Y, int myBoundary_Start_X,
 		int myBoundary_Start_Y, int myBoundary_End_X, int myBoundary_End_Y) //speed????? angle???
 {
@@ -256,6 +448,136 @@ int myBoundaryChecker_CheckInner(int ball_X, int ball_Y, int myBoundary_Start_X,
 	return 0;
 }
 
+
+
+// return 1 if x axis is within the brick side boundary
+// Return 0 if not...
+int myBoundaryChecker_checkHitBar_horizontal(int ball_X, int myBoundary_Start_X, int myBoundary_End_X)
+{
+	side_ball_X_Right = ball_X + CIRCLE_RADIUS + 1;
+	side_ball_X_Left = ball_X + CIRCLE_RADIUS - 1;
+
+
+	if((side_ball_X_Right >= myBoundary_Start_X) &&  (side_ball_X_Right <= myBoundary_End_X))
+	{
+		// right of ball x inside boundary
+		return 1;
+	}
+
+	else if((side_ball_X_Left >= myBoundary_Start_X) &&  (side_ball_X_Left <= myBoundary_End_X))
+	{
+		// left of ball x inside boundary
+		return 1;
+	}
+
+	else
+	{
+
+		return 0
+	}
+
+}
+
+
+
+// NO END Y cause... impossible to be below.. => below = lose game..
+int myBoundaryChecker_checkBar_vertical(int ball_Y, int myBoundary_Start_Y)
+{
+	// check btm is enough..
+
+	side_ball_Y_Bottom = ball_Y + CIRCLE_RADIUS - 1;
+
+
+	 if((side_ball_Y_Bottom >= myBoundary_Start_Y))
+	{
+		// btm of ball y inside boundary
+		return 1;
+	}
+
+	else
+	{
+
+		return 0
+	}
+
+}
+
+
+
+
+int myBoundaryChecker_checkHitBar(int ball_X, int ball_Y, int myBoundary_Start_X,
+		int myBoundary_Start_Y, int myBoundary_End_X, int myBoundary_End_Y)
+{
+
+	int closest_X, closest_Y;
+	int dist_X, dist_Y, distanceBtwThem; 
+
+	if(myBoundaryChecker_checkHitBar_horizontal( ball_X, myBoundary_Start_X, myBoundary_End_X))
+	{
+		// if ball at the x boundary of bar.. continue to confirm...
+
+		if(myBoundaryChecker_checkBar_vertical (ball_Y, myBoundary_Start_Y))
+		{
+			// ball is both at x and y boundary... using square box check..
+			// use distance to check if it's really hitting bar..
+
+			closest_X = myBoundaryChecker_getClosestX( ball_X,  myBoundary_Start_X,  myBoundary_End_X)
+			closest_Y = myBoundary_Start_Y; // using start Y only...
+
+
+			dist_X =  abs(ball_X - closest_X);
+			dist_Y =  abs(ball_Y - closest_Y);
+
+			// get dist btw brick and ball
+			distanceBtwThem = myBoundaryChecker_getDistanceBtwThem(dist_X, dist_Y);
+
+			if (distance < CIRCLE_RADIUS)
+			{
+				// collided into bar...
+
+				if(ball_X <= (myBoundary_Start_X + REGION_A_NEG))
+				{
+					// A- REGION : from LHS to end of A- region
+					return HIT_ANGLE_DEC; // return 14
+
+				}
+				else if(ball_X <= (myBoundary_Start_X + REGION_S_NEG))
+				{
+					// S- REGION : from end of A- to end of S- region
+					return HIT_SPEED_DEC; // return 14
+
+				}
+				else if(ball_X <= (myBoundary_Start_X + REGION_N))
+				{
+					// N REGION : from end of S- to end of N region
+
+					return HIT_BAR_N; // return 11
+
+
+				}
+				else if(ball_X <= (myBoundary_Start_X + REGION_S_POS))
+				{
+					// S+ REGION: from end of N to end of S+ region
+					return HIT_SPEED_ACC; // return 13
+
+				}
+				else
+				{
+					// N+ REGION : from end of S+ region to RHS
+					return HIT_SPEED_ACC; // return 13
+
+				}
+				
+			}
+
+		}
+
+	}
+	
+	return 0; // fail to hit any..
+	
+
+}
 
 int myBoundaryChecker_CheckBar(int ball_X, int ball_Y, int myBoundary_Start_X,
 		int myBoundary_Start_Y, int myBoundary_End_X, int myBoundary_End_Y) //speed????? angle???

@@ -18,6 +18,8 @@
  *																			 *
  ******************************************************************************/
 
+#define CORNER_TOLERANCE			2
+
 #define HIT_REFLECT_SIDE			9
 #define HIT_REFLECT_TOP				10
 #define HIT_REFLECT_BTM				12
@@ -49,6 +51,16 @@
 
 #define HIT_ANGLE_DEC				14
 #define HIT_ANGLE_ACC				15
+
+
+// Final region point (offset from  BAR START X Position)
+#define REGION_A_NEG				10
+#define REGION_S_NEG				20
+
+#define REGION_N 					60
+
+#define REGION_S_POS				70
+#define REGION_A_POS				80
 
 /*****************************************************************************
  **																			 *
@@ -101,4 +113,27 @@ int myBoundaryChecker_CheckInner(int ball_X, int ball_Y, int myBoundary_Start_X,
 
 int myBoundaryChecker_CheckBar(int ball_X, int ball_Y, int myBoundary_Start_X,
 		int myBoundary_Start_Y, int myBoundary_End_X, int myBoundary_End_Y);
+
+
+// --- Tier 1 Checks ------
+int myBoundaryChecker_checkBrick_horizontal(int ball_X, int myBoundary_Start_X, int myBoundary_End_X);
+int myBoundaryChecker_checkBrick_vertical(int ball_Y, int myBoundary_Start_Y, int myBoundary_End_Y);
+
+// --- Tier 2 Checks -------
+int myBoundaryChecker_checkHitBrick(int ball_X, int ball_Y, int myBoundary_Start_X, int myBoundary_Start_Y, int myBoundary_End_X, int myBoundary_End_Y);
+int myBoundaryChecker_getClosestX(int ball_X, int myBoundary_Start_X, int myBoundary_End_X);
+int myBoundaryChecker_getClosestY(int ball_Y, int myBoundary_Start_Y, int myBoundary_End_Y);
+int myBoundaryChecker_getDistanceBtwThem(int dist_X, int dist_Y);
+
+
+
+
+
+
+
+
+
+
+
+
 #endif /* BOUNDARYCHECK_H_ */
