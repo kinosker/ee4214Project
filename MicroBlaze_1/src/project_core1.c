@@ -599,7 +599,7 @@ void* thread_func_ball()
 			// if(barHit or outerboundary) global_bounceHit = 1; break;
 
 			// NOTE *** THIS HAVE MORE SIDE TO CHANGE ANGLEE **** BAR GOT DIFF REGION ***
-			barHit = myBoundaryChecker_CheckBar((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y, bar_recv.start_x,
+			barHit = myBoundaryChecker_checkHitBar((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y, bar_recv.start_x,
 					bar_recv.start_y, bar_recv.end_x, bar_recv.end_y);
 
 
