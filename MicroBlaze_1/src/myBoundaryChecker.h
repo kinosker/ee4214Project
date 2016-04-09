@@ -127,6 +127,11 @@ int myBoundaryChecker_getDistanceBtwThem(int dist_X, int dist_Y);
 
 
 
+int myBoundaryChecker_checkHitBar(int ball_X, int ball_Y, int myBoundary_Start_X,int myBoundary_Start_Y, int myBoundary_End_X, int myBoundary_End_Y);
+int myBoundaryChecker_checkBar_vertical(int ball_Y, int myBoundary_Start_Y);
+int myBoundaryChecker_checkHitBar_horizontal(int ball_X, int myBoundary_Start_X, int myBoundary_End_X);
+
+
 
 
 
