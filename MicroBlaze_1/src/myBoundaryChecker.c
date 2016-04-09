@@ -279,7 +279,7 @@ int myBoundaryChecker_checkHitBrick(int ball_X, int ball_Y, int myBoundary_Start
 int myBoundaryChecker_checkBrick_horizontal(int ball_X, int myBoundary_Start_X, int myBoundary_End_X)
 {
 	int side_ball_X_Right = ball_X + CIRCLE_RADIUS + 1;
-	int side_ball_X_Left = ball_X + CIRCLE_RADIUS - 1;
+	int side_ball_X_Left = ball_X - CIRCLE_RADIUS - 1;
 
 
 	if((side_ball_X_Right >= myBoundary_Start_X) &&  (side_ball_X_Right <= myBoundary_End_X))
@@ -305,8 +305,8 @@ int myBoundaryChecker_checkBrick_horizontal(int ball_X, int myBoundary_Start_X, 
 
 int myBoundaryChecker_checkBrick_vertical(int ball_Y, int myBoundary_Start_Y, int myBoundary_End_Y)
 {
-	int side_ball_Y_Top = ball_Y + CIRCLE_RADIUS + 1;
-	int side_ball_Y_Bottom = ball_Y + CIRCLE_RADIUS - 1;
+	int side_ball_Y_Top = ball_Y - CIRCLE_RADIUS - 1;
+	int side_ball_Y_Bottom = ball_Y + CIRCLE_RADIUS + 1;
 
 
 	if((side_ball_Y_Top >= myBoundary_Start_Y) &&  (side_ball_Y_Top <= myBoundary_End_Y))
@@ -425,7 +425,7 @@ int myBoundaryChecker_CheckInner(int ball_X, int ball_Y, int myBoundary_Start_X,
 int myBoundaryChecker_checkHitBar_horizontal(int ball_X, int myBoundary_Start_X, int myBoundary_End_X)
 {
 	int side_ball_X_Right = ball_X + CIRCLE_RADIUS + 1;
-	int side_ball_X_Left = ball_X + CIRCLE_RADIUS - 1;
+	int side_ball_X_Left = ball_X - CIRCLE_RADIUS - 1;
 
 
 	if((side_ball_X_Right >= myBoundary_Start_X) &&  (side_ball_X_Right <= myBoundary_End_X))
@@ -455,7 +455,7 @@ int myBoundaryChecker_checkBar_vertical(int ball_Y, int myBoundary_Start_Y)
 {
 	// check btm is enough..
 
-	int side_ball_Y_Bottom = ball_Y + CIRCLE_RADIUS - 1;
+	int side_ball_Y_Bottom = ball_Y + CIRCLE_RADIUS + 1;
 
 
 	 if((side_ball_Y_Bottom >= myBoundary_Start_Y))
