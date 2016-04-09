@@ -173,6 +173,35 @@ int innerBottomBoundary(int side_ball_Y, int myBoundary_End_Y) {
 	return side_ball_Y >= myBoundary_End_Y;
 }
 
+
+
+int myBoundaryChecker_checkHitBrick(int bricksLeft, int ball_X, int ball_Y, int myBoundary_Start_X,
+		int myBoundary_Start_Y, int myBoundary_End_X, int myBoundary_End_Y)
+{
+	int bricksHit = 0, sideHit = 0;
+
+	while(bricksLeft)
+	{
+		if( myBoundaryChecker_checkBrick_horizontal(ball_X, myBoundary_Start_X, myBoundary_End_X) == 0)
+		{
+			// if ball not within this brick column x axis => wont hit any brick here.
+			return 0;
+		}
+
+		if( myBoundaryChecker_checkBrick_vertical( ball_Y,  myBoundary_Start_Y,  myBoundary_End_Y) == 1 )
+		{
+
+			// ball(square) overLap brick...
+			bricksHit ++;
+		}
+
+
+
+	}
+
+
+}
+
 int myBoundaryChecker_getClosestX(int ball_X, int myBoundary_Start_X, int myBoundary_End_X)
 {
 	if (ball_X  < myBoundary_Start_X)
@@ -491,7 +520,7 @@ int myBoundaryChecker_checkHitBar(int ball_X, int ball_Y, int myBoundary_Start_X
 			// ball is both at x and y boundary... using square box check..
 			// use distance to check if it's really hitting bar..
 
-			closest_X = myBoundaryChecker_getClosestX( ball_X,  myBoundary_Start_X,  myBoundary_End_X);
+			closest_X = myBoundaryChecker_getClosestX( ball_X,  myBoundary_Start_X,  myBoundary_End_X)
 			closest_Y = myBoundary_Start_Y; // using start Y only...
 
 
