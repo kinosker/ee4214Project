@@ -1,16 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <section name="Workbench">
-	<item value="design_1_wrapper_hw_platform_1" key="programfpga.hwplatform"/>
-	<item value="C:\Users\KaiHsiang\Desktop\EE4214_Workspace\Lab1\MulticoreProcessor\MulticoreProcessor.sdk\4214_project\MicroBlaze_1\Debug\MicroBlaze_1.elf" key="design_1_wrapper_hw_platform_1-design_1_i/microblaze_1-initElf"/>
-	<item value="design_1_wrapper_bd.bmm" key="design_1_wrapper_hw_platform_1-bmmFile"/>
-	<item value="design_1_wrapper.bit" key="design_1_wrapper_hw_platform_1-bitFile"/>
-	<item value="true" key="design_1_wrapper_hw_platform_0-runResetZynq"/>
 	<item value="C:\Users\KaiHsiang\Desktop\EE4214_Workspace\Lab1\MulticoreProcessor\MulticoreProcessor.sdk\4214_project\MicroBlaze_0\Debug\MicroBlaze_0.elf" key="design_1_wrapper_hw_platform_0-design_1_i/microblaze_0-initElf"/>
-	<item value="C:\Users\KaiHsiang\Desktop\EE4214_Workspace\Lab1\MulticoreProcessor\MulticoreProcessor.sdk\4214_project\MicroBlaze_0\Debug\MicroBlaze_0.elf" key="design_1_wrapper_hw_platform_1-design_1_i/microblaze_0-initElf"/>
+	<item value="design_1_wrapper_hw_platform_0" key="programfpga.hwplatform"/>
 	<item value="design_1_wrapper_bd.bmm" key="design_1_wrapper_hw_platform_0-bmmFile"/>
 	<item value="design_1_wrapper.bit" key="design_1_wrapper_hw_platform_0-bitFile"/>
-	<item value="Local" key="design_1_wrapper_hw_platform_1-target"/>
 	<item value="C:\Users\KaiHsiang\Desktop\EE4214_Workspace\Lab1\MulticoreProcessor\MulticoreProcessor.sdk\4214_project\MicroBlaze_1\Debug\MicroBlaze_1.elf" key="design_1_wrapper_hw_platform_0-design_1_i/microblaze_1-initElf"/>
-	<item value="true" key="design_1_wrapper_hw_platform_1-runResetZynq"/>
+	<item value="true" key="design_1_wrapper_hw_platform_0-runResetZynq"/>
 	<item value="Local" key="design_1_wrapper_hw_platform_0-target"/>
 </section>
