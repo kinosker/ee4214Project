@@ -56,6 +56,11 @@ void* thread_func_time_elapsed();
 void* thread_func_ball();
 int init_mutex_Hardware(XMutex *MutexPtr);
 
+bar_msg bar_updatePositon(bar_msg bar_input);
+bar_msg bar_moveLeft(bar_msg bar_input, int holdTime);
+bar_msg bar_moveRight(bar_msg bar_input, int holdTime);
+
+
 void main_prog(void *arg);
 
 /************************ Global Variable Definitions ****************************/
@@ -216,7 +221,6 @@ void* thread_func_controller()
 
     init_mailBox(&Mbox);
 
-	int buttonHoldTime = 0;
 
 	/***************************Hardware Mutex **************************/
 	init_mutex_Hardware(&hardware_Mutex);
@@ -242,19 +246,8 @@ void* thread_func_controller()
 		//		core 1 processor take cares of FPS 
 	    XMbox_ReadBlocking(&Mbox, &allProcessor_recv, sizeof(allProcessor_msg)); 
 
-	    // 2. Blocking receive MSG Q from bar thread?
-	    if (myButton_checkLeft(&gpPB)) {
-			buttonHoldTime = myButton_checkLeft(&gpPB);
-			bar_send = tft_moveBarLeft(&TFT_Instance, buttonHoldTime);
-		}
-
-		if (myButton_checkRight(&gpPB)) {
-			//xil_printf("lapsed time is : %d\r\n", myButton_checkRight(&gpPB));
-			buttonHoldTime = myButton_checkRight(&gpPB);
-			bar_send = tft_moveBarRight(&TFT_Instance, buttonHoldTime);
-		}
-
-
+	    // 2. Get updated bar position..
+		bar_send = bar_updatePositon(bar_send);
 
 
 	    // 3. Send to core 1 for processing ...
@@ -267,6 +260,9 @@ void* thread_func_controller()
 	    global_ballSpeed_recv = allProcessor_recv.msg_ball.speed;						// update speed 
 		global_score_recv = allProcessor_recv.score;									// update score
 		global_totalBricksLeft_recv = allProcessor_recv.msg_Allbricks.totalBricksLeft;	// update total bricks left
+
+		// 4.1 update bar location..
+		tft_moveBar(&TFT_Instance, bar_send);
 
 
 	    myBarrier_wait(&barrier_SyncThreads_start);	// start all the threads
@@ -503,42 +499,101 @@ int init_mailBox(XMbox *MboxPtr)
 }
 
 
+bar_msg bar_updatePositon(bar_msg bar_input) 
+{
+	// get hold time..
+	bar_msg bar_temp = bar_input;
+
+	int leftHoldTime = myButton_checkLeft(&gpPB);
+	int rightHoldTime = myButton_checkRight(&gpPB);
+
+	if (leftHoldTime) 
+	{
+		bar_temp = bar_moveLeft(bar_temp, leftHoldTime);
+		return bar_temp;
+	}
+
+	else if (rightHoldTime) 
+	{
+		bar_temp = bar_moveRight(bar_temp, leftHoldTime);
+		return bar_temp;
+	}
+	else
+	{
+		return bar_temp;	// no changes
+	}
+
+}
 
 
-// void* thread_func_ball() {
-// 	ball_msg ball;
-// 	ball.x = CIRCLE_X;
-// 	ball.y = CIRCLE_Y;
-// 	ball.dir = 90; // 90 degree
+bar_msg bar_moveRight(bar_msg bar_input, int holdTime)
+{
+	bar_msg bar_temp = bar_input;
+	int pixelMove;
 
-// 	int ballSpeedPerFrame = 0;
 
-// 	while (1) {
-// 		pthread_mutex_lock(&mutex_ball);
+	if(holdTime > 250) // if hold for more than 250 ms...
+	{
+		// move at 200 pixel per sec
+		pixelMove = 200/FPS;
+	}
+	else
+	{
+		// move at 25 pixel if hold time <= 250 ms
+		pixelMove = 25;
+	}
 
-// 		ballSpeedPerFrame = myBallControl_getBallSpeedPerFrame(ballSpeed); // get speed per frame
 
-// 		pthread_mutex_lock(&mutex_tft);
-// 		tft_removeCircle(&TFT_Instance, ball.x, ball.y, CIRCLE_RADIUS); // update ball location...
-// 		pthread_mutex_unlock(&mutex_tft);
 
-// 		ball = myBallControl_getBallLocation(ballSpeedPerFrame, ball); // get end ball location..
 
-// 		// .. add some boundary so ball will bounce up and down.... irregardless of brick and 
-// 		if (ball.y < 228) {
-// 			ball.y = 228;
-// 			ball.dir = ball.dir * -1;
-// 		}
+	if (bar_temp.end_x < (OUTER_COL_END_X - 1))
+	{
 
-// 		if (ball.y > 397) {
-// 			ball.y = 395;
-// 			ball.dir = ball.dir * -1;
-// 		}
-// 		//xil_printf("bsp = %d, ball.x = %d\r\nball.y = %d\r\n",ballSpeedPerFrame, ball.x, ball.y);
+		bar_temp.start_x += 25;
+		bar_temp.end_x  += 25;
 
-// 		pthread_mutex_lock(&mutex_tft);
-// 		tft_addCircle(&TFT_Instance, ball.x, ball.y, CIRCLE_RADIUS); // update ball location...
-// 		pthread_mutex_unlock(&mutex_tft);
-// 	}
+		if (bar_temp.end_x > (OUTER_COL_END_X - 1))
+		{
+			bar_temp.end_x  = (OUTER_COL_END_X - 1);
+			bar_temp.start_x  = bar_temp.end_x - BAR_LENGTH;
+		}
+	}
 
-// }
+	return bar_temp;
+}
+
+bar_msg bar_moveLeft(bar_msg bar_input, int holdTime)
+{
+	bar_msg bar_temp = bar_input;
+	int pixelMove;
+
+	if(holdTime > 250) // if hold for more than 250 ms...
+	{
+		// move at 200 pixel per sec
+		pixelMove = 200/FPS;
+	}
+	else
+	{
+		// move at 25 pixel if hold time <= 250 ms
+		pixelMove = 25;
+	}
+
+
+
+	if (bar_temp.start_x > (OUTER_COL_START_X + 1))
+	{
+
+		bar_temp.start_x -= 25;
+		bar_temp.end_x  -= 25;
+
+		if (bar_temp.start_x > (OUTER_COL_START_X + 1))
+		{
+			bar_temp.start_x   	= （OUTER_COL_START_X ＋ 1）
+			bar_temp.end_x   	=  bar_temp.start_x + BAR_LENGTH;
+		}
+	}
+
+	return bar_temp;
+}
+
+

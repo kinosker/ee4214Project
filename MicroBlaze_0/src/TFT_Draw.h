@@ -394,7 +394,31 @@ int tft_fillBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
  *
  ******************************************************************************/
 int tft_addBar(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
-		u32 ColEndPos, u32 RowEndPos, unsigned int colour);
+		u32 ColEndPos, u32 RowEndPos);
+
+/*****************************************************************************
+ **
+ * Remove a bar based on tft_drawLine() to remove it on the screen
+ *
+ * @param  InstancePtr is a pointer to the XTft instance.
+ * @param  ColStartPos is the Start point of Column.
+ *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
+ * @param  RowStartPos is the Start point of Row.
+ *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
+ * @param  ColEndPos is the End point of Column.
+ *   The valid value is 0 to (XTFT_DISPLAY_WIDTH - 1).
+ * @param  RowEndPos is the End point of Row.
+ *   The valid value is 0 to (XTFT_DISPLAY_HEIGHT - 1).
+ * @param  colour is the Color Value to be put at pixel.
+ *
+ * @return
+ *   - XST_SUCCESS if successful.
+ *   - XST_FAILURE if unsuccessful.
+ *
+ *
+ ******************************************************************************/
+int tft_removeBar(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
+		u32 ColEndPos, u32 RowEndPos);
 
 /*****************************************************************************
  **
@@ -414,7 +438,7 @@ int tft_moveCircle(XTft *InstancePtr, int x0, int y0, int future_x0, int future_
 
 /*****************************************************************************
  **
- * Move the bar to the left
+ * Move the bar to the updated location with 1 clock cycle delay.
  *
  * @param  InstancePtr is a pointer to the XTft instance.
  *
@@ -424,20 +448,9 @@ int tft_moveCircle(XTft *InstancePtr, int x0, int y0, int future_x0, int future_
  *
  *
  ******************************************************************************/
-bar_msg tft_moveBarRight(XTft *InstancePtr, unsigned int holdTime);
+int tft_moveBar(XTft *InstancePtr, bar_msg bar_updated);
 
-/*****************************************************************************
- **
- * Move the bar to the right
- *
- * @param  InstancePtr is a pointer to the XTft instance.
- *
- * @return
- *		- Update bar_msg
- *
- *
- ******************************************************************************/
-bar_msg tft_moveBarLeft(XTft *InstancePtr, unsigned int holdTime);
+
 
 /*****************************************************************************
  **

@@ -16,8 +16,7 @@
 #include <limits.h>
 
 volatile char buttonPress = BUTTON_INIT, prevButtonPress = BUTTON_INIT, buttonFlag;
-unsigned int myButton_debounceTime, myButton_currentTime = 0;
-unsigned int myButton_leftPressTime = 0, myButton_rightPressTime = 0;
+static unsigned int myButton_leftPressTime = 0, myButton_rightPressTime = 0;
 
 
 // Debouncing function. Returns TRUE if this interrupt was not caused by a bouncing switch
@@ -129,6 +128,8 @@ char myButton_checkCenter(XGpio *gpPB) {
 
 void myButton_int_handler(XGpio *gpPB) //Should be very short (in time). In a practical program, don't print etc.
 {
+	static unsigned int myButton_debounceTime = 0,  myButton_currentTime = 0;
+
 	//clear the interrupt flag. if this is not done, gpio will keep interrupting the microblaze.--
 
 	//add debounce

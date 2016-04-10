@@ -1,8 +1,5 @@
 #include "TFT_Draw.h"
 
-static int barLeftPos = BAR_START_X, barRightPos = BAR_START_X + BAR_LENGTH;
-static int radius = CIRCLE_RADIUS; //,x0 = CIRCLE_X, y0= CIRCLE_Y;
-static int angle = CIRCLE_ANGLE;
 
 int tft_init(u32 TftDeviceId, XTft *InstancePtr) {
 	int Status;
@@ -68,7 +65,7 @@ int tft_intialDraw(XTft *InstancePtr) {
 
 	// Bar Box
 	tft_addBar(InstancePtr, BAR_START_X, BAR_START_Y, BAR_START_X + BAR_LENGTH,
-			BAR_START_Y + BAR_HEIGHT, COLOR_BLACK);
+			BAR_START_Y + BAR_HEIGHT);
 
 	// Score (WORD) Box
 	tft_drawRect(InstancePtr, SCORE_WORD_BOX_START_X, SCORE_WORD_BOX_START_Y,
@@ -420,8 +417,15 @@ int tft_fillBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 			color);
 }
 
+int tft_removeBar(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
+		u32 ColEndPos, u32 RowEndPos)
+{
+			tft_fillRect(InstancePtr, ColStartPos, RowStartPos, ColEndPos,
+				RowEndPos, COLOR_GREEN);
+}
+
 int tft_addBar(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
-		u32 ColEndPos, u32 RowEndPos, unsigned int colour) {
+		u32 ColEndPos, u32 RowEndPos) {
 
 	//N-region
 
@@ -488,103 +492,39 @@ int tft_moveCircle(XTft *InstancePtr, int x0, int y0, int future_x0,
 	//	}
 }
 
-bar_msg tft_moveBarLeft(XTft *InstancePtr, unsigned int holdTime) {
+int tft_moveBar(XTft *InstancePtr, bar_msg bar_updated)
+{
+	static bar_msg bar_prev = {.start_x = BAR_START_X, .start_y = BAR_START_Y, 
+								.end_x = (BAR_START_X + BAR_LENGTH), .end_y = (BAR_START_Y + BAR_HEIGHT)};
 
-	int pixelMove;
-	bar_msg bar_updated;
+	static bar_msg bar_current = bar_prev;
 
 
+	/********************* end of init *************************/
 
+	// this function will delay printing bar_updated for 1 clock cycle (after processing is done by another core)
 
-	if(holdTime > 250) // if hold for more than 250 ms...
+	// 1. Check is bar_prev and bar_current are not the same...
+
+	if(bar_prev.start_x != bar_current.start_x)
 	{
-		// move at 200 pixel per sec
-		pixelMove = 200/FPS;
-	}
-	else
-	{
-		// move at 25 pixel if hold time <= 250 ms
-		pixelMove = 25;
+		// 2. remove previous bar location...
+		tft_removeBar(InstancePtr, bar_prev.start_x, bar_prev.start_y, bar_prev.end_x, bar_prev.end_y);
+
+		// 3. add new bar location
+		tft_addBar(InstancePtr, bar_print.start_x, bar_print.start_y, bar_print.end_x, bar_print.end_y);
 	}
 
 
-	if (barLeftPos > OUTER_COL_START_X) {
+	// Update bar_prev and bar_current...
+	bar_prev = bar_current;
+	bar_current = bar_updated;
 
-		// remove Bar
-		tft_fillRect(InstancePtr, barLeftPos, BAR_START_Y, barRightPos,
-				BAR_START_Y + BAR_HEIGHT, COLOR_GREEN);
-
-
-		barLeftPos = barLeftPos - pixelMove;
-		barRightPos = barRightPos - pixelMove;
-
-		if (barLeftPos < OUTER_COL_START_X) {
-			barLeftPos = OUTER_COL_START_X + 1;
-			barRightPos = barLeftPos + BAR_LENGTH;
-		}
-
-		// add bar
-		tft_addBar(InstancePtr, barLeftPos, BAR_START_Y, barRightPos,
-				BAR_START_Y + BAR_HEIGHT, COLOR_BLACK);
-
-
-	}
-
-
-
-	bar_updated.start_x 	= barLeftPos;
-	bar_updated.start_y 	= BAR_START_Y;
-	bar_updated.end_x		= barRightPos;
-	bar_updated.end_y		= BAR_START_Y + BAR_HEIGHT;
-
-	return bar_updated;
+	return XST_SUCCESS;
 }
 
-bar_msg tft_moveBarRight(XTft *InstancePtr, unsigned int holdTime) {
-
-	int pixelMove;
-	bar_msg bar_updated;
 
 
-	if(holdTime > 250) // if hold for more than 250 ms...
-	{
-		// move at 200 pixel per sec
-		pixelMove = 200/FPS;
-	}
-	else
-	{
-		// move at 25 pixel if hold time <= 250 ms
-		pixelMove = 25;
-	}
-
-
-	if (barRightPos < OUTER_COL_END_X - 1) {
-
-		// remove Bar
-		tft_fillRect(InstancePtr, barLeftPos, BAR_START_Y, barRightPos,
-				BAR_START_Y + BAR_HEIGHT, COLOR_GREEN);
-
-		barLeftPos = barLeftPos + 25;
-		barRightPos = barRightPos + 25;
-
-		if (barRightPos > OUTER_COL_END_X) {
-			barRightPos = OUTER_COL_END_X - 1;
-			barLeftPos = barRightPos - BAR_LENGTH;
-		}
-
-		// add bar
-		tft_addBar(InstancePtr, barLeftPos, BAR_START_Y, barRightPos,
-				BAR_START_Y + BAR_HEIGHT, COLOR_BLACK);
-
-	}
-
-	bar_updated.start_x 	= barLeftPos;
-	bar_updated.start_y 	= BAR_START_Y;
-	bar_updated.end_x		= barRightPos;
-	bar_updated.end_y		= BAR_START_Y + BAR_HEIGHT;
-
-	return bar_updated;
-}
 
 int tft_drawLine(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 		u32 ColEndPos, u32 RowEndPos, unsigned int colour) {
