@@ -21,7 +21,7 @@
 
 
 #define MBOX_DEVICE_ID		XPAR_MBOX_0_DEVICE_ID
-#define MUTEX_DEVICE_ID XPAR_MUTEX_0_IF_1_DEVICE_ID
+#define MUTEX_DEVICE_ID 	XPAR_MUTEX_0_IF_1_DEVICE_ID
 #define MUTEX_NUM 0
 
 // 5 Priority levels for this processor.
@@ -57,8 +57,8 @@ void* thread_func_ball();
 int init_mutex_Hardware(XMutex *MutexPtr);
 
 bar_msg bar_updatePositon(bar_msg bar_input);
-bar_msg bar_moveLeft(bar_msg bar_input, int holdTime);
-bar_msg bar_moveRight(bar_msg bar_input, int holdTime);
+bar_msg bar_moveRight(bar_msg bar_input, int holdTime, char barMoved);
+bar_msg bar_moveLeft(bar_msg bar_input, int holdTime, char barMoved)；
 
 
 void main_prog(void *arg);
@@ -502,31 +502,45 @@ int init_mailBox(XMbox *MboxPtr)
 bar_msg bar_updatePositon(bar_msg bar_input) 
 {
 	// get hold time..
+	static char barMovedLeft = 0;
+	static char barMovedRight = 0;
+
 	bar_msg bar_temp = bar_input;
 
 	int leftHoldTime = myButton_checkLeft(&gpPB);
 	int rightHoldTime = myButton_checkRight(&gpPB);
 
+
 	if (leftHoldTime) 
 	{
-		bar_temp = bar_moveLeft(bar_temp, leftHoldTime);
+		barMovedLeft ＝ 1；
+		barMovedRight = 0;
+
+		bar_temp = bar_moveLeft(bar_temp, leftHoldTime, barMovedLeft);
 		return bar_temp;
 	}
 
 	else if (rightHoldTime) 
 	{
-		bar_temp = bar_moveRight(bar_temp, leftHoldTime);
+		barMovedLeft ＝ 0；
+		barMovedRight = 1;
+		
+		bar_temp = bar_moveRight(bar_temp, leftHoldTime, barMovedRight);
 		return bar_temp;
 	}
 	else
 	{
+
+		barMovedLeft ＝ 0；
+		barMovedRight = 0;
+
 		return bar_temp;	// no changes
 	}
 
 }
 
 
-bar_msg bar_moveRight(bar_msg bar_input, int holdTime)
+bar_msg bar_moveRight(bar_msg bar_input, int holdTime, char barMoved)
 {
 	bar_msg bar_temp = bar_input;
 	int pixelMove;
@@ -537,10 +551,19 @@ bar_msg bar_moveRight(bar_msg bar_input, int holdTime)
 		// move at 200 pixel per sec
 		pixelMove = 200/FPS;
 	}
-	else
+	else if( holdTime <= 250)
 	{
-		// move at 25 pixel if hold time <= 250 ms
-		pixelMove = 25;
+		if(barMoved != 0)
+		{
+			// move at 25 pixel if hold time <= 250 ms & bar not moved..
+
+			pixelMove = 25;
+		}
+		else
+		{
+			// dont move if already moved for <= 250
+			return bar_temp;
+		}
 	}
 
 
@@ -562,21 +585,33 @@ bar_msg bar_moveRight(bar_msg bar_input, int holdTime)
 	return bar_temp;
 }
 
-bar_msg bar_moveLeft(bar_msg bar_input, int holdTime)
+bar_msg bar_moveLeft(bar_msg bar_input, int holdTime, char barMoved)
 {
 	bar_msg bar_temp = bar_input;
 	int pixelMove;
+
 
 	if(holdTime > 250) // if hold for more than 250 ms...
 	{
 		// move at 200 pixel per sec
 		pixelMove = 200/FPS;
 	}
-	else
+	else if( holdTime <= 250)
 	{
-		// move at 25 pixel if hold time <= 250 ms
-		pixelMove = 25;
+		if(barMoved != 0)
+		{
+			// move at 25 pixel if hold time <= 250 ms & bar not moved..
+
+			pixelMove = 25;
+		}
+		else
+		{
+			// dont move if already moved for <= 250
+			return bar_temp;
+		}
 	}
+
+
 
 
 
