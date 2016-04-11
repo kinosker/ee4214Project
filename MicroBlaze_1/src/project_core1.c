@@ -26,7 +26,7 @@
 #include "xmutex.h"
 #include <limits.h>
 
-#define MAX_RAND_SLEEP    30   // for snatching colour sema
+
 #define MUTEX_DEVICE_ID XPAR_MUTEX_0_IF_1_DEVICE_ID
 #define MUTEX_NUM 0
 
@@ -801,6 +801,8 @@ void thread_func_brick(char columnNumber)
 	int row_y, col_x = global_col_x[columnNumber];
 	int temp_sideHit;
 
+	char checksLeft = 8;
+
 	unsigned int colour = COLOR_GREEN; // some default color.
 
 	int msgQ_brick_id;
@@ -828,6 +830,7 @@ void thread_func_brick(char columnNumber)
 				temp_BricksLeft = brickLoop = bricksLeft;
 				row_num = 0;
 				temp_thread_score = 0;
+				checksLeft = 8; // 8 bricks to check.
 
 
 				if( myBoundaryChecker_checkBrick_horizontal((int)global_ballBounceCheck.x, col_x, col_x + BRICK_SIZE_LENGTH) == 0)
@@ -861,6 +864,17 @@ void thread_func_brick(char columnNumber)
 
 							if(temp_sideHit > 0)
 							{
+								if(checksLeft == 1)
+								{
+									checksLeft = 0; // no more check
+								}
+
+								else if(checksLeft != 1)
+								{
+									checksLeft = 1; // if hit 1 brick last check...
+								}
+
+
 								// update : bounceHit, sideHit, bricksLeft, thread score.
 								pthread_mutex_lock(&mutex_bricks);
 								global_bounceHit ++;
@@ -896,6 +910,11 @@ void thread_func_brick(char columnNumber)
 						brickLoop = brickLoop >> 1; // move to next brick to check
 
 						//xil_printf("brick loop : %d\n", brickLoop);
+
+						if(checksLeft == 0)
+						{
+							break;
+						}
 
 					} // completed checking all the bricks
 				}

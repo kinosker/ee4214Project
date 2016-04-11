@@ -209,13 +209,14 @@ int tft_updateScore(XTft *InstancePtr, int score) {
 	else
 		score_Digit_Hundredth = 0;
 
+
 	tft_writeInteger(InstancePtr, SCORE_BOX1_START_X + 9,
-			SCORE_BOX_START_Y + 15, score_Digit_Hundredth, COLOR_BLACK,
-			COLOR_GREY); //first number
+			SCORE_BOX_START_Y + 15, score_Digit_Hundredth, COLOR_BLACK,COLOR_GREY); //Hundred
 	tft_writeInteger(InstancePtr, SCORE_BOX2_START_X + 9,
-			SCORE_BOX_START_Y + 15, score_Digit_Tens, COLOR_BLACK, COLOR_GREY); //second number
+			SCORE_BOX_START_Y + 15, score_Digit_Tens, COLOR_BLACK, COLOR_GREY); //Tenth
 	tft_writeInteger(InstancePtr, SCORE_BOX3_START_X + 9,
-			SCORE_BOX_START_Y + 15, score_Digit_Ones, COLOR_BLACK, COLOR_GREY); //third number
+			SCORE_BOX_START_Y + 15, score_Digit_Ones, COLOR_BLACK, COLOR_GREY); //one digit
+
 }
 
 int tft_updateTime(XTft *InstancePtr, int gameTime) {
@@ -271,14 +272,14 @@ int tft_updateSpeed(XTft *InstancePtr, int speed)
 	}
 
 	while ((prev_speed /= 10) != 0) {
-			prev_count++;
-		}
+		prev_count++;
+	}
 
 
 	if(prev_count != count)
 	{
 		tft_fillRect(InstancePtr, BALL_SPEED_START_X + 5, BALL_SPEED_START_Y+5,
-					BALL_SPEED_END_X - 5, BALL_SPEED_END_Y-5, COLOR_GREY);
+				BALL_SPEED_END_X - 5, BALL_SPEED_END_Y-5, COLOR_GREY);
 
 	}
 
@@ -294,6 +295,10 @@ int tft_updateSpeed(XTft *InstancePtr, int speed)
 	case 2:
 		tft_writeInteger(InstancePtr, BALL_SPEED_START_X + 50,
 				BALL_SPEED_START_Y + 5, speed, COLOR_BLACK, COLOR_GREY);
+		break;
+	case 3:
+		tft_writeInteger(InstancePtr, BALL_SPEED_START_X + 47,
+						BALL_SPEED_START_Y + 5, speed, COLOR_BLACK, COLOR_GREY);
 		break;
 	}
 
@@ -420,8 +425,8 @@ int tft_fillBrick(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 int tft_removeBar(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 		u32 ColEndPos, u32 RowEndPos)
 {
-			tft_fillRect(InstancePtr, ColStartPos, RowStartPos, ColEndPos,
-				RowEndPos, COLOR_GREEN);
+	tft_fillRect(InstancePtr, ColStartPos, RowStartPos, ColEndPos,
+			RowEndPos, COLOR_GREEN);
 }
 
 int tft_addBar(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
@@ -460,7 +465,7 @@ int tft_moveCircle(XTft *InstancePtr, int x0, int y0, int future_x0,
 	diff_X = future_x0 - x0;
 	diff_Y = future_y0 - y0;
 
-	tft_removeCircle(InstancePtr, x0, y0, radius);
+	tft_removeCircle(InstancePtr, x0, y0, CIRCLE_RADIUS);
 	//if the distance between 2 points is >> speed then it will need to take a nubmer of steps before the ball will reach the destination
 	if (diff_X > speed) {
 		number_of_Steps_X = diff_X / speed;
@@ -471,13 +476,13 @@ int tft_moveCircle(XTft *InstancePtr, int x0, int y0, int future_x0,
 	if (number_of_Steps_Y > 0 && number_of_Steps_X <= 0) {
 		for (i = 0; i < number_of_Steps_Y; i++) {
 			future_y0 = y0 + ((i + 1) * speed);
-			tft_addCircle(InstancePtr, future_x0, future_y0, radius);
+			tft_addCircle(InstancePtr, future_x0, future_y0, CIRCLE_RADIUS);
 		}
 	}
 	else if (number_of_Steps_X > 0 && number_of_Steps_Y <= 0) {
 		for (i = 0; i < number_of_Steps_X; i++) {
 			future_x0 = x0 + ((i + 1) * speed);
-			tft_addCircle(InstancePtr, future_x0, future_y0, radius);
+			tft_addCircle(InstancePtr, future_x0, future_y0, CIRCLE_RADIUS);
 		}
 	}
 	else
@@ -495,9 +500,9 @@ int tft_moveCircle(XTft *InstancePtr, int x0, int y0, int future_x0,
 int tft_moveBar(XTft *InstancePtr, bar_msg bar_updated)
 {
 	static bar_msg bar_prev = {.start_x = BAR_START_X, .start_y = BAR_START_Y, 
-								.end_x = (BAR_START_X + BAR_LENGTH), .end_y = (BAR_START_Y + BAR_HEIGHT)};
+			.end_x = (BAR_START_X + BAR_LENGTH), .end_y = (BAR_START_Y + BAR_HEIGHT)};
 
-	static bar_msg bar_current = bar_prev;
+	static bar_msg bar_current = {.start_x = BAR_START_X, .start_y = BAR_START_Y, .end_x = (BAR_START_X + BAR_LENGTH), .end_y = (BAR_START_Y + BAR_HEIGHT)};;
 
 
 	/********************* end of init *************************/
@@ -512,7 +517,7 @@ int tft_moveBar(XTft *InstancePtr, bar_msg bar_updated)
 		tft_removeBar(InstancePtr, bar_prev.start_x, bar_prev.start_y, bar_prev.end_x, bar_prev.end_y);
 
 		// 3. add new bar location
-		tft_addBar(InstancePtr, bar_print.start_x, bar_print.start_y, bar_print.end_x, bar_print.end_y);
+		tft_addBar(InstancePtr, bar_current.start_x, bar_current.start_y, bar_current.end_x, bar_current.end_y);
 	}
 
 

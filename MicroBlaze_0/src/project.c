@@ -25,10 +25,10 @@
 #define MUTEX_NUM 0
 
 // 5 Priority levels for this processor.
-#define PRIO_CONTROLLER 1
-#define PRIO_BALL		3
-#define PRIO_BRICK 		2
-#define PRIO_MISC_ZONE  4
+#define PRIO_CONTROLLER 2
+#define PRIO_BALL		4
+#define PRIO_BRICK 		3
+#define PRIO_TIMER	    1
 
 
 #define MSGQ_ID_BALL    1
@@ -58,7 +58,7 @@ int init_mutex_Hardware(XMutex *MutexPtr);
 
 bar_msg bar_updatePositon(bar_msg bar_input);
 bar_msg bar_moveRight(bar_msg bar_input, int holdTime, char barMoved);
-bar_msg bar_moveLeft(bar_msg bar_input, int holdTime, char barMoved)；
+bar_msg bar_moveLeft(bar_msg bar_input, int holdTime, char barMoved);
 
 
 void main_prog(void *arg);
@@ -207,6 +207,7 @@ void* thread_func_controller()
 	static XMutex hardware_Mutex;
 	static XMbox Mbox; /* Instance of the Mailbox driver */
 
+
 	bar_msg bar_send;
 	bar_send.start_x 	= BAR_START_X;
 	bar_send.start_y 	= BAR_START_Y;
@@ -228,7 +229,7 @@ void* thread_func_controller()
 	/********************* Initial Program ******************/	
 	while (!myButton_checkCenter(&gpPB)) 
 	{
-		sleep(10); // wait for middle button to press to start game...
+		//sleep(10); // wait for middle button to press to start game...
 	}
 
 	XMbox_WriteBlocking(&Mbox, &bar_send, sizeof(bar_msg));	// Send initial bar position to kick start core 1 processor (blocking)
@@ -450,7 +451,7 @@ int init_threads()
 
 	/************************ TIMER thread INIT *************************/
 
-	sched_par.sched_priority = PRIO_MISC_ZONE; // set priority for misc zone threads
+	sched_par.sched_priority = PRIO_TIMER; // set priority for misc zone threads
 	pthread_attr_setschedparam(&attr, &sched_par); // update priority attribute
 
 	//start timer thread. (SHOULD NOT BE HERE ON ACTUAL PROJECT !!! Launch ball => then start this thread..)
@@ -513,25 +514,28 @@ bar_msg bar_updatePositon(bar_msg bar_input)
 
 	if (leftHoldTime) 
 	{
-		barMovedLeft ＝ 1；
-		barMovedRight = 0;
 
 		bar_temp = bar_moveLeft(bar_temp, leftHoldTime, barMovedLeft);
+
+		barMovedLeft = 1;
+		barMovedRight = 0;
+
 		return bar_temp;
 	}
 
 	else if (rightHoldTime) 
 	{
-		barMovedLeft ＝ 0；
+		bar_temp = bar_moveRight(bar_temp, rightHoldTime, barMovedRight);
+
+		barMovedLeft = 0;
 		barMovedRight = 1;
 		
-		bar_temp = bar_moveRight(bar_temp, leftHoldTime, barMovedRight);
 		return bar_temp;
 	}
 	else
 	{
 
-		barMovedLeft ＝ 0；
+		barMovedLeft = 0;
 		barMovedRight = 0;
 
 		return bar_temp;	// no changes
@@ -553,14 +557,15 @@ bar_msg bar_moveRight(bar_msg bar_input, int holdTime, char barMoved)
 	}
 	else if( holdTime <= 250)
 	{
-		if(barMoved != 0)
+		if(barMoved == 0)
 		{
 			// move at 25 pixel if hold time <= 250 ms & bar not moved..
-
+			print("left one step\n");
 			pixelMove = 25;
 		}
 		else
 		{
+			print("skip left\n");
 			// dont move if already moved for <= 250
 			return bar_temp;
 		}
@@ -572,8 +577,8 @@ bar_msg bar_moveRight(bar_msg bar_input, int holdTime, char barMoved)
 	if (bar_temp.end_x < (OUTER_COL_END_X - 1))
 	{
 
-		bar_temp.start_x += 25;
-		bar_temp.end_x  += 25;
+		bar_temp.start_x += pixelMove;
+		bar_temp.end_x  += pixelMove;
 
 		if (bar_temp.end_x > (OUTER_COL_END_X - 1))
 		{
@@ -598,10 +603,9 @@ bar_msg bar_moveLeft(bar_msg bar_input, int holdTime, char barMoved)
 	}
 	else if( holdTime <= 250)
 	{
-		if(barMoved != 0)
+		if(barMoved == 0)
 		{
 			// move at 25 pixel if hold time <= 250 ms & bar not moved..
-
 			pixelMove = 25;
 		}
 		else
@@ -618,13 +622,13 @@ bar_msg bar_moveLeft(bar_msg bar_input, int holdTime, char barMoved)
 	if (bar_temp.start_x > (OUTER_COL_START_X + 1))
 	{
 
-		bar_temp.start_x -= 25;
-		bar_temp.end_x  -= 25;
+		bar_temp.start_x -= pixelMove;
+		bar_temp.end_x  -= pixelMove;
 
-		if (bar_temp.start_x > (OUTER_COL_START_X + 1))
+		if (bar_temp.start_x < (OUTER_COL_START_X + 1))
 		{
-			bar_temp.start_x   	= （OUTER_COL_START_X ＋ 1）
-			bar_temp.end_x   	=  bar_temp.start_x + BAR_LENGTH;
+			bar_temp.start_x   	= (OUTER_COL_START_X + 1);
+			bar_temp.end_x   	= bar_temp.start_x + BAR_LENGTH;
 		}
 	}
 

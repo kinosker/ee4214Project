@@ -24,6 +24,7 @@ BEGIN OS
  PARAMETER stdout = ps7_uart_1
  PARAMETER sysintc_spec = microblaze_0_axi_intc
  PARAMETER systmr_dev = axi_timer_0
+ PARAMETER systmr_interval = 1
  PARAMETER use_malloc = true
 END
 

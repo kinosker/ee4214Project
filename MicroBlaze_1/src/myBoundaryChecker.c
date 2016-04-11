@@ -534,7 +534,7 @@ int myBoundaryChecker_checkHitBar(int ball_X, int ball_Y, int myBoundary_Start_X
 				else
 				{
 					// N+ REGION : from end of S+ region to RHS
-					return HIT_SPEED_ACC; // return 13
+					return HIT_ANGLE_ACC; // return 13
 
 				}
 				

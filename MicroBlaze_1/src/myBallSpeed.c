@@ -11,10 +11,10 @@ int myBallControl_getBallSpeed()
 void myBallControl_updateBallSpeed(int speedGain)
 {
 	xil_printf("Speed Gained is %d\n", speedGain);
-	if(ballSpeed > BALL_MINIMUM_SPEED && ballSpeed < BALL_MAXIMUM_SPEED)
-	{
+//	if(ballSpeed > BALL_MINIMUM_SPEED && ballSpeed < BALL_MAXIMUM_SPEED)
+//	{
 		ballSpeed += speedGain;
-	}
+//	}
 
 	if(ballSpeed < BALL_MINIMUM_SPEED)
 	{
