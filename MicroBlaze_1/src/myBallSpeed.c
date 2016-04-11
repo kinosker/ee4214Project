@@ -5,7 +5,7 @@ static volatile int ballSpeed = BALL_INITIAL_SPEED;
 
 int myBallControl_getBallSpeed()
 {
-	return ballSpeed;
+	return 200;
 }
 
 void myBallControl_updateBallSpeed(int speedGain)

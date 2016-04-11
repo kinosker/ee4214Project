@@ -47,7 +47,7 @@
 #define INIT_SCORE		0
 
 
-/************************** Function Prototypes *****************************/
+/************************** Funcction Prototypes *****************************/
 
 int init_threads();
 void* thread_func_controller();

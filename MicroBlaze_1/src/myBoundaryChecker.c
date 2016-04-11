@@ -8,6 +8,7 @@
 #include "myBoundaryChecker.h"
 #include "myCommon.h"
 #include "math.h"
+#include "stdlib.h"
 
 
 int outerLeftBoundary(int side_ball_X) {
@@ -232,12 +233,46 @@ int myBoundaryChecker_getDistanceBtwThem(int dist_X, int dist_Y)
 }
 
 
+int myBoundaryChecker_getDistance_Y(int ball_Y, int myBoundary_Start_Y, int myBoundary_End_Y)
+{
+	int dist_end_y = abs(ball_Y - myBoundary_End_Y);
+	int dist_start_y = abs(ball_Y - myBoundary_Start_Y);
+
+	if(dist_start_y < dist_end_y)
+	{
+		return dist_start_y;
+	}
+	else
+	{
+		return dist_end_y;
+	}
+}
+
+int myBoundaryChecker_getDistance_X(int ball_X, int myBoundary_Start_X, int myBoundary_End_X)
+{
+	int dist_end_x = abs(ball_X - myBoundary_End_X);
+	int dist_start_x = abs(ball_X - myBoundary_Start_X);
+
+	if(dist_start_x < dist_start_x)
+	{
+		return dist_start_x;
+	}
+	else
+	{
+		return dist_end_x;
+	}
+}
+
 // return the side that it HIT!, if 
 int myBoundaryChecker_checkHitBrick(int ball_X, int ball_Y, int myBoundary_Start_X, int myBoundary_Start_Y, int myBoundary_End_X, int myBoundary_End_Y)
 {
 
+	static int prev_dist_X = 0, prev_dist_Y = 0;
+
 	int closest_X, closest_Y;
 	int dist_X, dist_Y, distanceBtwThem; 
+
+	int ret = 0;
 
 
 	// get closest point btw them. 
@@ -255,50 +290,105 @@ int myBoundaryChecker_checkHitBrick(int ball_X, int ball_Y, int myBoundary_Start
 	{
 		// collided into brick...
 
-		if(CIRCLE_RADIUS - distanceBtwThem <= CORNER_TOLERANCE)
+		if(CIRCLE_RADIUS - distanceBtwThem < CORNER_TOLERANCE)
 		{
 			// distance between brick and ball is very near... likely to be corner
 			// NOTE : Why cannot be ball inside brick and near..?
 			// NOTE : How do u confirm!?!? => Small steps algorithm... 
 
-			return HIT_INNER_CORNER; // return 11
+			xil_printf("Hit Corner\n");
+
+			ret = HIT_INNER_CORNER; // return 11
 		}
 		else
 		{
-			// determine : hit side or top/bottom
-//			xil_printf("dis_X: %d, dis_y : %d\n", dist_X, dist_Y);
 
 			if(dist_X == 0 && dist_Y == 0)
 			{
-				xil_printf("Y am i here\n");
-				return HIT_INNER_CORNER; // return 11
+				xil_printf("why and i here, prev_dist_X : %d, prev_dist_Y :%d\n",prev_dist_X, prev_dist_Y);
+
+
+				if(prev_dist_X == 0 && prev_dist_Y == 0)
+				{
+
+					xil_printf("GG!\n");
+					ret = HIT_INNER_BOX_BTM;
+
+				}
+				else if(prev_dist_X == 0)
+				{
+
+					xil_printf("reflect BTM using prev_dist_X = 0\n");
+					ret = HIT_INNER_BOX_BTM;
+				}
+				else if (prev_dist_Y == 0)
+				{
+
+					xil_printf("reflect SIDE using prev_dist_Y = 0\n");
+
+					ret = HIT_INNER_BOX_SIDE;
+				}
+				else if(prev_dist_X < prev_dist_Y)
+				{
+					// distance for x is closer...
+					xil_printf("reflect SIDE using PREV_X < Y\n\n");
+
+					ret = HIT_INNER_BOX_SIDE;
+				}
+				else
+				{
+					// distance for y is closer... either btm or top .. no difference
+					xil_printf("reflect BTM using PREV_Y < X\n\n");
+
+					ret = HIT_INNER_BOX_BTM;
+				}
+
 			}
 			else if (dist_X == 0)
 			{
-				//  ball not inside x bondary
-				return HIT_INNER_BOX_BTM;
+				//  ball  inside x boundary
+				xil_printf("reflect BTM using dist_x = 0\n");
+
+				ret = HIT_INNER_BOX_BTM;
 			}
 			else if(dist_Y == 0)
 			{
-				return HIT_INNER_BOX_SIDE;
+				// ball inside y boundary
+//				xil_printf("so near to y boundary\n");
+				xil_printf("reflect SIDE using dist_y = 0 is\n\n");
+
+				ret = HIT_INNER_BOX_SIDE;
 			}
 			else if(dist_X < dist_Y)
 			{
+//				xil_printf("dist x < y \n");
 				// distance for x is closer...
-				return HIT_INNER_BOX_SIDE;
+				xil_printf("reflect SIDE using X < Y\n\n");
+
+				ret = HIT_INNER_BOX_SIDE;
 			}
 			else
 			{
 				// distance for y is closer... either btm or top .. no difference
-				return HIT_INNER_BOX_BTM;
+//				xil_printf("dist y < x \n");
+				xil_printf("reflect BTM using Y < X\n\n");
+
+				ret = HIT_INNER_BOX_BTM;
 			}
 
 		}
 	}
 	else
 	{
-		return 0;
+		ret = 0;
 	}
+
+	prev_dist_X = dist_X;
+	prev_dist_Y = dist_Y;
+
+	xil_printf("returning ret : %d\n", ret);
+
+	return ret;
 
 }
 
@@ -382,89 +472,89 @@ int myBoundaryChecker_checkLastBrick_vertical(int ball_Y, int myBoundary_End_Y)
 
 
 
-
-int myBoundaryChecker_CheckInner(int ball_X, int ball_Y, int myBoundary_Start_X,
-		int myBoundary_Start_Y, int myBoundary_End_X, int myBoundary_End_Y) //speed????? angle???
-{
-	int side_ball_X_Right = ball_X + CIRCLE_RADIUS;
-	int side_ball_Y_Bottom = ball_Y + CIRCLE_RADIUS;
-	int side_ball_X_Left = ball_X - CIRCLE_RADIUS;
-	int side_ball_Y_Top = ball_Y - CIRCLE_RADIUS;
-
-	int side_ball_X = 0;
-	int side_ball_Y = 0;
-
-	int quad_x[] = {side_ball_X_Left, side_ball_X_Left, side_ball_X_Right, side_ball_X_Right};
-	int quad_y[] = {side_ball_Y_Top, side_ball_Y_Bottom, side_ball_Y_Top, side_ball_Y_Bottom};
-	int i =0;
-	//	xil_printf("bound_x_start : %d, bound_ystart : %d\n bound_x_end : %d, bound_yend : %d\n", myBoundary_Start_X, myBoundary_Start_Y, myBoundary_End_X, myBoundary_End_Y);
-
-	for(i = 0; i < 4; i++)
-	{
-		side_ball_X = quad_x[i];
-		side_ball_Y = quad_y[i];
-
-
-
-		//	}
-
-		/*******************************************four corners checking****************************************/
-		// left and top boundary
-		if (leftTopBoundaryCheck(side_ball_X, myBoundary_Start_X, side_ball_Y,
-				myBoundary_Start_Y)) {
-
-			//side_ball_X = myBoundary_Start_X;
-			//side_ball_Y = myBoundary_Start_Y;
-			return HIT_INNER_CORNER; // return 11
-		}
-
-		// right and top boundary
-		else if (rightTopBoundaryCheck(side_ball_X, myBoundary_End_X, side_ball_Y,
-				myBoundary_Start_Y)) {
-			//side_ball_X = myBoundary_End_X;
-			//side_ball_Y = myBoundary_Start_Y;
-
-			//xil_printf("sideball : %d,%d , bound_x_start : %d, bound_ystart : %d\n bound_x_end : %d, bound_yend : %d\n", side_ball_X, side_ball_Y, myBoundary_Start_X, myBoundary_Start_Y, myBoundary_End_X, myBoundary_End_Y);
-
-			return HIT_INNER_CORNER; // return 11
-		}
-		// left and bottom boundary
-		else if (leftBottomBoundaryCheck(side_ball_X, myBoundary_Start_X,
-				side_ball_Y, myBoundary_End_Y)) {
-			//side_ball_X = myBoundary_Start_X;
-			//side_ball_Y = myBoundary_End_Y;
-			return HIT_INNER_CORNER; // return 11
-		}
-		// right and bottom boundary
-		else if (rightBottomBoundaryCheck(side_ball_X, myBoundary_End_X,
-				side_ball_Y, myBoundary_End_Y)) {
-			//side_ball_X = myBoundary_End_X;
-			//side_ball_Y = myBoundary_End_Y;
-			return HIT_INNER_CORNER; // return 11
-		}
-		else if (innerBoundaryCheck(side_ball_X, myBoundary_Start_X, myBoundary_End_X,
-				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) { // left boundary
-			//side_ball_X = myBoundary_Start_X;
-			if( innerLeftBoundary(side_ball_X, myBoundary_Start_X)) {
-				return HIT_INNER_BOX_SIDE;
-			}
-
-			if( innerRightBoundary(side_ball_X, myBoundary_End_X)) {
-				return HIT_INNER_BOX_SIDE;
-			}
-
-			if(innerTopBoundary(side_ball_Y, myBoundary_Start_Y)) {
-				return HIT_INNER_BOX_TOP;
-			}
-
-			if(innerBottomBoundary(side_ball_Y, myBoundary_End_Y)) {
-				return HIT_INNER_BOX_BTM;
-			}
-
-		}
-	}
-	return 0;
-}
+//
+//int myBoundaryChecker_CheckInner(int ball_X, int ball_Y, int myBoundary_Start_X,
+//		int myBoundary_Start_Y, int myBoundary_End_X, int myBoundary_End_Y) //speed????? angle???
+//{
+//	int side_ball_X_Right = ball_X + CIRCLE_RADIUS;
+//	int side_ball_Y_Bottom = ball_Y + CIRCLE_RADIUS;
+//	int side_ball_X_Left = ball_X - CIRCLE_RADIUS;
+//	int side_ball_Y_Top = ball_Y - CIRCLE_RADIUS;
+//
+//	int side_ball_X = 0;
+//	int side_ball_Y = 0;
+//
+//	int quad_x[] = {side_ball_X_Left, side_ball_X_Left, side_ball_X_Right, side_ball_X_Right};
+//	int quad_y[] = {side_ball_Y_Top, side_ball_Y_Bottom, side_ball_Y_Top, side_ball_Y_Bottom};
+//	int i =0;
+//	//	xil_printf("bound_x_start : %d, bound_ystart : %d\n bound_x_end : %d, bound_yend : %d\n", myBoundary_Start_X, myBoundary_Start_Y, myBoundary_End_X, myBoundary_End_Y);
+//
+//	for(i = 0; i < 4; i++)
+//	{
+//		side_ball_X = quad_x[i];
+//		side_ball_Y = quad_y[i];
+//
+//
+//
+//		//	}
+//
+//		/*******************************************four corners checking****************************************/
+//		// left and top boundary
+//		if (leftTopBoundaryCheck(side_ball_X, myBoundary_Start_X, side_ball_Y,
+//				myBoundary_Start_Y)) {
+//
+//			//side_ball_X = myBoundary_Start_X;
+//			//side_ball_Y = myBoundary_Start_Y;
+//			return HIT_INNER_CORNER; // return 11
+//		}
+//
+//		// right and top boundary
+//		else if (rightTopBoundaryCheck(side_ball_X, myBoundary_End_X, side_ball_Y,
+//				myBoundary_Start_Y)) {
+//			//side_ball_X = myBoundary_End_X;
+//			//side_ball_Y = myBoundary_Start_Y;
+//
+//			//xil_printf("sideball : %d,%d , bound_x_start : %d, bound_ystart : %d\n bound_x_end : %d, bound_yend : %d\n", side_ball_X, side_ball_Y, myBoundary_Start_X, myBoundary_Start_Y, myBoundary_End_X, myBoundary_End_Y);
+//
+//			return HIT_INNER_CORNER; // return 11
+//		}
+//		// left and bottom boundary
+//		else if (leftBottomBoundaryCheck(side_ball_X, myBoundary_Start_X,
+//				side_ball_Y, myBoundary_End_Y)) {
+//			//side_ball_X = myBoundary_Start_X;
+//			//side_ball_Y = myBoundary_End_Y;
+//			return HIT_INNER_CORNER; // return 11
+//		}
+//		// right and bottom boundary
+//		else if (rightBottomBoundaryCheck(side_ball_X, myBoundary_End_X,
+//				side_ball_Y, myBoundary_End_Y)) {
+//			//side_ball_X = myBoundary_End_X;
+//			//side_ball_Y = myBoundary_End_Y;
+//			return HIT_INNER_CORNER; // return 11
+//		}
+//		else if (innerBoundaryCheck(side_ball_X, myBoundary_Start_X, myBoundary_End_X,
+//				side_ball_Y, myBoundary_Start_Y, myBoundary_End_Y)) { // left boundary
+//			//side_ball_X = myBoundary_Start_X;
+//			if( innerLeftBoundary(side_ball_X, myBoundary_Start_X)) {
+//				return HIT_INNER_BOX_SIDE;
+//			}
+//
+//			if( innerRightBoundary(side_ball_X, myBoundary_End_X)) {
+//				return HIT_INNER_BOX_SIDE;
+//			}
+//
+//			if(innerTopBoundary(side_ball_Y, myBoundary_Start_Y)) {
+//				return HIT_INNER_BOX_TOP;
+//			}
+//
+//			if(innerBottomBoundary(side_ball_Y, myBoundary_End_Y)) {
+//				return HIT_INNER_BOX_BTM;
+//			}
+//
+//		}
+//	}
+//	return 0;
+//}
 
 
 

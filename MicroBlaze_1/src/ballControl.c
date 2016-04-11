@@ -14,7 +14,6 @@
 
 #define REGION_A	10
 #define REGION_S	10
-#define REGION_N	40
 
 #define BALL_INITIAL_DIR 			90		// Initial Direction : 90 Degree
 
@@ -205,12 +204,13 @@ int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 {
 	int tempAngle;
 
-	if(sideHit == HIT_REFLECT_SIDE || sideHit == HIT_REFLECT_TOP || sideHit == HIT_REFLECT_BTM || sideHit == HIT_OUTER_BOX_BTM) //remove sideHit == HIT_OUTER_BOX_BOX after testing
+	if(sideHit == HIT_REFLECT_SIDE || sideHit == HIT_REFLECT_TOP || sideHit == HIT_REFLECT_BTM || sideHit == HIT_OUTER_BOX_BTM ||sideHit == HIT_SPEED_DEC || sideHit == HIT_SPEED_ACC || sideHit == HIT_REFLECT_180) //remove sideHit == HIT_OUTER_BOX_BOX after testing
 	{
 		//print("Hit inner box\n");
 		//xil_printf("Inside rebound angle is %d\n", currentLocation.dir);
 		if(currentLocation.dir % 90 == 0)
 		{
+			xil_printf("90 deg\n");
 			// if flying vertical or horizontally perfectly... should rebounce 180 deg instead of 90 deg
 			//xil_printf("reflect 90 but 180 is %d\n\n\n", currentLocation.dir);
 			return ((currentLocation.dir + 180) % 360);
@@ -218,7 +218,7 @@ int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 		}
 		else if(sideHit == HIT_REFLECT_SIDE)
 		{
-			//xil_printf("Angle reflect side hit is %d\n\n", sideHit);
+//			xil_printf("Angle reflect side hit is %d\n\n", sideHit);
 
 			return ((180 - currentLocation.dir) % 360); //editted
 
@@ -228,18 +228,21 @@ int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 		{
 			//xil_printf("reflect 90 is %d\n\n", currentLocation.dir);
 			//return ((180 - currentLocation.dir) % 360); //inital
+			if(sideHit == HIT_REFLECT_BTM)
+			xil_printf("Really hit Btm\n");
+
 			return ((360 - currentLocation.dir) % 360); //editted
 		}
 	}
-	else if (sideHit == HIT_REFLECT_180_1 || sideHit == HIT_REFLECT_180_2 || sideHit == HIT_REFLECT_180_3)
-	{
-		//print("Hit corner box\n");
-		return ((currentLocation.dir + 180) % 360);
-	}
+//	else if (sideHit == HIT_REFLECT_180)
+//	{
+//		//print("Hit corner box\n");
+//		return ((180 - currentLocation.dir ) % 360);
+//	}
 	else if(sideHit == HIT_ANGLE_DEC)
 	{
 //		xil_printf("Angle reflect DECREASE CONSTANT is %d\n\n", sideHit);
-		tempAngle = (currentLocation.dir + 180) % 360 ; // reflect 1st
+		tempAngle = (180 - currentLocation.dir) % 360 ; // reflect 1st
 		tempAngle -= BAR_ANGLE_ADJUSTMENT;				// decrease angle..
 
 		// low angle threshold check.
