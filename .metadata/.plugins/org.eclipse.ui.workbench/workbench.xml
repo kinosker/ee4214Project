@@ -48,13 +48,13 @@
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_0/src/project.c"/>
 <editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="12142" selectionTopPixel="10189"/>
 </editor>
-<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="project_core1.c" partName="project_core1.c" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_1/src/project_core1.c" title="project_core1.c" tooltip="MicroBlaze_1/src/project_core1.c" workbook="DefaultEditorWorkbook">
+<editor id="org.eclipse.cdt.ui.editor.CEditor" name="project_core1.c" partName="project_core1.c" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_1/src/project_core1.c" title="project_core1.c" tooltip="MicroBlaze_1/src/project_core1.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_1/src/project_core1.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="22639" selectionTopPixel="16045"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="22639" selectionTopPixel="15939"/>
 </editor>
-<editor id="org.eclipse.cdt.ui.editor.CEditor" name="myBoundaryChecker.c" partName="myBoundaryChecker.c" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_1/src/myBoundaryChecker.c" title="myBoundaryChecker.c" tooltip="MicroBlaze_1/src/myBoundaryChecker.c" workbook="DefaultEditorWorkbook">
+<editor activePart="true" focus="true" id="org.eclipse.cdt.ui.editor.CEditor" name="myBoundaryChecker.c" partName="myBoundaryChecker.c" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_1/src/myBoundaryChecker.c" title="myBoundaryChecker.c" tooltip="MicroBlaze_1/src/myBoundaryChecker.c" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_1/src/myBoundaryChecker.c"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="8286" selectionTopPixel="6946"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="7718" selectionTopPixel="6417"/>
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="myCommon.h" partName="myCommon.h" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_0/myCommon/myCommon.h" title="myCommon.h" tooltip="MicroBlaze_0/myCommon/myCommon.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_0/myCommon/myCommon.h"/>
@@ -74,7 +74,7 @@
 </editor>
 <editor id="org.eclipse.cdt.ui.editor.CEditor" name="myBoundaryChecker.h" partName="myBoundaryChecker.h" path="C:/Users/KaiHsiang/Desktop/EE4214_Workspace/Lab1/MulticoreProcessor/MulticoreProcessor.sdk/4214_project/MicroBlaze_1/src/myBoundaryChecker.h" title="myBoundaryChecker.h" tooltip="MicroBlaze_1/src/myBoundaryChecker.h" workbook="DefaultEditorWorkbook">
 <input factoryID="org.eclipse.ui.part.FileEditorInputFactory" path="/MicroBlaze_1/src/myBoundaryChecker.h"/>
-<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="1089" selectionTopPixel="690"/>
+<editorState selectionHorizontalPixel="0" selectionLength="0" selectionOffset="496" selectionTopPixel="207"/>
 </editor>
 </editors>
 <views>
@@ -96,9 +96,7 @@
 <view id="org.eclipse.ui.views.ProblemView" partName="Problems">
 <viewState PRIMARY_SORT_FIELD="org.eclipse.ui.ide.severityAndDescriptionField" categoryGroup="org.eclipse.ui.ide.severity" markerContentGenerator="org.eclipse.ui.ide.problemsGenerator" partName="Problems">
 <expanded>
-<category IMemento.internal.id="Warnings"/>
-<category IMemento.internal.id="Errors"/>
-<category IMemento.internal.id="Warnings (2 items)"/>
+<category IMemento.internal.id="Warnings (36 items)"/>
 </expanded>
 <columnWidths org.eclipse.ui.ide.locationField="150" org.eclipse.ui.ide.markerType="150" org.eclipse.ui.ide.pathField="200" org.eclipse.ui.ide.resourceField="150" org.eclipse.ui.ide.severityAndDescriptionField="500"/>
 <visible IMemento.internal.id="org.eclipse.ui.ide.severityAndDescriptionField"/>
@@ -260,19 +258,9 @@
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_0/myCommon/myCommon.h"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_1/src/myBoundaryChecker.h"/>
 <editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_0/src/project.c"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_1/src/myBoundaryChecker.h"/>
+<editor factoryID="org.eclipse.ui.part.FileEditorInputFactory" id="org.eclipse.cdt.ui.editor.CEditor" path="/MicroBlaze_1/src/myBoundaryChecker.c"/>
 </editors>
-<item historyLabel="ballControl.c" index="1">
-<position info="not_deleted" x="5966" y="0"/>
-</item>
-<item historyLabel="myBoundaryChecker.c" index="0">
-<position info="not_deleted" x="9852" y="0"/>
-</item>
-<item historyLabel="ballControl.c" index="1">
-<position info="not_deleted" x="5966" y="0"/>
-</item>
-<item historyLabel="myBallSpeed.c" index="3">
-<position info="not_deleted" x="438" y="0"/>
-</item>
 <item historyLabel="project_core1.c" index="2">
 <position info="not_deleted" x="25554" y="0"/>
 </item>
@@ -408,8 +396,20 @@
 <item historyLabel="myBoundaryChecker.h" index="6">
 <position info="not_deleted" x="1089" y="0"/>
 </item>
-<item active="true" historyLabel="project_core1.c" index="2">
+<item historyLabel="project_core1.c" index="2">
 <position info="not_deleted" x="23190" y="0"/>
+</item>
+<item historyLabel="myBoundaryChecker.h" index="8">
+<position info="not_deleted" x="1089" y="0"/>
+</item>
+<item historyLabel="myBoundaryChecker.c" index="9">
+<position info="not_deleted" x="7768" y="0"/>
+</item>
+<item historyLabel="myBoundaryChecker.h" index="8">
+<position info="not_deleted" x="496" y="0"/>
+</item>
+<item active="true" historyLabel="myBoundaryChecker.c" index="9">
+<position info="not_deleted" x="7768" y="0"/>
 </item>
 </navigationHistory>
 <input factoryID="org.eclipse.ui.internal.model.ResourceFactory" path="/" type="8"/>

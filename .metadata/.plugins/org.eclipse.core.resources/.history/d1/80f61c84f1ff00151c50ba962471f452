@@ -289,7 +289,6 @@ int myBoundaryChecker_checkHitBrick(int ball_X, int ball_Y, int myBoundary_Start
 	if (distanceBtwThem < CIRCLE_RADIUS)
 	{
 		// collided into brick...
-		xil_printf("Dist : %d\n", distanceBtwThem);
 
 		if(distanceBtwThem > (CIRCLE_RADIUS - CORNER_TOLERANCE))
 		{
