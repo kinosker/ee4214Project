@@ -267,6 +267,7 @@ void* thread_func_controller()
 
 		// 4.1 update bar location..
 		tft_moveBar(&TFT_Instance, bar_send);
+		myPause();
 
 	    myBarrier_wait(&barrier_SyncThreads_start);	// start all the threads
 

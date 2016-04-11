@@ -145,9 +145,6 @@
 #define FRAME_PER_SEC			25
 #define INITIAL_SPEED 			250/FRAME_PER_SEC	//250pixels per sec -> 25fps = 10pixels
 
-#define WIN_STATUS					90
-#define LOSE_STATUS					99
-
 
 typedef struct
 {

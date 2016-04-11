@@ -181,8 +181,6 @@ int init_myButton(XGpio *gpPB) {
 	enable_interrupt(XPAR_MICROBLAZE_0_AXI_INTC_AXI_GPIO_0_IP2INTC_IRPT_INTR);
 }
 
-
-
 unsigned int myButton_ticks_to_ms(unsigned int ticks) {
 	return (ticks);// * (SYSTMR_INTERVAL / SYSTMR_CLK_FREQ_KHZ));
 }

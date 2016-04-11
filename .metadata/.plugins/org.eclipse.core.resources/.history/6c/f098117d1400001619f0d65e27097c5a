@@ -659,12 +659,11 @@ void gameFinishChecker (XTft *InstancePtr, int gameStatus, int numOfBricksLeft)
 	if((gameStatus == WIN_STATUS) && (numOfBricksLeft == 0))
 	{
 		tft_writeString(InstancePtr, 240, 140, "YOU WIN!!!",COLOR_BLACK, COLOR_GREEN);
-		tft_writeString(InstancePtr, 175, 175, "Press any button to restart.",COLOR_BLACK, COLOR_GREEN);
+		tft_writeString(InstancePtr, 180, 155, "Press any button to restart",COLOR_BLACK, COLOR_GREEN);
 	}
 	else if((gameStatus == LOSE_STATUS) && (numOfBricksLeft != 0))
 	{
 		tft_writeString(InstancePtr, 240, 140, "GAME OVER....",COLOR_BLACK, COLOR_GREEN);
-		tft_writeString(InstancePtr, 175, 175, "Press any button to restart.",COLOR_BLACK, COLOR_GREEN);
 	}
 	else
 	{

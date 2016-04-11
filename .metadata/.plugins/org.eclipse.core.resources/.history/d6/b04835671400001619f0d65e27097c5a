@@ -72,7 +72,6 @@ ball_msg global_ball_recv;
 int global_score_recv;
 int global_totalBricksLeft_recv;
 int global_ballSpeed_recv;
-int while_waiting = 0;
 
 unsigned char global_currentBricks[MAX_BRICKS_THREAD]; 	// start with 8 bricks..
 unsigned int global_currentColour[MAX_BRICKS_THREAD]; 	// start with 8 bricks..
@@ -145,8 +144,8 @@ void main_prog(void *arg) {
 	pthread_mutex_lock(&mutex_timer);
 
 	init_myButton(&gpPB);	
-
-	tft_intialDraw(&TFT_Instance);	// drawing layout...
+	gameFinishChecker (&TFT_Instance, WIN_STATUS, 0);
+	//tft_intialDraw(&TFT_Instance);	// drawing layout...
 
 	tft_updateSpeed(&TFT_Instance, INIT_BALLSPEED);
 	tft_updateBricksLeft(&TFT_Instance, TOTAL_BRICKS);
@@ -267,6 +266,7 @@ void* thread_func_controller()
 
 		// 4.1 update bar location..
 		tft_moveBar(&TFT_Instance, bar_send);
+
 
 	    myBarrier_wait(&barrier_SyncThreads_start);	// start all the threads
 
@@ -635,16 +635,4 @@ bar_msg bar_moveLeft(bar_msg bar_input, int holdTime, char barMoved)
 	return bar_temp;
 }
 
-void myPause()
-{
-
-	//check centre button pressed
-	if(myButton_checkUp(&gpPB))
-	{
-		while_waiting = ~while_waiting;
-	}
-
-	while(while_waiting);
-
-}
 
