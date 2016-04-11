@@ -238,7 +238,7 @@ int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 	}
 	else if(sideHit == HIT_ANGLE_DEC)
 	{
-		xil_printf("Angle reflect DECREASE CONSTANT is %d\n\n", sideHit);
+//		xil_printf("Angle reflect DECREASE CONSTANT is %d\n\n", sideHit);
 		tempAngle = (currentLocation.dir + 180) % 360 ; // reflect 1st
 		tempAngle -= BAR_ANGLE_ADJUSTMENT;				// decrease angle..
 
@@ -254,7 +254,7 @@ int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 	}
 	else if (sideHit == HIT_ANGLE_ACC)
 	{
-		xil_printf("Angle reflect increase CONSTANT is %d\n\n", sideHit);
+//		xil_printf("Angle reflect increase CONSTANT is %d\n\n", sideHit);
 		tempAngle = (currentLocation.dir + 180) % 360 ; // reflect 1st
 		tempAngle += BAR_ANGLE_ADJUSTMENT;				// decrease angle..
 
@@ -280,12 +280,12 @@ void myBallControl_SetReboundSpeed(int sideHit)
 {
 	if(sideHit == HIT_SPEED_DEC)
 	{
-		xil_printf("Speed decrease CONSTANT is %d\n\n", sideHit);
+//		xil_printf("Speed decrease CONSTANT is %d\n\n", sideHit);
 		myBallControl_updateBallSpeed(BAR_SPEED_ADJUSTMENT_DOWN);
 	}
 	else if (sideHit == HIT_SPEED_ACC)
 	{
-		xil_printf("Speed increase CONSTANT is %d\n\n", sideHit);
+//		xil_printf("Speed increase CONSTANT is %d\n\n", sideHit);
 		myBallControl_updateBallSpeed(BAR_SPEED_ADJUSTMENT_UP);
 	}
 

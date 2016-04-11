@@ -1,7 +1,7 @@
 
 #include "myBallSpeed.h"
 
-static int ballSpeed = BALL_INITIAL_SPEED;
+static volatile int ballSpeed = BALL_INITIAL_SPEED;
 
 int myBallControl_getBallSpeed()
 {

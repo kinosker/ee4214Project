@@ -135,7 +135,7 @@ int tft_updateColumn(XTft *InstancePtr, const int col_x, int currentBricks,
 		// removeBricks if there is bricks to remove
 		if (updateRemoveBricks & 1) {
 			// if current bricks is to be removed....
-			row_y = ROW_Y_START + ROW_OFFSET * row_num; // position of y to draw rect.
+			row_y = ROW_Y_END - ROW_OFFSET * row_num; // position of y to draw rect.
 
 			tft_fillBrick(InstancePtr, col_x, row_y, col_x + BRICK_SIZE_LENGTH,
 					row_y + BRICK_SIZE_HEIGHT, COLOR_GREEN);
@@ -156,7 +156,10 @@ int tft_updateColumn(XTft *InstancePtr, const int col_x, int currentBricks,
 		// addBricks if there is bricks to add
 		if (updateAddBricks & 1) {
 			// if current bricks is to be added....
-			row_y = ROW_Y_START + ROW_OFFSET * row_num; // position of y to draw rect.
+
+			row_y = ROW_Y_END - ROW_OFFSET * row_num; // position of y to draw rect.
+
+
 
 			tft_fillBrick(InstancePtr, col_x, row_y, col_x + BRICK_SIZE_LENGTH,
 					row_y + BRICK_SIZE_HEIGHT, futureColour);
@@ -177,7 +180,7 @@ int tft_updateColumn(XTft *InstancePtr, const int col_x, int currentBricks,
 		// fill all bricks in futureBricks
 		if (futureBricks & 1) {
 			// if current bricks is to be filled....
-			row_y = ROW_Y_START + ROW_OFFSET * row_num; // position of y to draw rect.
+			row_y = ROW_Y_END - ROW_OFFSET * row_num; // position of y to draw rect.
 
 			tft_fillBrick(InstancePtr, col_x, row_y, col_x + BRICK_SIZE_LENGTH,
 					row_y + BRICK_SIZE_HEIGHT, futureColour);

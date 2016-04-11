@@ -51,7 +51,7 @@
 #define COL_10_X		COL_X_START + COL_OFFSET * 9 	// Default col 10 X value to start.
 #define ROW_OFFSET				20 						// Row offset from each other
 #define ROW_Y_START				65 						// Default start Y value to draw smaller square
-#define ROW_Y_END		ROW_Y_START + ROW_OFFSET *  ROW_BRICKS - 1	// Default Endin Y value to draw smaller square
+#define ROW_Y_END		ROW_Y_START + ROW_OFFSET *  (ROW_BRICKS - 1)	// Default Endin Y value to draw smaller square
 #define ROW_1_Y					65 						// default Y value to start.
 
 

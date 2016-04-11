@@ -465,7 +465,8 @@ void* thread_func_controller()
 		}
 		if(leftOverTime_ms > 40)
 		{
-			xil_printf("leftOverTime : %d", leftOverTime_ms);
+			xil_printf("leftOverTime : %d\n", leftOverTime_ms);
+			leftOverTime_ms = 1;
 		}
 		sleep(leftOverTime_ms);
 		// sleep(10);
@@ -828,6 +829,7 @@ void thread_func_brick(char columnNumber)
 
 				// initialise loop variables
 				temp_BricksLeft = brickLoop = bricksLeft;
+				temp_sideHit = 0;
 				row_num = 0;
 				temp_thread_score = 0;
 				checksLeft = 8; // 8 bricks to check.
@@ -837,6 +839,8 @@ void thread_func_brick(char columnNumber)
 				{
 						// if ball not within this brick column x axis => wont hit any brick at this column.
 						// do nth
+//					xil_printf("using horizontal to exit @ col %d\n", col_x);
+
 				}
 				else
 				{
@@ -845,13 +849,19 @@ void thread_func_brick(char columnNumber)
 					while(brickLoop)
 					{
 
-
+						checksLeft --;
 
 						if(brickLoop & 0b1) // if got brick then check
 						{
-							row_y = ROW_Y_START + ROW_OFFSET * row_num; // position of y for the selected brick.
+							row_y = ROW_Y_END - ROW_OFFSET * row_num; // position of y for the selected brick.
 
-							if( myBoundaryChecker_checkBrick_vertical( (int)global_ballBounceCheck.y,  row_y,  row_y + BRICK_SIZE_HEIGHT) == 1 )
+							if(! myBoundaryChecker_checkLastBrick_vertical((int)global_ballBounceCheck.y, row_y + BRICK_SIZE_HEIGHT))
+							{
+								// below the last brick.. dont need to check brick..
+								break;
+							}
+
+							if( myBoundaryChecker_checkBrick_vertical( (int)global_ballBounceCheck.y,  row_y,  row_y + BRICK_SIZE_HEIGHT) )
 							{
 								// brief overlap check... used ball as square to check overlap... unable to confirm...
 
@@ -864,12 +874,8 @@ void thread_func_brick(char columnNumber)
 
 							if(temp_sideHit > 0)
 							{
-								if(checksLeft == 1)
-								{
-									checksLeft = 0; // no more check
-								}
 
-								else if(checksLeft != 1)
+								if(checksLeft != 1)
 								{
 									checksLeft = 1; // if hit 1 brick last check...
 								}
@@ -902,6 +908,13 @@ void thread_func_brick(char columnNumber)
 								temp_sideHit = 0; // reset temp side hit to find next bricks that may get hit..
 
 							}
+
+							if(checksLeft == 0)
+							{
+//								print("using checks left to exit\n");
+								break;
+							}
+
 
 						}
 

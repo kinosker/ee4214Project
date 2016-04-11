@@ -560,12 +560,10 @@ bar_msg bar_moveRight(bar_msg bar_input, int holdTime, char barMoved)
 		if(barMoved == 0)
 		{
 			// move at 25 pixel if hold time <= 250 ms & bar not moved..
-			print("left one step\n");
 			pixelMove = 25;
 		}
 		else
 		{
-			print("skip left\n");
 			// dont move if already moved for <= 250
 			return bar_temp;
 		}
