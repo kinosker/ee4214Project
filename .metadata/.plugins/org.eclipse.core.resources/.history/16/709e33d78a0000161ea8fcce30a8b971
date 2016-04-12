@@ -18,7 +18,7 @@
  *																			 *
  ******************************************************************************/
 
-#define CORNER_TOLERANCE			1.0
+#define CORNER_TOLERANCE			1.5
 
 #define HIT_REFLECT_SIDE			9
 #define HIT_REFLECT_TOP				10

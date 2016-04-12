@@ -759,8 +759,8 @@ void* thread_func_ball()
 			//xil_printf("new direction of ball = %d\n", ball_send.dir);
 
 			// set rebound speed.
-			//xil_printf("Setting boundary hit : %d \n", global_sideHit);
-//			sleep(300);
+			xil_printf("Boundary hit : %d \n", global_sideHit);
+//			sleep(0);
 			myBallControl_SetReboundSpeed(global_sideHit);
 
 		}
@@ -1014,7 +1014,9 @@ void thread_func_brick(char columnNumber)
 		if(!bricksLeft)
 		{
 
-			//   	  xil_printf("Thread exiting\n");
+			pthread_mutex_lock(&mutex_bricks);
+
+			   	  xil_printf("Thread exiting\n");
 
 			global_ColThreadsLeft --;
 

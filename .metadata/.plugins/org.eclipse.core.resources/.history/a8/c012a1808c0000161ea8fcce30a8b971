@@ -759,8 +759,8 @@ void* thread_func_ball()
 			//xil_printf("new direction of ball = %d\n", ball_send.dir);
 
 			// set rebound speed.
-			//xil_printf("Setting boundary hit : %d \n", global_sideHit);
-//			sleep(300);
+			xil_printf("Boundary hit : %d \n", global_sideHit);
+//			sleep(0);
 			myBallControl_SetReboundSpeed(global_sideHit);
 
 		}
@@ -895,9 +895,13 @@ void thread_func_brick(char columnNumber)
 							if( myBoundaryChecker_checkBrick_vertical( (int)global_ballBounceCheck.y,  row_y,  row_y + BRICK_SIZE_HEIGHT) )
 							{
 								// brief overlaaap check... used ball as square to check overlap... unable to confirm...
+								pthread_mutex_lock(&mutex_bricks); //insert by kh
 
 								temp_sideHit = myBoundaryChecker_checkHitBrick((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y, col_x,
 										row_y, col_x + BRICK_SIZE_LENGTH, row_y + BRICK_SIZE_HEIGHT);
+
+								pthread_mutex_unlock(&mutex_bricks); //insert by kh
+
 
 							}
 							else
@@ -1014,7 +1018,9 @@ void thread_func_brick(char columnNumber)
 		if(!bricksLeft)
 		{
 
-			//   	  xil_printf("Thread exiting\n");
+			pthread_mutex_lock(&mutex_bricks);
+
+			   	  xil_printf("Thread exiting\n");
 
 			global_ColThreadsLeft --;
 

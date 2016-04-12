@@ -258,7 +258,7 @@ int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 	else if(sideHit == HIT_ANGLE_DEC)
 	{
 //		xil_printf("Angle reflect DECREASE CONSTANT is %d\n\n", sideHit);
-		tempAngle = (180 + currentLocation.dir) % 360 ; // reflect 1st
+		tempAngle = (180 - currentLocation.dir) % 360 ; // reflect 1st
 		tempAngle -= BAR_ANGLE_ADJUSTMENT;				// decrease angle..
 
 		// low angle threshold check.
