@@ -75,7 +75,7 @@ int global_totalBricksLeft_recv;
 int global_ballSpeed_recv;
 char global_status = RESUME_STATUS;
 
-
+time_t global_startTime;
 
 unsigned char global_currentBricks[MAX_BRICKS_THREAD]; 	// start with 8 bricks..
 unsigned int global_currentColour[MAX_BRICKS_THREAD]; 	// start with 8 bricks..
@@ -274,15 +274,20 @@ void* thread_func_controller()
 				else if (global_status == WIN_STATUS || global_status == LOSE_STATUS)
 				{
 
-					for (iterator = 0 ; iterator < MAX_BRICKS_THREAD ; iterator ++)
-					{
-						pthread_join(tid_bricks[iterator], NULL);
-						xil_printf("Wait for %d threads already\n", iterator);
-					}
+//					for (iterator = 0 ; iterator < MAX_BRICKS_THREAD ; iterator ++)
+//					{
+//						pthread_join(tid_bricks[iterator], NULL);
+//						//						xil_printf("Wait for %d threads already\n", iterator);
+//					}
 
-					print("I finish waiting for threads to join\n");
+					//					print("I finish waiting for threads to join\n");
+
+					pthread_mutex_lock(&mutex_tft);
+
 
 					tft_intialDraw(&TFT_Instance);	// drawing layout...
+
+					tft_updateTime(&TFT_Instance, 0);
 
 					tft_updateSpeed(&TFT_Instance, INIT_BALLSPEED);
 					tft_updateBricksLeft(&TFT_Instance, TOTAL_BRICKS);
@@ -296,19 +301,36 @@ void* thread_func_controller()
 
 					}
 
+					pthread_mutex_unlock(&mutex_tft);
+
 					bar_send.start_x 	= BAR_START_X;
 					bar_send.start_y 	= BAR_START_Y;
 					bar_send.end_x		= BAR_START_X + BAR_LENGTH;
 					bar_send.end_y		= BAR_START_Y + BAR_HEIGHT;
 
 
-					myBarrier_setSize(&barrier_SyncThreads_start, ALL_SYNC_THREADS + 1); // barrier for all sync threads to start (Amount : ALL_SYNC_THREADS)
-					myBarrier_setSize(&barrier_SyncThreads_end, ALL_SYNC_THREADS + 1); // barrier for all sync threads to end (Amount : ALL_SYNC_THREADS)
 
-					reinit_brick_threads();
+					//					myBarrier_print(barrier_t *barrier)
+
+//					myBarrier_setSize(&barrier_SyncThreads_start, ALL_SYNC_THREADS + 1); // barrier for all sync threads to start (Amount : ALL_SYNC_THREADS)
+//					myBarrier_setSize(&barrier_SyncThreads_end, ALL_SYNC_THREADS + 1); // barrier for all sync threads to end (Amount : ALL_SYNC_THREADS)
+
+					for(iterator = 0 ; iterator < MAX_BRICKS_THREAD; iterator ++)
+					{
+						global_allBricks_recv.allMsg[iterator].bricksLeft = 0b11111111;
+						global_allBricks_recv.allMsg[iterator].colour = COLOR_GREEN;
+						global_allBricks_recv.allMsg[iterator].columnNumber = iterator;
+					}
+
+
+
+//					reinit_brick_threads();
+					sys_time(&global_startTime); // get start time of the game
 
 
 					global_status = RESUME_STATUS;
+
+
 				}
 				//				sleep(1000);
 			}
@@ -316,7 +338,15 @@ void* thread_func_controller()
 
 		// 1. Read all messages to update from core 1 processor (blocking)
 		//		core 1 processor take cares of FPS 
+		//		print("@ C0 : R\n");
+		//
+
+
+
 		XMbox_ReadBlocking(&Mbox, &allProcessor_recv, sizeof(allProcessor_msg));
+
+		//		print("@ C0 : N\n");
+
 
 		// 2. Get updated bar position..
 		bar_send = bar_updatePositon(bar_send);
@@ -351,7 +381,11 @@ void* thread_func_controller()
 		}
 
 		// 4.1 update bar location..
+		pthread_mutex_lock(&mutex_tft);
+
 		tft_moveBar(&TFT_Instance, bar_send);
+
+		pthread_mutex_unlock(&mutex_tft);
 
 		myBarrier_wait(&barrier_SyncThreads_start);	// start all the threads
 
@@ -365,12 +399,12 @@ void* thread_func_controller()
 }
 
 void* thread_func_time_elapsed() {
-	time_t startTime, timeElapsed, gameTime, prevGameTime = -1, pauseTime;
+	time_t timeElapsed, gameTime, prevGameTime = -1, pauseTime;
 
 
 	pthread_mutex_lock(&mutex_timer); // let's wait for game to start...
 
-	sys_time(&startTime); // get start time of the game
+	sys_time(&global_startTime); // get start time of the game
 	sys_time(&timeElapsed); // get start time of the game
 
 
@@ -382,17 +416,17 @@ void* thread_func_time_elapsed() {
 
 		if(pauseTime >= timeElapsed + 2)
 		{
-			startTime = startTime + (pauseTime - timeElapsed);
+			global_startTime = global_startTime + (pauseTime - timeElapsed);
 		}
 
 
 		sys_time(&timeElapsed); // get time elapsed so far...
 
-		if (timeElapsed < startTime) {
+		if (timeElapsed < global_startTime) {
 			// over flow ... handle it !
-			gameTime = LONG_MAX - timeElapsed - startTime; // max time = LONG_MAX
+			gameTime = LONG_MAX - timeElapsed - global_startTime; // max time = LONG_MAX
 		} else {
-			gameTime = timeElapsed - startTime;
+			gameTime = timeElapsed - global_startTime;
 		}
 
 		if (prevGameTime != gameTime) {
@@ -424,41 +458,53 @@ void thread_func_brick(int iterator)
 
 	while(1)
 	{
-
-		myBarrier_wait(&barrier_SyncThreads_start);	// wait for controller thread to launch us
-
-
-		// Get the updated value by controller 
-		columnNumber =  global_allBricks_recv.allMsg[iterator].columnNumber;
-		futureColour =  global_allBricks_recv.allMsg[iterator].colour;
-		futureBricks =	global_allBricks_recv.allMsg[iterator].bricksLeft;
-
-		pthread_mutex_lock(&mutex_tft);
-		tft_updateColumn(&TFT_Instance, global_col_x[columnNumber], global_currentBricks[columnNumber], futureBricks, global_currentColour[columnNumber], futureColour);
-		pthread_mutex_unlock(&mutex_tft);
-
-		global_currentBricks[columnNumber] = futureBricks;
-		global_currentColour[columnNumber] =  futureColour;
-
-
-
 		if(global_currentBricks[columnNumber] == 0 || global_status == WIN_STATUS || global_status == LOSE_STATUS)
 		{
-			myBarrier_decreaseSize(&barrier_SyncThreads_start);
-			myBarrier_decreaseSize(&barrier_SyncThreads_end);
+			// do nth
+			myBarrier_wait(&barrier_SyncThreads_start);	// wait for controller thread to launch us
+			myBarrier_wait(&barrier_SyncThreads_end);	// wait for all the threads to complete
 
 
-			break;
 		}
+		else
+		{
 
 
-		myBarrier_wait(&barrier_SyncThreads_end);	// wait for all the threads to complete
+			myBarrier_wait(&barrier_SyncThreads_start);	// wait for controller thread to launch us
+
+
+			// Get the updated value by controller
+			columnNumber =  global_allBricks_recv.allMsg[iterator].columnNumber;
+			futureColour =  global_allBricks_recv.allMsg[iterator].colour;
+			futureBricks =	global_allBricks_recv.allMsg[iterator].bricksLeft;
+
+			pthread_mutex_lock(&mutex_tft);
+			tft_updateColumn(&TFT_Instance, global_col_x[columnNumber], global_currentBricks[columnNumber], futureBricks, global_currentColour[columnNumber], futureColour);
+			pthread_mutex_unlock(&mutex_tft);
+
+			global_currentBricks[columnNumber] = futureBricks;
+			global_currentColour[columnNumber] =  futureColour;
+
+
+
+			//		if(global_currentBricks[columnNumber] == 0 || global_status == WIN_STATUS || global_status == LOSE_STATUS)
+			//		{
+			//			myBarrier_decreaseSize(&barrier_SyncThreads_start);
+			//			myBarrier_decreaseSize(&barrier_SyncThreads_end);
+			//
+			//
+			//			break;
+			//		}
+
+
+			myBarrier_wait(&barrier_SyncThreads_end);	// wait for all the threads to complete
+		}
 
 	}
 
 
-	print("Exiting thread\n");
-	pthread_exit(0);
+	//	print("Exiting thread\n");
+	//	pthread_exit(0);
 
 	// pthread_exited...
 
@@ -475,9 +521,13 @@ void* thread_func_ball()
 	{
 		myBarrier_wait(&barrier_SyncThreads_start);	// wait for controller thread to launch us
 
+		pthread_mutex_lock(&mutex_tft);
+
 		tft_removeCircle(&TFT_Instance, prevBall.x, prevBall.y, CIRCLE_RADIUS);
 		tft_addCircle(&TFT_Instance, (int)global_ball_recv.x, (int)global_ball_recv.y, CIRCLE_RADIUS); // update ball location...
 
+
+		pthread_mutex_unlock(&mutex_tft);
 		prevBall = global_ball_recv; // update previous ball!
 
 		myBarrier_wait(&barrier_SyncThreads_end);	// wait for all the threads to complete

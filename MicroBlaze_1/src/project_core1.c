@@ -97,6 +97,20 @@ volatile char global_status = RESUME_STATUS;
 const int FPS_MS = 1000*(1.0/FPS);
 const int global_col_x[] = { ALL_COL_X };
 
+
+
+/************************** Threading variables ****************************/
+
+pthread_attr_t attr;
+
+pthread_t tid_controller, tid_ball, tid_bricks[MAX_BRICKS_THREAD];
+
+/************************** Scheduling variables ****************************/
+
+struct sched_param sched_par;
+
+/************************** Normal variables ****************************/
+
 /************************** Function Prototype  ****************************/
 
 
@@ -112,6 +126,7 @@ int msgQueue_receiveBricks(int msgQ_brick_id, int colThreads, allBricks_msg *all
 void changeBrickColour(int global_score, int colThreadsLeft);
 int getNumberOfBricksLeft(int bricksleft);
 int init_mutex_Hardware(XMutex *MutexPtr);
+int reinit_brick_threads();
 
 
 int main (void)
@@ -279,17 +294,7 @@ int init_mailBox(XMbox *MboxPtr)
 
 int init_threads()
 {
-	/************************** Threading variables ****************************/
 
-	pthread_attr_t attr;
-
-	pthread_t tid_controller, tid_ball, tid_bricks[MAX_BRICKS_THREAD];
-
-	/************************** Scheduling variables ****************************/
-
-	struct sched_param sched_par;
-
-	/************************** Normal variables ****************************/
 
 	int  thread_status = 0, iterator;
 
@@ -335,6 +340,8 @@ void* thread_func_controller()
 	int msgQ_brick_id, msgQ_ball_id, msgQ_bar_id;
 	char init = 1;
 
+	int iterator = 0;
+
 	unsigned int startTime_ms, endTime_ms, leftOverTime_ms;
 
 
@@ -379,6 +386,8 @@ void* thread_func_controller()
 		if(!init)
 		{
 			XMbox_ReadBlocking(&Mbox, &bar_recv, sizeof(bar_msg));
+
+//			print("receive bar msg\n");
 		}
 
 		init = 0;
@@ -395,12 +404,13 @@ void* thread_func_controller()
 
 
 
+
 		// 2. Wait for score to be updated using mutex_bricks
 
 		//      xil_printf("Controller : Waiting for all score \n");
 
 		myBarrier_wait(&barrier_score); // wait for score to be updated by bricks thread.
-		//xil_printf("At controller score is %d\n", score);
+//		xil_printf("At controller score is %d\n", global_score);
 
 		//     xil_printf("Controller : End of wait for all score \n");
 
@@ -415,7 +425,7 @@ void* thread_func_controller()
 
 		myBarrier_wait(&barrier_colour_start);  // signal all bricks threads, they are ready to be updated with new colour
 
-		//      xil_printf("Controller : End for colour  \n");
+//		      xil_printf("Controller : End for colour  \n");
 
 		//      xil_printf("Controller : Waiting for ball \n");
 
@@ -426,7 +436,7 @@ void* thread_func_controller()
 			print ("Error in receiving message from bricks thread");
 		}
 
-		//      xil_printf("At controller ball location is x : %d y : %d, speed is %d\n", ball_recv.x , ball_recv.y, ball_recv.speed);
+//		xil_printf("At controller ball location is x : %d y : %d, speed is %d\n", (int)ball_recv.x , (int)ball_recv.y, ball_recv.speed);
 
 
 		//      xil_printf("Controller : Waiting for colour update \n");
@@ -434,7 +444,7 @@ void* thread_func_controller()
 		myBarrier_wait(&barrier_colour_end);   // wait for bricks to finish changing colour?
 
 
-		//      xil_printf("Controller : Waiting for all bricks, globalThreadsLeft : %d \n",global_ColThreadsLeft );
+//		xil_printf("Controller : Waiting for all bricks, globalThreadsLeft : %d \n",global_ColThreadsLeft );
 		// 5. Get final bricks location via msg queue? blocking!
 		if (msgQueue_receiveBricks(msgQ_brick_id, global_ColThreadsLeft, &allBricks_recv))
 		{
@@ -442,11 +452,11 @@ void* thread_func_controller()
 			print ("Error in receiving message from bricks thread");
 		}
 
-		//      int i;
-		//      for(i = 0; i < 10 ; i++)
-		//      xil_printf("At controller bricks is %d\n colour is %d\n", allBricks_recv.allMsg[i].columnNumber, allBricks_recv.allMsg[i].colour);
+		      int i;
+		      for(i = 0; i < 10 ; i++)
+//		      xil_printf("At controller bricks is %d\n brickLeft is %d\n", allBricks_recv.allMsg[i].columnNumber, allBricks_recv.allMsg[i].bricksLeft);
 		//
-		//      xil_printf("end of 1 send \n\n\n");
+//		      xil_printf("end of 1 send \n\n\n");
 		// 6. Get current tick (after processing)
 		endTime_ms = myCommon_ticks_to_ms(xget_clock_ticks());
 		//leftOverTime_ms = FPS_MS - (endTime_ms - startTime_ms);  // time to sleep = FPS ticks - processing time.....
@@ -475,6 +485,7 @@ void* thread_func_controller()
 		// sleep(10);
 
 		// 8. Send all updated values via MAILBOX
+
 		allProcessor_send.score = global_score;
 		allProcessor_send.msg_Allbricks = allBricks_recv;
 		allProcessor_send.msg_ball = ball_recv;
@@ -495,24 +506,128 @@ void* thread_func_controller()
 			allProcessor_send.status = RESUME_STATUS;
 		}
 
+
+
+
+//		xil_printf("Score : %d , bricksleft : %d , ball speed : %d, global_status : %d\n", global_score, allBricks_recv.totalBricksLeft, ball_recv.speed, allProcessor_send.status);
+
+//		xil_printf("Ready to send to another processor\n");
+		XMbox_WriteBlocking(&Mbox, &allProcessor_send, sizeof(allProcessor_msg));
+
+
+
+
+//		xil_printf("Controller : Waiting for all threads \n");
+//		myBarrier_print(&barrier_all_threads_end);
+		myBarrier_wait(&barrier_all_threads_end);
+//		xil_printf("Controller : End of waiting for all threads \n");
+
+
+
+		myBarrier_wait(&barrier_all_threads_start); // ready to start
+
+
 		if(global_status == WIN_STATUS || global_status == LOSE_STATUS)
 		{
+
+			for (iterator = 0 ; iterator < MAX_BRICKS_THREAD ; iterator ++)
+			{
+				pthread_join(tid_bricks[iterator], NULL);
+//				xil_printf("Wait for %d threads already\n", iterator);
+			}
+
+//			print("@ C1 : I finish waiting for threads to join\n");
+
+			global_status = RESUME_STATUS;
+
+
 			// Reset status
-			myBallControl_setInitSpeed();
+//			xil_printf("Colour end size :");
+//			myBarrier_print(&barrier_colour_end);
+
+			myBarrier_setSize(&barrier_colour_end, MAX_BRICKS_THREAD + MAX_CONTROLLER_THREAD);
+
+//			xil_printf("Colour start size :");
+//			myBarrier_print(&barrier_colour_start);
+
+			myBarrier_setSize(&barrier_colour_start, MAX_BRICKS_THREAD + MAX_CONTROLLER_THREAD);
+
+//			xil_printf("barrier score size :");
+//			myBarrier_print(&barrier_score);
+
+			myBarrier_setSize(&barrier_score, MAX_BRICKS_THREAD + MAX_CONTROLLER_THREAD);
+
+
+
+
+//			xil_printf("bound check end size :");
+//			myBarrier_print(&barrier_bounceCheck_end);
+			myBarrier_setSize(&barrier_bounceCheck_end, MAX_BRICKS_THREAD + 1);
+
+
+//			xil_printf("bound check start size :");
+//			myBarrier_print(&barrier_bounceCheck_start);
+			myBarrier_setSize(&barrier_bounceCheck_start, MAX_BRICKS_THREAD + 1);
+
+//			xil_printf("all end size :");
+//			myBarrier_print(&barrier_all_threads_end);
+			myBarrier_setSize(&barrier_all_threads_end, MAX_BRICKS_THREAD + MAX_CONTROLLER_THREAD + MAX_BALL_THREAD);
+
+//			xil_printf("all start size :");
+//			myBarrier_print(&barrier_all_threads_start);
+			myBarrier_setSize(&barrier_all_threads_start, MAX_BRICKS_THREAD + MAX_CONTROLLER_THREAD + MAX_BALL_THREAD);
+
+//			sleep(1000);
+
+			global_score = 0;
+			global_bounceHit = 0;
+			global_sideHit = 0;
+			global_bounceCompleted = 0;
+			global_stopBounceCheck	= 0;
+			global_ColThreadsLeft = 10;
+
+			ball_recv.dir = BALL_INITIAL_DIR;
+			ball_recv.speed = BALL_INITIAL_SPEED;
+			ball_recv.x = CIRCLE_X;
+			ball_recv.y = CIRCLE_Y;
+
+
+			for(iterator = 0 ; iterator < MAX_BRICKS_THREAD; iterator ++)
+			{
+				allBricks_recv.allMsg[iterator].bricksLeft = 0b11111111;
+				allBricks_recv.allMsg[iterator].colour = COLOR_GREEN;
+				allBricks_recv.allMsg[iterator].columnNumber = iterator;
+			}
+
+			allBricks_recv.totalBricksLeft = 80;
+
+			allProcessor_send.score = 0;
+			allProcessor_send.msg_Allbricks = allBricks_recv;
+			allProcessor_send.msg_ball = ball_recv;
+			allProcessor_send.status = RESUME_STATUS;
+
+//			print("@ C1 : waiting to send \n");
+
+			if ( XMbox_Flush(&Mbox) == XST_FAILURE)
+			{
+//				print("@ C1 : FLUSH FAIL \n");
+
+			}
+//			print("@ C1 : flush to send \n");
+
+
+			XMbox_WriteBlocking(&Mbox, &allProcessor_send, sizeof(allProcessor_msg));
+
+
+//			print("@ C1 : I am reint\n");
+
+
+			reinit_brick_threads();
+//			print("@ C1 : I finish reinit\n");
+
 
 
 		}
-
-
-		//xil_printf("Score : %d , bricksleft : %d , ball speed : %d\n", global_score, allBricks_recv.totalBricksLeft, ball_recv.speed);
-		//      xil_printf("Ready to send to another processor\n");
-		XMbox_WriteBlocking(&Mbox, &allProcessor_send, sizeof(allProcessor_msg));
-
-		//      xil_printf("Controller : Waiting for all threads \n");
-		myBarrier_wait(&barrier_all_threads_end);
-		//     xil_printf("Controller : End of waiting for all threads \n");
-
-		myBarrier_wait(&barrier_all_threads_start); // ready to start
 
 	}
 
@@ -855,6 +970,19 @@ void* thread_func_ball()
 
 		// restart...
 
+		if(global_status == WIN_STATUS || global_status == LOSE_STATUS)
+		{
+			// Reset status
+			myBallControl_setInitSpeed();
+			// initial ball parameters
+			ball_send.speed = BALL_INITIAL_SPEED;
+			ball_send.dir   = BALL_INITIAL_DIR;
+
+			ball_send.x     = CIRCLE_X;
+			ball_send.y     = CIRCLE_Y;
+		}
+
+
 
 		myBarrier_wait(&barrier_all_threads_start);
 	}
@@ -1058,11 +1186,17 @@ void thread_func_brick(char columnNumber)
 		//    xil_printf("When Send : Col number : %d, bricksLeft : %d\n", columnNumber, bricksLeft);
 
 		myBarrier_wait(&barrier_all_threads_end);
+		// restart...
 
-		if(!bricksLeft)
+		if(!bricksLeft || global_status == WIN_STATUS || global_status == LOSE_STATUS)
 		{
 
-			xil_printf("Thread exiting\n");
+//			xil_printf("Thread exiting\n");
+			if( !bricksLeft && colour == COLOR_YELLOW)
+			{
+				sem_post(&sem_colour_yellow);
+			}
+
 			pthread_mutex_lock(&mutex_bricks);
 
 
@@ -1109,13 +1243,14 @@ unsigned int updateBrickColour(unsigned int currentColour)
 {
 	int tries = 0;
 
-	if(rand()%2 || tries < 3)
+	if(rand()%2 || tries < 8)
 	{
 		yield();
 		tries ++;
 	}
 
-	if (sem_trywait(&sem_colour_yellow) == SEM_SUCCESS) {
+
+	if (currentColour != COLOR_YELLOW && sem_trywait(&sem_colour_yellow) == SEM_SUCCESS) {
 		// resource snatched !
 		return COLOR_YELLOW;
 	} else {
@@ -1181,10 +1316,14 @@ void changeBrickColour(int global_score, int colThreadsLeft)
 	static int prev_score = 0;
 	int i, semaRelease;
 
+	if (global_score == 0)
+	{
+		prev_score = 0;
+	}
 
 	//	print("Starting Here\r\n");
 	//	xil_printf("score: %d", score);
-	if ((global_score != prev_score) && (global_score % 10 == 0))
+	if ((global_score != prev_score) && ((global_score / 10) > (prev_score/10) ))
 	{
 
 		//		xil_printf("score is %d\n", global_score);
@@ -1224,6 +1363,39 @@ void changeBrickColour(int global_score, int colThreadsLeft)
 
 
 }
+
+int reinit_brick_threads()
+{
+
+
+	/************************** Normal variables ****************************/
+
+	int  thread_status = 0, iterator;
+
+
+	pthread_attr_init(&attr);					// get attribute for thread.
+
+
+	sched_par.sched_priority = PRIO_BRICKS; // set priority for columns thread
+	pthread_attr_setschedparam(&attr, &sched_par); // update priority attribute
+
+
+	for (iterator = 0 ; iterator < MAX_BRICKS_THREAD ; iterator ++)
+	{
+		thread_status += pthread_create(&tid_bricks[iterator], NULL, (void*) thread_func_brick, (void*)iterator );
+
+		if(thread_status)
+		{
+			xil_printf("Fail re init of threads %d\n", thread_status);
+			sleep(200);
+		}
+	}
+
+
+
+	return thread_status;
+}
+
 
 
 unsigned int myCommon_ticks_to_ms(unsigned int ticks)

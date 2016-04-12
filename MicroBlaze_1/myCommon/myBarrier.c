@@ -14,6 +14,11 @@ int myBarrier_init(barrier_t *barrier, unsigned int maxSize)
 }
 
 
+void myBarrier_print(barrier_t *barrier)
+{
+	xil_printf("barrier->currentSize : %d, maxSize : %d\n", barrier->currentSize, barrier->maxSize);
+}
+
 void myBarrier_wait(barrier_t *barrier)
 {
 
@@ -38,8 +43,26 @@ void myBarrier_wait(barrier_t *barrier)
 
 void myBarrier_setSize(barrier_t *barrier, unsigned int maxSize)
 {
+
+	int diffSize;
+
 	pthread_mutex_lock(&barrier->mutex);
-	barrier->maxSize = maxSize; // correct
+
+	diffSize = barrier->maxSize -  barrier->currentSize;
+
+	if(barrier->currentSize == barrier->maxSize)
+	{
+		barrier->maxSize = maxSize; // correct
+		barrier->currentSize = barrier->maxSize;
+
+	}
+	else
+	{
+		barrier->maxSize = maxSize; // correct
+		barrier->currentSize = barrier->maxSize - diffSize;
+	}
+
+
 	pthread_mutex_unlock(&barrier->mutex);
 
 }
@@ -65,7 +88,7 @@ void myBarrier_decreaseSize(barrier_t *barrier)
 
 	if(barrier->currentSize == 0)
 	{
-		print("one and only\n");
+//		print("one and only\n");
 
 		for(i = 0 ; i < barrier->maxSize ; i++)
 		{
