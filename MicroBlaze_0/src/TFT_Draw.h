@@ -516,9 +516,9 @@ void tft_drawRect(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 void tft_fillRect(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 		u32 ColEndPos, u32 RowEndPos, u32 colour);
 
-void updateGameStatus (XTft *InstancePtr, int buttonPressed);
+void updateGameStatus (XTft *InstancePtr, char gameStatus);
 
-void gameFinishChecker (XTft *InstancePtr, int gameStatus, int numOfBricksLeft);
+void gameFinishChecker (XTft *InstancePtr, char gameStatus);
 
 /*****************************************************************************
  **																			 *

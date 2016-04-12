@@ -86,4 +86,8 @@ void myBarrier_wait(barrier_t *barrier);
  *****************************************************************************/
 void myBarrier_decreaseSize(barrier_t *barrier);
 
+
+
+void myBarrier_setSize(barrier_t *barrier, unsigned int maxSize);
+
 #endif

@@ -27,6 +27,7 @@
 void myBallControl_updateBallSpeed(int speedGain);
 int myBallControl_getBallSpeed();
 void myBallControl_updateAutoSpeed(int score);
+void myBallControl_setInitSpeed();
 
 
 

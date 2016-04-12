@@ -23,6 +23,7 @@
 #include "myCommon.h"
 #include "myBarrier.h"
 #include "ballControl.h"
+#include "myBallSpeed.h"
 #include "xmutex.h"
 #include <limits.h>
 
@@ -89,9 +90,9 @@ volatile int global_bounceHit = 0;               //  how many bricks hit which c
 volatile int global_sideHit = 0;					// determine which side (corner or ??? ) was hit by the ball
 volatile char global_bounceCompleted = 0;         //  Signal bounce have been completed
 volatile char global_stopBounceCheck	= 0;
+volatile int global_ColThreadsLeft = 10; // how to find this can signal? via queue? change to constant later!!!
 
-static volatile int global_ColThreadsLeft = 10; // how to find this can signal? via queue? change to constant later!!!
-
+volatile char global_status = RESUME_STATUS;
 
 const int FPS_MS = 1000*(1.0/FPS);
 const int global_col_x[] = { ALL_COL_X };
@@ -477,6 +478,32 @@ void* thread_func_controller()
 		allProcessor_send.score = global_score;
 		allProcessor_send.msg_Allbricks = allBricks_recv;
 		allProcessor_send.msg_ball = ball_recv;
+
+		if(allProcessor_send.msg_Allbricks.totalBricksLeft == 0)
+		{
+			allProcessor_send.status = WIN_STATUS;
+			global_status = WIN_STATUS;
+
+		}
+		else  if(global_status == LOSE_STATUS)
+		{
+			allProcessor_send.status = LOSE_STATUS;
+
+		}
+		else
+		{
+			allProcessor_send.status = RESUME_STATUS;
+		}
+
+		if(global_status == WIN_STATUS || global_status == LOSE_STATUS)
+		{
+			// Reset status
+			myBallControl_setInitSpeed();
+
+
+		}
+
+
 		//xil_printf("Score : %d , bricksleft : %d , ball speed : %d\n", global_score, allBricks_recv.totalBricksLeft, ball_recv.speed);
 		//      xil_printf("Ready to send to another processor\n");
 		XMbox_WriteBlocking(&Mbox, &allProcessor_send, sizeof(allProcessor_msg));
@@ -760,13 +787,23 @@ void* thread_func_ball()
 			// set the new direction.. (angle)
 			//ball_send.dir = ??
 			//xil_printf("Boundary: %d \n\n\n\n\n\n\n\n", global_sideHit);
-			ball_send.dir = myBallControl_ReboundAngle(global_sideHit, ball_send);
-			//xil_printf("new direction of ball = %d\n", ball_send.dir);
 
-			// set rebound speed.
-			//xil_printf("Setting boundary hit : %d \n", global_sideHit);
-//			sleep(300);
-			myBallControl_SetReboundSpeed(global_sideHit);
+			if(global_sideHit == HIT_OUTER_BOX_BTM)
+			{
+				global_status = LOSE_STATUS;
+			}
+			else
+			{
+
+
+				ball_send.dir = myBallControl_ReboundAngle(global_sideHit, ball_send);
+				//xil_printf("new direction of ball = %d\n", ball_send.dir);
+
+				// set rebound speed.
+				//xil_printf("Setting boundary hit : %d \n", global_sideHit);
+	//			sleep(300);
+				myBallControl_SetReboundSpeed(global_sideHit);
+			}
 
 		}
 
@@ -815,6 +852,10 @@ void* thread_func_ball()
 
 
 		myBarrier_wait(&barrier_all_threads_end);
+
+		// restart...
+
+
 		myBarrier_wait(&barrier_all_threads_start);
 	}
 

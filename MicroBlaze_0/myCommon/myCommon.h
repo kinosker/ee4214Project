@@ -151,8 +151,13 @@
 #define FRAME_PER_SEC			25
 #define INITIAL_SPEED 			250/FRAME_PER_SEC	//250pixels per sec -> 25fps = 10pixels
 
-#define WIN_STATUS					90
-#define LOSE_STATUS					99
+
+
+#define RESUME_STATUS				0
+#define PAUSE_STATUS				1
+#define RESTART_STATUS				2
+#define WIN_STATUS					3
+#define LOSE_STATUS					4
 
 
 typedef struct
@@ -196,6 +201,7 @@ typedef struct
 
 typedef struct
 {
+  char status;
   int score;                    // score to be updated
   ball_msg msg_ball;            // ball location to be update.
   allBricks_msg msg_Allbricks;  // bricks to be updated

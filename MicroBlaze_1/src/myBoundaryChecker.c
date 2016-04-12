@@ -233,35 +233,6 @@ float myBoundaryChecker_getDistanceBtwThem(int dist_X, int dist_Y)
 }
 
 
-int myBoundaryChecker_getDistance_Y(int ball_Y, int myBoundary_Start_Y, int myBoundary_End_Y)
-{
-	int dist_end_y = abs(ball_Y - myBoundary_End_Y);
-	int dist_start_y = abs(ball_Y - myBoundary_Start_Y);
-
-	if(dist_start_y < dist_end_y)
-	{
-		return dist_start_y;
-	}
-	else
-	{
-		return dist_end_y;
-	}
-}
-
-int myBoundaryChecker_getDistance_X(int ball_X, int myBoundary_Start_X, int myBoundary_End_X)
-{
-	int dist_end_x = abs(ball_X - myBoundary_End_X);
-	int dist_start_x = abs(ball_X - myBoundary_Start_X);
-
-	if(dist_start_x < dist_start_x)
-	{
-		return dist_start_x;
-	}
-	else
-	{
-		return dist_end_x;
-	}
-}
 
 // return the side that it HIT!, if 
 int myBoundaryChecker_checkHitBrick(int ball_X, int ball_Y, int myBoundary_Start_X, int myBoundary_Start_Y, int myBoundary_End_X, int myBoundary_End_Y)
@@ -632,8 +603,8 @@ int myBoundaryChecker_checkHitBar(int ball_X, int ball_Y, int myBoundary_Start_X
 			// ball is both at x and y boundary... using square box check..
 			// use distance to check if it's really hitting bar..
 
-			closest_X = myBoundaryChecker_getClosestX( ball_X,  myBoundary_Start_X,  myBoundary_End_X);
-			closest_Y = myBoundary_Start_Y; // using start Y only...
+			closest_X = myBoundaryChecker_getClosestX( ball_X,  myBoundary_Start_X-2,  myBoundary_End_X+2);
+			closest_Y = myBoundary_Start_Y-2; // using start Y only...
 
 
 			dist_X =  abs(ball_X - closest_X);

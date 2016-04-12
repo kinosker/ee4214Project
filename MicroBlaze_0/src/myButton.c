@@ -121,11 +121,29 @@ char myButton_checkDown(XGpio *gpPB) {
 	return (buttonPress & BUTTON_DOWN_PRESS & currentButton);
 }
 
-// return 1 if center button is pressed
-char myButton_checkCenter(XGpio *gpPB) {
+// return 1 if center button is pressed (on release)
+char myButton_checkCenter(XGpio *gpPB)
+{
 
+	static char prevButton = 0;
 	char currentButton = XGpio_DiscreteRead(gpPB, 1);
-	return (buttonPress & BUTTON_CENTER_PRESS & currentButton);
+
+	currentButton = (buttonPress & BUTTON_CENTER_PRESS & currentButton);
+
+	if(currentButton == 0 && prevButton == 1)
+	{
+		//print("On release\n");
+		//sleep(1000);
+		prevButton = currentButton;
+		return 1;
+	}
+	else
+	{
+		//print("Nth happen\n");
+		prevButton = currentButton;
+		return 0;
+	}
+
 }
 
 void myButton_int_handler(XGpio *gpPB) //Should be very short (in time). In a practical program, don't print etc.

@@ -659,9 +659,9 @@ void tft_fillRect(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 			colour);
 }
 
-void updateGameStatus (XTft *InstancePtr, int buttonPressed)
+void updateGameStatus (XTft *InstancePtr, char gameStatus)
 {
-	if(buttonPressed)
+	if(gameStatus)
 	{
 		tft_fillRect(InstancePtr, GAME_START_X, GAME_START_Y, GAME_END_X,
 				GAME_END_Y, COLOR_RED);
@@ -675,11 +675,11 @@ void updateGameStatus (XTft *InstancePtr, int buttonPressed)
 				GAME_END_Y, COLOR_GREEN);
 		tft_drawRect(InstancePtr, GAME_START_X, GAME_START_Y, GAME_END_X,
 				GAME_END_Y, COLOR_BLACK);
-		tft_writeString(InstancePtr, GAME_START_X + 32, GAME_START_Y - 5, "PLAYING",COLOR_BLACK, COLOR_GREEN);
+		tft_writeString(InstancePtr, GAME_START_X + 32, GAME_START_Y + 5, "PLAYING",COLOR_BLACK, COLOR_GREEN);
 	}
 }
 
-void gameFinishChecker (XTft *InstancePtr, int gameStatus, int numOfBricksLeft)
+void gameFinishChecker (XTft *InstancePtr, char gameStatus)
 {
 	tft_fillRect(InstancePtr, OUTER_COL_START_X, OUTER_COL_START_Y,
 			OUTER_COL_END_X, OUTER_COL_END_Y, COLOR_WHITE);
@@ -687,12 +687,14 @@ void gameFinishChecker (XTft *InstancePtr, int gameStatus, int numOfBricksLeft)
 			OUTER_COL_END_X, OUTER_COL_END_Y, COLOR_GREEN);
 	tft_drawRect(InstancePtr, OUTER_COL_START_X, OUTER_COL_START_Y,
 			OUTER_COL_END_X, OUTER_COL_END_Y, COLOR_BLACK);
-	if((gameStatus == WIN_STATUS) && (numOfBricksLeft == 0))
+
+
+	if(gameStatus == WIN_STATUS)
 	{
 		tft_writeString(InstancePtr, 240, 140, "YOU WIN!!!",COLOR_BLACK, COLOR_GREEN);
 		tft_writeString(InstancePtr, 175, 175, "Press any button to restart.",COLOR_BLACK, COLOR_GREEN);
 	}
-	else if((gameStatus == LOSE_STATUS) && (numOfBricksLeft != 0))
+	else if(gameStatus == LOSE_STATUS)
 	{
 		tft_writeString(InstancePtr, 240, 140, "GAME OVER....",COLOR_BLACK, COLOR_GREEN);
 		tft_writeString(InstancePtr, 175, 175, "Press any button to restart.",COLOR_BLACK, COLOR_GREEN);

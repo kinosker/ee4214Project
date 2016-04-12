@@ -1,0 +1,751 @@
+#include "xmk.h"
+#include "xtft.h"
+#include "xgpio.h"
+#include "stdlib.h"
+#include "sys/init.h"
+#include "xparameters.h"
+#include "semaphore.h"
+#include <pthread.h>
+#include <sys/timer.h> //for using sleep. need to set config_time to true
+#include <sys/intr.h> //xilkernel api for interrupts
+#include <stdio.h>
+#include <limits.h>
+#include "TFT_Draw.h"
+#include "myButton.h"
+#include "xmbox.h"
+#include "myCommon.h"
+#include "myBarrier.h"
+#include "xmutex.h"
+
+/************************** Struct Definition ****************************/
+
+
+#define MBOX_DEVICE_ID		XPAR_MBOX_0_DEVICE_ID
+#define MUTEX_DEVICE_ID 	XPAR_MUTEX_0_IF_1_DEVICE_ID
+#define MUTEX_NUM 0
+
+// 5 Priority levels for this processor.
+#define PRIO_CONTROLLER 2
+#define PRIO_BALL		4
+#define PRIO_BRICK 		3
+#define PRIO_TIMER	    1
+
+
+#define MSGQ_ID_BALL    1
+#define MSGQ_ID_BRICK	2
+#define MSGQ_ID_MISC    3
+
+
+
+
+
+
+#define ALL_SYNC_THREADS		MAX_BRICKS_THREAD + MAX_BALL_THREAD + MAX_CONTROLLER_THREAD + MAX_MISC_THREAD
+
+
+#define INIT_BALLSPEED 	250
+#define INIT_SCORE		0
+
+
+/************************** Funcction Prototypes *****************************/
+
+int init_threads();
+void* thread_func_controller();
+void thread_func_brick(int iterator);
+void* thread_func_time_elapsed();
+void* thread_func_ball();
+int init_mutex_Hardware(XMutex *MutexPtr);
+int reinit_brick_threads();
+
+bar_msg bar_updatePositon(bar_msg bar_input);
+bar_msg bar_moveRight(bar_msg bar_input, int holdTime, char barMoved);
+bar_msg bar_moveLeft(bar_msg bar_input, int holdTime, char barMoved);
+
+
+void main_prog(void *arg);
+
+/************************ Global Variable Definitions ****************************/
+
+const int global_col_x[] = { ALL_COL_X };
+
+allBricks_msg global_allBricks_recv;
+ball_msg global_ball_recv;
+int global_score_recv;
+int global_totalBricksLeft_recv;
+int global_ballSpeed_recv;
+char global_status = RESUME_STATUS;
+
+
+
+unsigned char global_currentBricks[MAX_BRICKS_THREAD]; 	// start with 8 bricks..
+unsigned int global_currentColour[MAX_BRICKS_THREAD]; 	// start with 8 bricks..
+
+
+/************************** Tft variables ****************************/
+
+static XTft TFT_Instance;
+
+
+
+/************************** Thread Synchronisation variables ****************************/
+
+pthread_mutex_t mutex_tft, mutex_timer;
+
+barrier_t barrier_SyncThreads_start;
+barrier_t barrier_SyncThreads_end;
+
+/************************** Button variables********************************************/
+//volatile char bar_Status;
+XGpio gpPB; //PB device instance.
+
+volatile int taskrunning;
+
+int main() {
+	print("-- Entering main() --\r\n");
+
+	// Initialise VGA Display...
+	tft_init(TFT_DEVICE_ID, &TFT_Instance);
+
+	//Initialize Xilkernel
+	xilkernel_init();
+
+	//Add main_prog as the static thread that will be invoked by Xilkernel
+	xmk_add_static_thread(main_prog, 0);
+
+	//Start Xilkernel
+	xilkernel_start();
+
+	/* Never reached */
+	return 0;
+}
+
+void main_prog(void *arg) {
+
+	int ret, status = 0, iterator;
+
+
+	// initialize barrier
+	status = myBarrier_init(&barrier_SyncThreads_start, ALL_SYNC_THREADS + 1); // barrier for all sync threads to start (Amount : ALL_SYNC_THREADS)
+	status += myBarrier_init(&barrier_SyncThreads_end, ALL_SYNC_THREADS + 1); // barrier for all sync threads to end (Amount : ALL_SYNC_THREADS)
+	if(status != 0)
+	{
+		xil_printf("-- ERROR @ core0 init barrier...\r\n");
+	}
+
+
+
+	// initialize mutex
+	ret = pthread_mutex_init(&mutex_tft, NULL );
+	if (ret != 0) {
+		xil_printf("-- ERROR (%d) init uart_mutex...\r\n", ret);
+	}
+
+	ret = pthread_mutex_init(&mutex_timer, NULL );
+	if (ret != 0) {
+		xil_printf("-- ERROR (%d) init uart_mutex...\r\n", ret);
+	}
+
+	pthread_mutex_lock(&mutex_timer);
+
+	init_myButton(&gpPB);	
+
+	tft_intialDraw(&TFT_Instance);	// drawing layout...
+
+	tft_updateSpeed(&TFT_Instance, INIT_BALLSPEED);
+	tft_updateBricksLeft(&TFT_Instance, TOTAL_BRICKS);
+	tft_updateScore(&TFT_Instance, INIT_SCORE);
+
+	for(iterator = 0 ; iterator < MAX_BRICKS_THREAD ; iterator++)
+	{
+		tft_updateColumn(&TFT_Instance, global_col_x[iterator], 0, 0b11111111, COLOR_GREEN, COLOR_GREEN); // draw all bricks...
+		global_currentBricks[iterator] = 0b11111111;
+		global_currentColour[iterator] = COLOR_GREEN;
+
+	}
+
+
+	/************************** Threads Init ****************************/
+
+	if (init_threads() != 0)
+	{
+		//  error handling...
+		print("-- Error initializing thread : Core 0--\r\n");
+	}
+}
+
+int init_mutex_Hardware(XMutex *MutexPtr)
+{
+	XStatus Mutex_Status;
+
+
+	XMutex_Config* Mutex_ConfigPtr;
+	Mutex_ConfigPtr = XMutex_LookupConfig(MUTEX_DEVICE_ID); //Use the device identifier to find the static configuration structure defined in XMutex_g.c.
+
+	if (Mutex_ConfigPtr == (XMutex_Config *) NULL ) {
+
+		("B1-- ERROR  init  core 1 HW mutex...\r\n");
+	}
+
+	// initialize the HW Mutex
+	Mutex_Status = XMutex_CfgInitialize(MutexPtr, Mutex_ConfigPtr,
+			Mutex_ConfigPtr->BaseAddress);
+
+	if (Mutex_Status != XST_SUCCESS) {
+
+		xil_printf("B1-- ERROR  init  core 1 HW mutex...\r\n");
+	}
+
+	return Mutex_Status;
+}
+
+
+
+
+
+
+
+void* thread_func_controller() 
+{
+
+
+	/************************** Variable Definitions ****************************/
+	static XMutex hardware_Mutex;
+	static XMbox Mbox; /* Instance of the Mailbox driver */
+
+
+	bar_msg bar_send;
+	bar_send.start_x 	= BAR_START_X;
+	bar_send.start_y 	= BAR_START_Y;
+	bar_send.end_x		= BAR_START_X + BAR_LENGTH;
+	bar_send.end_y		= BAR_START_Y + BAR_HEIGHT;
+
+	int iterator;
+
+	allProcessor_msg allProcessor_recv;
+
+
+	/************************** Mailbox Init ****************************/
+
+	init_mailBox(&Mbox);
+
+
+	/***************************Hardware Mutex **************************/
+	init_mutex_Hardware(&hardware_Mutex);
+
+	/********************* Initial Program ******************/	
+	while (!myButton_checkCenter(&gpPB)) 
+	{
+		//sleep(10); // wait for middle button to press to start game...
+	}
+
+	XMbox_WriteBlocking(&Mbox, &bar_send, sizeof(bar_msg));	// Send initial bar position to kick start core 1 processor (blocking)
+
+	// middle button pressed..
+	pthread_mutex_unlock(&mutex_timer); // release timer mutex to start time for game..
+	/********************* End initial program ******************/
+
+
+	while (1) 
+	{
+
+		while(global_status)
+		{
+			if (myButton_checkCenter(&gpPB))
+			{
+				//				print("resume game\n");
+				if(global_status == PAUSE_STATUS)
+				{
+					global_status = RESUME_STATUS;
+					updateGameStatus (&TFT_Instance, global_status);
+				}
+				else if (global_status == WIN_STATUS || global_status == LOSE_STATUS)
+				{
+					tft_intialDraw(&TFT_Instance);	// drawing layout...
+
+					tft_updateSpeed(&TFT_Instance, INIT_BALLSPEED);
+					tft_updateBricksLeft(&TFT_Instance, TOTAL_BRICKS);
+					tft_updateScore(&TFT_Instance, INIT_SCORE);
+
+					for(iterator = 0 ; iterator < MAX_BRICKS_THREAD ; iterator++)
+					{
+						tft_updateColumn(&TFT_Instance, global_col_x[iterator], 0, 0b11111111, COLOR_GREEN, COLOR_GREEN); // draw all bricks...
+						global_currentBricks[iterator] = 0b11111111;
+						global_currentColour[iterator] = COLOR_GREEN;
+
+					}
+
+					bar_send.start_x 	= BAR_START_X;
+					bar_send.start_y 	= BAR_START_Y;
+					bar_send.end_x		= BAR_START_X + BAR_LENGTH;
+					bar_send.end_y		= BAR_START_Y + BAR_HEIGHT;
+
+
+					myBarrier_setSize(&barrier_SyncThreads_start, ALL_SYNC_THREADS + 1); // barrier for all sync threads to start (Amount : ALL_SYNC_THREADS)
+					myBarrier_setSize(&barrier_SyncThreads_end, ALL_SYNC_THREADS + 1); // barrier for all sync threads to end (Amount : ALL_SYNC_THREADS)
+
+					reinit_brick_threads();
+
+
+					global_status = RESUME_STATUS;
+				}
+				//				sleep(1000);
+			}
+		}
+
+		// 1. Read all messages to update from core 1 processor (blocking)
+		//		core 1 processor take cares of FPS 
+		XMbox_ReadBlocking(&Mbox, &allProcessor_recv, sizeof(allProcessor_msg));
+
+		// 2. Get updated bar position..
+		bar_send = bar_updatePositon(bar_send);
+
+
+		// 3. Send to core 1 for processing ...
+		XMbox_WriteBlocking(&Mbox, &bar_send, sizeof(bar_msg));	// Send initial bar position to kick start core 1 processor (blocking)
+
+
+		// 4. update variables for other threads to use.....
+		global_allBricks_recv = allProcessor_recv.msg_Allbricks; 						// update status for all bricks
+		global_ball_recv = allProcessor_recv.msg_ball;									// update location for ball
+		global_ballSpeed_recv = allProcessor_recv.msg_ball.speed;						// update speed
+		global_score_recv = allProcessor_recv.score;									// update score
+		global_totalBricksLeft_recv = allProcessor_recv.msg_Allbricks.totalBricksLeft;	// update total bricks left
+		global_status = allProcessor_recv.status;
+
+		if(global_status == WIN_STATUS || global_status == LOSE_STATUS)
+		{
+			gameFinishChecker (&TFT_Instance, global_status);
+		}
+
+
+
+
+		if (myButton_checkCenter(&gpPB))
+		{
+			//			print("pausing game\n");
+			global_status = PAUSE_STATUS;
+			updateGameStatus (&TFT_Instance, global_status);
+			//			sleep(1000);
+		}
+
+		// 4.1 update bar location..
+		tft_moveBar(&TFT_Instance, bar_send);
+
+		myBarrier_wait(&barrier_SyncThreads_start);	// start all the threads
+
+
+		// 5. wait for other threads to end...
+
+		myBarrier_wait(&barrier_SyncThreads_end);	// wait for all the threads to complete
+
+	}
+
+}
+
+void* thread_func_time_elapsed() {
+	time_t startTime, timeElapsed, gameTime, prevGameTime = -1, pauseTime;
+
+
+	pthread_mutex_lock(&mutex_timer); // let's wait for game to start...
+
+	sys_time(&startTime); // get start time of the game
+	sys_time(&timeElapsed); // get start time of the game
+
+
+	while (1) {
+
+		myBarrier_wait(&barrier_SyncThreads_start);	// wait for controller thread to launch us
+
+		sys_time(&pauseTime); // get time elapsed so far...
+
+		if(pauseTime >= timeElapsed + 2)
+		{
+			startTime = startTime + (pauseTime - timeElapsed);
+		}
+
+
+		sys_time(&timeElapsed); // get time elapsed so far...
+
+		if (timeElapsed < startTime) {
+			// over flow ... handle it !
+			gameTime = LONG_MAX - timeElapsed - startTime; // max time = LONG_MAX
+		} else {
+			gameTime = timeElapsed - startTime;
+		}
+
+		if (prevGameTime != gameTime) {
+			// update time box (function needed !!!)
+			pthread_mutex_lock(&mutex_tft);
+			tft_updateTime(&TFT_Instance, gameTime);
+			pthread_mutex_unlock(&mutex_tft);
+
+			prevGameTime = gameTime;
+		}
+
+		myBarrier_wait(&barrier_SyncThreads_end);	// wait for controller thread to launch us
+
+
+	}
+}
+
+void thread_func_brick(int iterator)
+{
+	char columnNumber = 0;
+
+
+	unsigned int futureColour = COLOR_GREEN; 	// some default color.
+	unsigned char futureBricks = 0b11111111; 	// start with 8 bricks..
+
+
+
+	ball_msg ball; // ball param received from mailbox
+
+	while(1)
+	{
+
+		myBarrier_wait(&barrier_SyncThreads_start);	// wait for controller thread to launch us
+
+
+		// Get the updated value by controller 
+		columnNumber =  global_allBricks_recv.allMsg[iterator].columnNumber;
+		futureColour =  global_allBricks_recv.allMsg[iterator].colour;
+		futureBricks =	global_allBricks_recv.allMsg[iterator].bricksLeft;
+
+		pthread_mutex_lock(&mutex_tft);
+		tft_updateColumn(&TFT_Instance, global_col_x[columnNumber], global_currentBricks[columnNumber], futureBricks, global_currentColour[columnNumber], futureColour);
+		pthread_mutex_unlock(&mutex_tft);
+
+		global_currentBricks[columnNumber] = futureBricks;
+		global_currentColour[columnNumber] =  futureColour;
+
+
+
+		if(global_currentBricks[columnNumber] == 0)
+		{
+			myBarrier_decreaseSize(&barrier_SyncThreads_start);
+			myBarrier_decreaseSize(&barrier_SyncThreads_end);
+			break; //pthread_exit(0);
+		}
+
+
+		myBarrier_wait(&barrier_SyncThreads_end);	// wait for all the threads to complete
+
+	}
+
+	// pthread_exited...
+
+}
+
+void* thread_func_ball()
+{
+	ball_msg prevBall;
+	prevBall.x = CIRCLE_X;
+	prevBall.y = CIRCLE_Y;
+
+
+	while (1) 
+	{
+		myBarrier_wait(&barrier_SyncThreads_start);	// wait for controller thread to launch us
+
+		tft_removeCircle(&TFT_Instance, prevBall.x, prevBall.y, CIRCLE_RADIUS);
+		tft_addCircle(&TFT_Instance, (int)global_ball_recv.x, (int)global_ball_recv.y, CIRCLE_RADIUS); // update ball location...
+
+		prevBall = global_ball_recv; // update previous ball!
+
+		myBarrier_wait(&barrier_SyncThreads_end);	// wait for all the threads to complete
+
+	}
+
+}
+
+
+void thread_func_misc()
+{
+
+	while(1)
+	{
+		myBarrier_wait(&barrier_SyncThreads_start);	// wait for controller thread to launch us
+
+		pthread_mutex_lock(&mutex_tft);
+		tft_updateScore(&TFT_Instance, global_score_recv); // temp score increment per frame...
+		tft_updateSpeed(&TFT_Instance, global_ballSpeed_recv);
+		tft_updateBricksLeft(&TFT_Instance, global_totalBricksLeft_recv);
+		pthread_mutex_unlock(&mutex_tft);
+
+
+		myBarrier_wait(&barrier_SyncThreads_end);	// wait for all the threads to complete
+
+
+	}
+
+
+}
+
+int reinit_brick_threads()
+{
+	pthread_attr_t attr;
+	pthread_t tid_bricks[MAX_BRICKS_THREAD];
+	/************************** Scheduling variables ****************************/
+
+	struct sched_param sched_par;
+
+	/************************** Normal variables ****************************/
+
+	int  thread_status = 0, iterator;
+
+
+	pthread_attr_init(&attr);					// get attribute for thread.
+
+
+	sched_par.sched_priority = PRIO_BRICK; // set priority for columns thread
+	pthread_attr_setschedparam(&attr, &sched_par); // update priority attribute
+
+
+	for (iterator = 0 ; iterator < MAX_BRICKS_THREAD ; iterator ++)
+	{
+		thread_status += pthread_create(&tid_bricks[iterator], NULL, (void*) thread_func_brick, (void*)iterator );
+
+		if(thread_status)
+		{
+			xil_printf("Fail re init of threads %d\n", thread_status);
+			sleep(200);
+		}
+	}
+
+
+
+	return thread_status;
+}
+
+
+int init_threads()
+{
+
+
+	/************************** Threading variables ****************************/
+
+	pthread_attr_t attr;
+
+	pthread_t tid_controller, tid_ball, tid_time_elapsed, tid_misc, tid_bricks[MAX_BRICKS_THREAD];
+
+
+	/************************** Scheduling variables ****************************/
+
+	struct sched_param sched_par;
+
+	/************************** Normal variables ****************************/
+
+	int  thread_status = 0, iterator;
+
+
+
+	pthread_attr_init(&attr);					// get attribute for thread.
+
+
+	/************************** Controller Threads Init ****************************/
+
+	sched_par.sched_priority = PRIO_CONTROLLER; // set priority for controller thread
+	pthread_attr_setschedparam(&attr, &sched_par); // update priority attribute
+
+	//start controller thread 1
+	thread_status += pthread_create(&tid_controller, NULL, (void*) thread_func_controller, NULL );
+
+	/************************** Brick Threads Init ****************************/
+
+	sched_par.sched_priority = PRIO_BRICK; // set priority for columns thread
+	pthread_attr_setschedparam(&attr, &sched_par); // update priority attribute
+
+
+	for (iterator = 0 ; iterator < MAX_BRICKS_THREAD ; iterator ++)
+	{
+		thread_status += pthread_create(&tid_bricks[iterator], NULL, (void*) thread_func_brick, (void*)iterator );
+	}
+
+
+
+	/************************ TIMER thread INIT *************************/
+
+	sched_par.sched_priority = PRIO_TIMER; // set priority for misc zone threads
+	pthread_attr_setschedparam(&attr, &sched_par); // update priority attribute
+
+	//start timer thread. (SHOULD NOT BE HERE ON ACTUAL PROJECT !!! Launch ball => then start this thread..)
+	thread_status += pthread_create(&tid_time_elapsed, NULL, (void*) thread_func_time_elapsed, 0);
+	thread_status += pthread_create(&tid_misc, NULL, (void*) thread_func_misc, 0);
+
+
+	/************************  Ball thread INIT *************************/
+
+	sched_par.sched_priority = PRIO_BALL; // set priority for score zone threads
+	pthread_attr_setschedparam(&attr, &sched_par); // update priority attribute
+
+	thread_status += pthread_create(&tid_ball, NULL, (void*) thread_func_ball, 0);
+
+	return thread_status;
+}
+
+
+int init_mailBox(XMbox *MboxPtr)
+{
+	XMbox_Config *ConfigPtr;
+
+	int mailbox_status = 0;
+
+	/************************** Mailbox Init ****************************/
+
+
+
+	ConfigPtr = XMbox_LookupConfig(MBOX_DEVICE_ID );
+	if (ConfigPtr == (XMbox_Config *)NULL)
+	{
+		// error handling...
+		print("-- Error configuring Mailbox core 0 --\r\n");
+		return XST_FAILURE;
+	}
+
+	mailbox_status = XMbox_CfgInitialize(MboxPtr, ConfigPtr, ConfigPtr->BaseAddress);
+	if (mailbox_status != XST_SUCCESS)
+	{
+		//  error handling...
+		print("-- Error initializing Mailbox : core 0--\r\n");
+		return XST_FAILURE;
+	}
+
+	XMbox_Flush(MboxPtr);
+}
+
+
+bar_msg bar_updatePositon(bar_msg bar_input) 
+{
+	// get hold time..
+	static char barMovedLeft = 0;
+	static char barMovedRight = 0;
+
+	bar_msg bar_temp = bar_input;
+
+	int leftHoldTime = myButton_checkLeft(&gpPB);
+	int rightHoldTime = myButton_checkRight(&gpPB);
+
+
+	if (leftHoldTime) 
+	{
+
+		bar_temp = bar_moveLeft(bar_temp, leftHoldTime, barMovedLeft);
+
+		barMovedLeft = 1;
+		barMovedRight = 0;
+
+		return bar_temp;
+	}
+
+	else if (rightHoldTime) 
+	{
+		bar_temp = bar_moveRight(bar_temp, rightHoldTime, barMovedRight);
+
+		barMovedLeft = 0;
+		barMovedRight = 1;
+
+		return bar_temp;
+	}
+	else
+	{
+
+		barMovedLeft = 0;
+		barMovedRight = 0;
+
+		return bar_temp;	// no changes
+	}
+
+}
+
+
+bar_msg bar_moveRight(bar_msg bar_input, int holdTime, char barMoved)
+{
+	bar_msg bar_temp = bar_input;
+	int pixelMove;
+
+
+	if(holdTime > 250) // if hold for more than 250 ms...
+	{
+		// move at 200 pixel per sec
+		pixelMove = 200/FPS;
+	}
+	else if( holdTime <= 250)
+	{
+		if(barMoved == 0)
+		{
+			// move at 25 pixel if hold time <= 250 ms & bar not moved..
+			pixelMove = 25;
+		}
+		else
+		{
+			// dont move if already moved for <= 250
+			return bar_temp;
+		}
+	}
+
+
+
+
+	if (bar_temp.end_x < (OUTER_COL_END_X - 1))
+	{
+
+		bar_temp.start_x += pixelMove;
+		bar_temp.end_x  += pixelMove;
+
+		if (bar_temp.end_x > (OUTER_COL_END_X - 1))
+		{
+			bar_temp.end_x  = (OUTER_COL_END_X - 1);
+			bar_temp.start_x  = bar_temp.end_x - BAR_LENGTH;
+		}
+	}
+
+	return bar_temp;
+}
+
+bar_msg bar_moveLeft(bar_msg bar_input, int holdTime, char barMoved)
+{
+	bar_msg bar_temp = bar_input;
+	int pixelMove;
+
+
+	if(holdTime > 250) // if hold for more than 250 ms...
+	{
+		// move at 200 pixel per sec
+		pixelMove = 200/FPS;
+	}
+	else if( holdTime <= 250)
+	{
+		if(barMoved == 0)
+		{
+			// move at 25 pixel if hold time <= 250 ms & bar not moved..
+			pixelMove = 25;
+		}
+		else
+		{
+			// dont move if already moved for <= 250
+			return bar_temp;
+		}
+	}
+
+
+
+
+
+	if (bar_temp.start_x > (OUTER_COL_START_X + 1))
+	{
+
+		bar_temp.start_x -= pixelMove;
+		bar_temp.end_x  -= pixelMove;
+
+		if (bar_temp.start_x < (OUTER_COL_START_X + 1))
+		{
+			bar_temp.start_x   	= (OUTER_COL_START_X + 1);
+			bar_temp.end_x   	= bar_temp.start_x + BAR_LENGTH;
+		}
+	}
+
+	return bar_temp;
+}
+
+
+
