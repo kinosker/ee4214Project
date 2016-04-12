@@ -537,17 +537,17 @@ int myBoundaryChecker_checkLastBrick_vertical(int ball_Y, int myBoundary_End_Y)
 // Return 0 if not...
 int myBoundaryChecker_checkHitBar_horizontal(int ball_X, int myBoundary_Start_X, int myBoundary_End_X)
 {
-	int side_ball_X_Right = ball_X + CIRCLE_RADIUS;
-	int side_ball_X_Left = ball_X - CIRCLE_RADIUS;
+	int side_ball_X_Right = ball_X + CIRCLE_RADIUS + 1;
+	int side_ball_X_Left = ball_X - CIRCLE_RADIUS - 1;
 
 
-	if((side_ball_X_Right >= myBoundary_Start_X - 2) &&  (side_ball_X_Right <= myBoundary_End_X + 2))
+	if((side_ball_X_Right >= myBoundary_Start_X) &&  (side_ball_X_Right <= myBoundary_End_X))
 	{
 		// right of ball x inside boundary
 		return 1;
 	}
 
-	else if((side_ball_X_Left >= myBoundary_Start_X - 2) &&  (side_ball_X_Left <= myBoundary_End_X + 2))
+	else if((side_ball_X_Left >= myBoundary_Start_X) &&  (side_ball_X_Left <= myBoundary_End_X))
 	{
 		// left of ball x inside boundary
 		return 1;
@@ -568,10 +568,10 @@ int myBoundaryChecker_checkBar_vertical(int ball_Y, int myBoundary_Start_Y)
 {
 	// check btm is enough..
 
-	int side_ball_Y_Bottom = ball_Y + CIRCLE_RADIUS;
+	int side_ball_Y_Bottom = ball_Y + CIRCLE_RADIUS + 1;
 
 
-	if((side_ball_Y_Bottom >= myBoundary_Start_Y - 2))
+	if((side_ball_Y_Bottom >= myBoundary_Start_Y))
 	{
 		// btm of ball y inside boundary
 		return 1;
@@ -604,17 +604,17 @@ int myBoundaryChecker_checkHitBar(int ball_X, int ball_Y, int myBoundary_Start_X
 			// ball is both at x and y boundary... using square box check..
 			// use distance to check if it's really hitting bar..
 
-//			closest_X = myBoundaryChecker_getClosestX( ball_X,  myBoundary_Start_X,  myBoundary_End_X);
-//			closest_Y = myBoundary_Start_Y; // using start Y only...
-//
-////			xil_printf("closest x is %d, ball_x is %d, s_x is %d, e_x is %d\n", closest_X, ball_X,myBoundary_Start_X, myBoundary_End_X);
-//			dist_X =  abs(ball_X - closest_X);
-//			dist_Y =  abs(ball_Y - closest_Y);
+			closest_X = myBoundaryChecker_getClosestX( ball_X-2,  myBoundary_Start_X,  myBoundary_End_X);
+			closest_Y = myBoundaryChecker_getClosestY(ball_Y ,myBoundary_Start_Y, myBoundary_End_Y); // using start Y only...
+
+//			xil_printf("closest x is %d, ball_x is %d, s_x is %d, e_x is %d\n", closest_X, ball_X,myBoundary_Start_X, myBoundary_End_X);
+			dist_X =  abs(ball_X - closest_X);
+			dist_Y =  abs(ball_Y - closest_Y);
 
 			// get (dist btw brick and ball)
-//			distanceBtwThem = myBoundaryChecker_getDistanceBtwThem(dist_X, dist_Y);
+			distanceBtwThem = myBoundaryChecker_getDistanceBtwThem(dist_X, dist_Y);
 
-//			if (distanceBtwThem < (CIRCLE_RADIUS))
+			if (distanceBtwThem < (CIRCLE_RADIUS))
 			{
 				// collided into bar...
 

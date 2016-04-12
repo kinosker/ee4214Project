@@ -612,7 +612,7 @@ int myBoundaryChecker_checkHitBar(int ball_X, int ball_Y, int myBoundary_Start_X
 //			dist_Y =  abs(ball_Y - closest_Y);
 
 			// get (dist btw brick and ball)
-//			distanceBtwThem = myBoundaryChecker_getDistanceBtwThem(dist_X, dist_Y);
+			distanceBtwThem = myBoundaryChecker_getDistanceBtwThem(dist_X, dist_Y);
 
 //			if (distanceBtwThem < (CIRCLE_RADIUS))
 			{

@@ -236,13 +236,6 @@ int tft_updateTime(XTft *InstancePtr, int gameTime) {
 			gameTime_secs_higherBit = 0, gameTime_mins_lowerBit = 0,
 			gameTime_secs_lowerBit = 0;
 
-
-	if(gameTime > 3600)
-	{
-		gameTime = 0;
-	}
-
-
 	if (gameTime == 0) {
 		gameTime_mins = 0;
 		gameTime_secs = 0;
