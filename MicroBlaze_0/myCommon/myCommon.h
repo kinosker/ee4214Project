@@ -130,6 +130,12 @@
 #define BRICK_LEFT_END_X		635
 #define BRICK_LEFT_END_Y		408
 
+//Game Status Box
+#define GAME_START_X			520
+#define GAME_START_Y			175
+#define GAME_END_X				635
+#define GAME_END_Y				195
+
 // Amount of columns to be coloured
 #define COL_YELLOW				2
 #define COL_BACKGROUND		COL_BRICKS - COL_YELLOW

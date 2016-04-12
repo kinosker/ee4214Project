@@ -5,12 +5,12 @@ static volatile int ballSpeed = BALL_INITIAL_SPEED;
 
 int myBallControl_getBallSpeed()
 {
-	return 200;
+	return 500;
 }
 
 void myBallControl_updateBallSpeed(int speedGain)
 {
-	xil_printf("Speed Gained is %d\n", speedGain);
+//	xil_printf("Speed Gained is %d\n", speedGain);
 //	if(ballSpeed > BALL_MINIMUM_SPEED && ballSpeed < BALL_MAXIMUM_SPEED)
 //	{
 		ballSpeed += speedGain;
@@ -26,7 +26,7 @@ void myBallControl_updateBallSpeed(int speedGain)
 		ballSpeed = BALL_MAXIMUM_SPEED;
 	}
 
-	xil_printf("New Speed is %d\n", ballSpeed);
+//	xil_printf("New Speed is %d\n", ballSpeed);
 
 }
 

@@ -113,6 +113,15 @@ int tft_intialDraw(XTft *InstancePtr) {
 	tft_writeString(InstancePtr, BRICK_LEFT_START_X, BALL_SPEED_END_Y + 5,
 			"Bricks left: ", COLOR_BLACK, COLOR_WHITE);
 
+	// Current Game Status
+	tft_fillRect(InstancePtr, GAME_START_X, GAME_START_Y, GAME_END_X,
+			GAME_END_Y, COLOR_GREEN);
+	tft_drawRect(InstancePtr, GAME_START_X, GAME_START_Y, GAME_END_X,
+			GAME_END_Y, COLOR_BLACK);
+	tft_writeString(InstancePtr, GAME_START_X, GAME_START_Y - 20, "Game Status: ",
+			COLOR_BLACK, COLOR_WHITE);
+	tft_writeString(InstancePtr, GAME_START_X + 32, GAME_START_Y + 5, "PLAYING",COLOR_BLACK, COLOR_GREEN);
+
 	tft_addCircle(InstancePtr, CIRCLE_X, CIRCLE_Y, CIRCLE_RADIUS);
 }
 
@@ -315,7 +324,7 @@ int tft_updateBricksLeft(XTft *InstancePtr, int bricksLeft) {
 	switch (count) {
 	case 0:
 		tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 53,
-										BRICK_LEFT_START_Y + 5, additional_Value, COLOR_BLACK, COLOR_GREY);
+				BRICK_LEFT_START_Y + 5, additional_Value, COLOR_BLACK, COLOR_GREY);
 		tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 61,
 				BRICK_LEFT_START_Y + 5, bricksLeft, COLOR_BLACK, COLOR_GREY);
 		break;
@@ -650,10 +659,30 @@ void tft_fillRect(XTft *InstancePtr, u32 ColStartPos, u32 RowStartPos,
 			colour);
 }
 
+void updateGameStatus (XTft *InstancePtr, int buttonPressed)
+{
+	if(buttonPressed)
+	{
+		tft_fillRect(InstancePtr, GAME_START_X, GAME_START_Y, GAME_END_X,
+				GAME_END_Y, COLOR_RED);
+		tft_drawRect(InstancePtr, GAME_START_X, GAME_START_Y, GAME_END_X,
+				GAME_END_Y, COLOR_BLACK);
+		tft_writeString(InstancePtr, GAME_START_X + 35, GAME_START_Y - 5, "PAUSE",COLOR_BLACK, COLOR_RED);
+	}
+	else
+	{
+		tft_fillRect(InstancePtr, GAME_START_X, GAME_START_Y, GAME_END_X,
+				GAME_END_Y, COLOR_GREEN);
+		tft_drawRect(InstancePtr, GAME_START_X, GAME_START_Y, GAME_END_X,
+				GAME_END_Y, COLOR_BLACK);
+		tft_writeString(InstancePtr, GAME_START_X + 32, GAME_START_Y - 5, "PLAYING",COLOR_BLACK, COLOR_GREEN);
+	}
+}
+
 void gameFinishChecker (XTft *InstancePtr, int gameStatus, int numOfBricksLeft)
 {
 	tft_fillRect(InstancePtr, OUTER_COL_START_X, OUTER_COL_START_Y,
-				OUTER_COL_END_X, OUTER_COL_END_Y, COLOR_WHITE);
+			OUTER_COL_END_X, OUTER_COL_END_Y, COLOR_WHITE);
 	tft_fillRect(InstancePtr, OUTER_COL_START_X, OUTER_COL_START_Y,
 			OUTER_COL_END_X, OUTER_COL_END_Y, COLOR_GREEN);
 	tft_drawRect(InstancePtr, OUTER_COL_START_X, OUTER_COL_START_Y,

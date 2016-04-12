@@ -102,7 +102,10 @@ float myBallControl_getFrameSpeed(int ballSpeed)
 int myBallControl_getSteps(float ballSpeed_frame, int dir)
 {
 	int x_gained, y_gained;
+	int steps;
+
 	ball_msg tempBall;
+
 
 	tempBall.dir = dir;
 	tempBall.x = 0; 
@@ -119,19 +122,26 @@ int myBallControl_getSteps(float ballSpeed_frame, int dir)
 
 	if((BRICK_SIZE_HEIGHT < BRICK_SIZE_LENGTH || x_gained == 0) && y_gained != 0)
 	{
-		return (ceil(  ((float)(y_gained)) / (BRICK_SIZE_HEIGHT+CIRCLE_RADIUS+CIRCLE_RADIUS)));
+		steps = (ceil(  ((float)(y_gained)) / (BRICK_SIZE_HEIGHT+CIRCLE_RADIUS+CIRCLE_RADIUS)));
 	}
 	else
 	{
-		return (ceil( ((float)(x_gained)) / (BRICK_SIZE_LENGTH+CIRCLE_RADIUS+CIRCLE_RADIUS)));
+		steps = (ceil( ((float)(x_gained)) / (BRICK_SIZE_LENGTH+CIRCLE_RADIUS+CIRCLE_RADIUS)));
 	}
+
+	if(!steps)
+	{
+		steps = 1;
+	}
+
+	return steps;
 }
 
 
 // return the ball speed in pixel per step in a frame.
 float myBallControl_getStepSpeed(float ballSpeed_frame, int steps)
 {
-	return  ((float)ballSpeed_frame) / steps; 
+	return  (((float)ballSpeed_frame) / steps);
 
 }
 
@@ -204,7 +214,7 @@ int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 {
 	int tempAngle;
 
-	if(sideHit == HIT_REFLECT_SIDE || sideHit == HIT_REFLECT_TOP || sideHit == HIT_REFLECT_BTM || sideHit == HIT_OUTER_BOX_BTM ||sideHit == HIT_SPEED_DEC || sideHit == HIT_SPEED_ACC || sideHit == HIT_REFLECT_180) //remove sideHit == HIT_OUTER_BOX_BOX after testing
+	if(sideHit == HIT_REFLECT_SIDE || sideHit == HIT_REFLECT_TOP || sideHit == HIT_REFLECT_BTM || sideHit == HIT_OUTER_BOX_BTM ||sideHit == HIT_SPEED_DEC || sideHit == HIT_SPEED_ACC || sideHit == HIT_REFLECT_180 || sideHit == HIT_INNER_CORNER) //remove sideHit == HIT_OUTER_BOX_BOX after testing
 	{
 		//print("Hit inner box\n");
 		//xil_printf("Inside rebound angle is %d\n", currentLocation.dir);
@@ -216,6 +226,11 @@ int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 			return ((currentLocation.dir + 180) % 360);
 
 		}
+		else if(sideHit == HIT_INNER_CORNER)
+		{
+			return ((360 - currentLocation.dir) % 360); //editted
+
+		}
 		else if(sideHit == HIT_REFLECT_SIDE)
 		{
 //			xil_printf("Angle reflect side hit is %d\n\n", sideHit);
@@ -223,6 +238,11 @@ int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 			return ((180 - currentLocation.dir) % 360); //editted
 
 			//return ((360 - currentLocation.dir) % 360); //initial
+		}
+		else if (sideHit == HIT_REFLECT_180)
+		{
+			xil_printf("currentLocation.dir is %d\n", currentLocation.dir);
+			return ((180 - currentLocation.dir ) % 360);
 		}
 		else
 		{
@@ -234,11 +254,7 @@ int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 			return ((360 - currentLocation.dir) % 360); //editted
 		}
 	}
-//	else if (sideHit == HIT_REFLECT_180)
-//	{
-//		//print("Hit corner box\n");
-//		return ((180 - currentLocation.dir ) % 360);
-//	}
+
 	else if(sideHit == HIT_ANGLE_DEC)
 	{
 //		xil_printf("Angle reflect DECREASE CONSTANT is %d\n\n", sideHit);

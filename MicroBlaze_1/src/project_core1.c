@@ -77,20 +77,20 @@ barrier_t barrier_all_threads;  // ensure all threads complete execution each it
 
 pthread_mutex_t mutex_bricks;
 pthread_mutex_t mutex_speed;    // used as "barrier" to update speed
-pthread_mutex_t mutex_pause;
+pthread_mutex_t mutex_global;
 
 
 /**************** Global variables **********************/
 
 volatile int  global_score = 0;                   // score that is accessible by all threads.
 
-volatile ball_msg global_ballBounceCheck;        //  temp location, which the ball hit the brick.
-volatile int global_bounceHit = 0;               //  how many bricks hit which causes bounce to be used by brick threads
-volatile int global_sideHit = 0;					// determine which side (corner or ??? ) was hit by the ball
-volatile char global_bounceCompleted = 0;         //  Signal bounce have been completed
-volatile char global_stopBounceCheck	= 0;
+static volatile ball_msg global_ballBounceCheck;        //  temp location, which the ball hit the brick.
+static volatile int global_bounceHit = 0;               //  how many bricks hit which causes bounce to be used by brick threads
+static volatile int global_sideHit = 0;					// determine which side (corner or ??? ) was hit by the ball
+static volatile char global_bounceCompleted = 0;         //  Signal bounce have been completed
+static volatile char global_stopBounceCheck	= 0;
 
-volatile int global_ColThreadsLeft = 10; // how to find this can signal? via queue? change to constant later!!!
+static volatile int global_ColThreadsLeft = 10; // how to find this can signal? via queue? change to constant later!!!
 
 
 const int FPS_MS = 1000*(1.0/FPS);
@@ -147,12 +147,11 @@ void main_prog(void)
 	pthread_mutex_lock(&mutex_speed); // start with lock ~!
 
 
-	if (pthread_mutex_init (&mutex_pause, NULL) != 0)
+	if (pthread_mutex_init (&mutex_global, NULL) != 0)
 	{
 		print ("Error when initializing mutex");
 	}
 
-	pthread_mutex_lock(&mutex_pause); // start with lock ~!
 
 
 
@@ -521,6 +520,7 @@ void* thread_func_ball()
 
 		/********************* 0. Initialise every iteration  ****************/
 		// 0.1  : Init no bounce hit every iteration ...
+
 		global_bounceHit = 0;
 
 		// 0.2  : Update global_ballBounceCheck every iteration ...
@@ -579,13 +579,16 @@ void* thread_func_ball()
 			{
 				// if it is last step move to that position...
 				//forwards step iteration used rounding may not be as accurate
+
 				global_ballBounceCheck = myBallControl_moveBall_frame(ballSpeed_frame, ball_send);
 
 			}
 			else
 			{
 				// forward steps iteration
+
 				global_ballBounceCheck = myBallControl_moveBall_step(ballSpeed_step, global_ballBounceCheck);
+
 			}
 
 			//        xil_printf("Step Ball Location : %d , %d\n", global_ballBounceCheck.x, global_ballBounceCheck.y);
@@ -607,35 +610,41 @@ void* thread_func_ball()
 
 			myBarrier_wait(&barrier_bounceCheck_end); // barrier to wait for bounce check to complete...
 
-			//		print("end of big bounce check end barrier\n");
+			//print("end of big bounce check end barrier\n");
 
 			// 4.4  : Check global_bounceHit if > 0 go to 4.3.1... else continue
 
 			if(global_bounceHit)
 			{
+				//print("Big step breaking\n\n");
+
 				break;
 			}
 
 
 			// 4.1  : Check if hit bar..
 
-					// ******
-					// if(barHit or outerboundary) global_bounceHit = 1; break;
+			// ******
+			// if(barHit or outerboundary) global_bounceHit = 1; break;
 
-					// NOTE *** THIS HAVE MORE SIDE TO CHANGE ANGLEE **** BAR GOT DIFF REGION ***
-					barHit = myBoundaryChecker_checkHitBar((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y, bar_recv.start_x,
-							bar_recv.start_y, bar_recv.end_x, bar_recv.end_y);
+			// NOTE *** THIS HAVE MORE SIDE TO CHANGE ANGLEE **** BAR GOT DIFF REGION ***
+			barHit = myBoundaryChecker_checkHitBar((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y, bar_recv.start_x,
+					bar_recv.start_y, bar_recv.end_x, bar_recv.end_y);
 
 
-					outerBoxHit = myBoundaryChecker_CheckOuter((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y);
+			outerBoxHit = myBoundaryChecker_CheckOuter((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y);
 
-					global_sideHit = (barHit | outerBoxHit);
 
-					if(global_sideHit)
-					{
-						global_bounceHit ++;
-						break;
-					}
+			global_sideHit = (barHit | outerBoxHit);
+
+
+			if(global_sideHit)
+			{
+
+				global_bounceHit = 1;
+
+				break;
+			}
 
 
 
@@ -653,13 +662,16 @@ void* thread_func_ball()
 
 			//xil_printf("BALL HIT BIG STEP, dir : %d, location :  %d,%d\n", global_ballBounceCheck.dir, (int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y);
 
+
 			// move back by 1 step..
 			global_ballBounceCheck = myBallControl_moveBall_step_backward(ballSpeed_step, global_ballBounceCheck);
 
 
 			//xil_printf("BALL HIT -1 Stp, dir : %d, location :  %d,%d\n", global_ballBounceCheck.dir, (int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y);
 			// reset bounceHit back to 0... so can find when it is the perfect hit
+
 			global_bounceHit = 0;
+
 
 			// forward (small step iteration to just nice..) to find when it just nice hit the brick/boundary
 			numberOfSteps = myBallControl_getForwardSteps( ballSpeed_step, ball_send.dir) + 1;
@@ -673,9 +685,10 @@ void* thread_func_ball()
 			{
 
 				// forward steps movement
+
 				global_ballBounceCheck = myBallControl_moveBall_forward(ballSpeed_forward, global_ballBounceCheck);
 
-//				xil_printf("Small step : ball = %d,%d, ballSpeed : %d\n" , (int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y, ballSpeed_forward);
+				//				xil_printf("Small step : ball = %d,%d, ballSpeed : %d\n" , (int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y, ballSpeed_forward);
 
 
 				/****************** 4. Check bounce hit for each steps  ****************/
@@ -697,12 +710,13 @@ void* thread_func_ball()
 
 				myBarrier_wait(&barrier_bounceCheck_end); // barrier to wait for bounce check to complete...
 				//
-				//     		print("end of small bounce check end barrier\n");
+				//print("end of small bounce check end barrier\n");
 
 				// 4.3  : Check global_bounceHit is 0 => ball almost hit the brick/boundary
 
 				if(global_bounceHit)
 				{
+					//print("Samll step breaking\n\n");
 					break; // perfect hit !
 				}
 
@@ -715,11 +729,15 @@ void* thread_func_ball()
 
 				outerBoxHit = myBoundaryChecker_CheckOuter((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y);
 
+
 				global_sideHit = (barHit | outerBoxHit);
+
 
 				if(global_sideHit)
 				{
-					global_bounceHit ++;
+
+					global_bounceHit = 1;
+
 					break;
 				}
 
@@ -741,7 +759,7 @@ void* thread_func_ball()
 			//xil_printf("new direction of ball = %d\n", ball_send.dir);
 
 			// set rebound speed.
-			xil_printf("Setting boundary hit : %d \n", global_sideHit);
+			//xil_printf("Setting boundary hit : %d \n", global_sideHit);
 			sleep(300);
 			myBallControl_SetReboundSpeed(global_sideHit);
 
@@ -753,14 +771,18 @@ void* thread_func_ball()
 
 		// bounce check completed.
 
+
 		global_bounceCompleted = 1;
+
 
 		// 7.1 :  barrier to signify brick threads to complete bounceCheck.
 
 		//  print("start of bounce check completed barrier\n");
 		myBarrier_wait(&barrier_bounceCheck_start);
 
+
 		global_stopBounceCheck = 1;
+
 
 		// 7.2 :  Barrier to ensure every brick threads got the bounce completed signal.
 
@@ -845,9 +867,9 @@ void thread_func_brick(char columnNumber)
 
 				if( myBoundaryChecker_checkBrick_horizontal((int)global_ballBounceCheck.x, col_x, col_x + BRICK_SIZE_LENGTH) == 0)
 				{
-						// if ball not within this brick column x axis => wont hit any brick at this column.
-						// do nth
-//					xil_printf("using horizontal to exit @ col %d\n", col_x);
+					// if ball not within this brick column x axis => wont hit any brick at this column.
+					// do nth
+					//					xil_printf("using horizontal to exit @ col %d\n", col_x);
 
 				}
 				else
@@ -866,7 +888,7 @@ void thread_func_brick(char columnNumber)
 							if(! myBoundaryChecker_checkLastBrick_vertical((int)global_ballBounceCheck.y, row_y + BRICK_SIZE_HEIGHT))
 							{
 								// below the last brick.. dont need to check brick..
-
+								brickLoop = 0;
 								break;
 							}
 
@@ -875,29 +897,23 @@ void thread_func_brick(char columnNumber)
 								// brief overlaaap check... used ball as square to check overlap... unable to confirm...
 
 								temp_sideHit = myBoundaryChecker_checkHitBrick((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y, col_x,
-									row_y, col_x + BRICK_SIZE_LENGTH, row_y + BRICK_SIZE_HEIGHT);
+										row_y, col_x + BRICK_SIZE_LENGTH, row_y + BRICK_SIZE_HEIGHT);
 
+							}
+							else
+							{
+								temp_sideHit = 0;
 							}
 
 
 
-							if(temp_sideHit > 0)
+							if(temp_sideHit != 0)
 							{
-
-								if(checksLeft != 1)
-								{
-									checksLeft = 1; // if hit 1 brick last check...
-								}
-
-
 								// update : bounceHit, sideHit, bricksLeft, thread score.
-								pthread_mutex_lock(&mutex_bricks);
-								global_bounceHit ++;
-//								if(global_sideHit != HIT_INNER_CORNER)// hit inner corner should hav priority
-//								{
-									global_sideHit = temp_sideHit;
-//								}
-								pthread_mutex_unlock(&mutex_bricks);
+								  //insert by kh
+								global_bounceHit = 1;
+								global_sideHit = temp_sideHit;
+								pthread_mutex_unlock(&mutex_bricks); //insert by kh
 
 								//  		    	   	xil_printf("sideHit : %d\n , Before : Col number : %d, bricksLeft : %d\n", temp_sideHit, columnNumber, temp_BricksLeft);
 
@@ -914,37 +930,44 @@ void thread_func_brick(char columnNumber)
 									temp_thread_score += 2;
 								}
 
+
+								if(checksLeft != 1)
+								{
+									checksLeft = 1; // if hit 1 brick last check...
+								}
+
 								temp_sideHit = 0; // reset temp side hit to find next bricks that may get hit..
 
 							}
 
-							if(checksLeft == 0)
-							{
-//								print("using checks left to exit\n");
-								break;
-							}
-
-
 						}
+
+						if(checksLeft == 0)
+						{
+							//print("using checks left to exit\n");
+							brickLoop = 0;
+							break;
+						}
+
 
 
 						row_num++; // move to next row
 						brickLoop = brickLoop >> 1; // move to next brick to check
 
-						//xil_printf("brick loop : %d\n", brickLoop);
-
-						if(checksLeft == 0)
-						{
-							break;
-						}
 
 					} // completed checking all the bricks
+
+//					print("one column of bricks check DONE\n");
 				}
 
 
 			}
 
+//			print("brick - barrier end wait\n");
+
 			myBarrier_wait(&barrier_bounceCheck_end); // Signal that the 1 iteration of bounceCheck is completed..
+
+//			print("brick - barrier end completed\n");
 
 		}  //all iteration bounce check completed can update what was calculate...
 
@@ -955,9 +978,9 @@ void thread_func_brick(char columnNumber)
 
 
 		// 1.2. Update bricks/score for this thread/column
-		pthread_mutex_lock(&mutex_bricks);
+		  //insert by kh
 		global_score += thread_score;
-		pthread_mutex_unlock(&mutex_bricks);
+		pthread_mutex_unlock(&mutex_bricks); //insert by kh
 
 		// Barrier to wait for score and colour to be updated here
 		myBarrier_wait(&barrier_score); // wait for all bricks thread to update score.
@@ -990,19 +1013,19 @@ void thread_func_brick(char columnNumber)
 
 		if(!bricksLeft)
 		{
-			pthread_mutex_lock(&mutex_bricks);
 
 			//   	  xil_printf("Thread exiting\n");
 
 			global_ColThreadsLeft --;
 
 			// 1. decrease size of the barrier.
-			myBarrier_decreaseSize(&barrier_colour_start);
 			myBarrier_decreaseSize(&barrier_colour_end);
-			myBarrier_decreaseSize(&barrier_score);
+			myBarrier_decreaseSize(&barrier_colour_start);
 
-			myBarrier_decreaseSize(&barrier_bounceCheck_start);
+			myBarrier_decreaseSize(&barrier_score);
 			myBarrier_decreaseSize(&barrier_bounceCheck_end);
+			myBarrier_decreaseSize(&barrier_bounceCheck_start);
+
 			myBarrier_decreaseSize(&barrier_all_threads);
 
 			pthread_mutex_unlock(&mutex_bricks);

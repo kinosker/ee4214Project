@@ -18,7 +18,7 @@
  *																			 *
  ******************************************************************************/
 
-#define CORNER_TOLERANCE			2
+#define CORNER_TOLERANCE			1.5
 
 #define HIT_REFLECT_SIDE			9
 #define HIT_REFLECT_TOP				10
@@ -42,7 +42,7 @@
 #define HIT_INNER_BOX_TOP			10    // Hit Left side boundary
 #define HIT_INNER_BOX_BTM			8    // Hit Left side boundary
 #define HIT_INNER_BOX_SIDE 			9    // Hit Left side boundary
-#define HIT_INNER_CORNER			11    // Hit 2 boundaries(bottom and left)
+#define HIT_INNER_CORNER			88    // Hit 2 boundaries(bottom and left)
 
 #define HIT_BAR_N					10
 
@@ -125,7 +125,7 @@ int myBoundaryChecker_checkBrick_vertical(int ball_Y, int myBoundary_Start_Y, in
 int myBoundaryChecker_checkHitBrick(int ball_X, int ball_Y, int myBoundary_Start_X, int myBoundary_Start_Y, int myBoundary_End_X, int myBoundary_End_Y);
 int myBoundaryChecker_getClosestX(int ball_X, int myBoundary_Start_X, int myBoundary_End_X);
 int myBoundaryChecker_getClosestY(int ball_Y, int myBoundary_Start_Y, int myBoundary_End_Y);
-int myBoundaryChecker_getDistanceBtwThem(int dist_X, int dist_Y);
+float myBoundaryChecker_getDistanceBtwThem(int dist_X, int dist_Y);
 int myBoundaryChecker_getDistance_X(int ball_X, int myBoundary_Start_X, int myBoundary_End_X);
 int myBoundaryChecker_getDistance_Y(int ball_Y, int myBoundary_Start_Y, int myBoundary_End_Y);
 
