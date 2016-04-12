@@ -149,8 +149,7 @@ void main_prog(void *arg) {
 	tft_intialDraw(&TFT_Instance);	// drawing layout...
 
 	tft_updateSpeed(&TFT_Instance, INIT_BALLSPEED);
-	tft_updateBricksLeft(&TFT_Instance, TOTAL_BRICKS);
-
+	tft_updateBricksLeft(&TFT_Instance, 7);//TOTAL_BRICKS);
 	tft_updateScore(&TFT_Instance, INIT_SCORE);
 
 

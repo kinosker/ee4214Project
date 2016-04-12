@@ -315,11 +315,13 @@ int tft_updateBricksLeft(XTft *InstancePtr, int bricksLeft) {
 	switch (count) {
 	case 0:
 		tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 53,
-										BRICK_LEFT_START_Y + 5, additional_Value, COLOR_BLACK, COLOR_GREY);
-		tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 61,
 				BRICK_LEFT_START_Y + 5, bricksLeft, COLOR_BLACK, COLOR_GREY);
 		break;
 	case 1:
+		tft_fillRect(InstancePtr, BRICK_LEFT_START_X + 49, BRICK_LEFT_START_Y+5,
+				BRICK_LEFT_END_X - 10, BRICK_LEFT_END_Y - 5, COLOR_GREY);
+		tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 53,
+								BRICK_LEFT_START_Y + 5, additional_Value, COLOR_BLACK, COLOR_GREY);
 		tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 53,
 				BRICK_LEFT_START_Y + 5, bricksLeft, COLOR_BLACK, COLOR_GREY);
 		break;

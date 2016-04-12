@@ -308,15 +308,13 @@ int tft_updateSpeed(XTft *InstancePtr, int speed)
 }
 
 int tft_updateBricksLeft(XTft *InstancePtr, int bricksLeft) {
-	int temp_brickLeft = bricksLeft, count = 0, additional_Value =0;
+	int temp_brickLeft = bricksLeft, count = 0;
 	while ((temp_brickLeft /= 10) != 0) {
 		count++;
 	}
 	switch (count) {
 	case 0:
 		tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 53,
-										BRICK_LEFT_START_Y + 5, additional_Value, COLOR_BLACK, COLOR_GREY);
-		tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 61,
 				BRICK_LEFT_START_Y + 5, bricksLeft, COLOR_BLACK, COLOR_GREY);
 		break;
 	case 1:

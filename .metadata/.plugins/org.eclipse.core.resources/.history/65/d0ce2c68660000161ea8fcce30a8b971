@@ -316,7 +316,7 @@ int tft_updateBricksLeft(XTft *InstancePtr, int bricksLeft) {
 	case 0:
 		tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 53,
 										BRICK_LEFT_START_Y + 5, additional_Value, COLOR_BLACK, COLOR_GREY);
-		tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 61,
+		tft_writeInteger(InstancePtr, BRICK_LEFT_START_X + 56,
 				BRICK_LEFT_START_Y + 5, bricksLeft, COLOR_BLACK, COLOR_GREY);
 		break;
 	case 1:
