@@ -84,11 +84,11 @@ pthread_mutex_t mutex_global;
 
 volatile int  global_score = 0;                   // score that is accessible by all threads.
 
-volatile ball_msg global_ballBounceCheck;        //  temp location, which the ball hit the brick.
-volatile int global_bounceHit = 0;               //  how many bricks hit which causes bounce to be used by brick threads
-volatile int global_sideHit = 0;					// determine which side (corner or ??? ) was hit by the ball
-volatile char global_bounceCompleted = 0;         //  Signal bounce have been completed
-volatile char global_stopBounceCheck	= 0;
+static volatile ball_msg global_ballBounceCheck;        //  temp location, which the ball hit the brick.
+static volatile int global_bounceHit = 0;               //  how many bricks hit which causes bounce to be used by brick threads
+static volatile int global_sideHit = 0;					// determine which side (corner or ??? ) was hit by the ball
+static volatile char global_bounceCompleted = 0;         //  Signal bounce have been completed
+static volatile char global_stopBounceCheck	= 0;
 
 static volatile int global_ColThreadsLeft = 10; // how to find this can signal? via queue? change to constant later!!!
 
@@ -1021,7 +1021,7 @@ void thread_func_brick(char columnNumber)
 		if(!bricksLeft)
 		{
 
-			xil_printf("Thread exiting\n");
+			   	  xil_printf("Thread exiting\n");
 			pthread_mutex_lock(&mutex_bricks);
 
 

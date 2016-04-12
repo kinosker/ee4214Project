@@ -46,7 +46,7 @@ void myBarrier_decreaseSize(barrier_t *barrier)
 
 	if(barrier->currentSize > barrier->maxSize)
 	{
-//		print("always here? xcept 1\n");
+		print("always here? xcept 1\n");
 
 		barrier->currentSize = barrier->maxSize;
 	}

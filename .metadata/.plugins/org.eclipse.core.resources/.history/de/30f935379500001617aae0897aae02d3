@@ -38,27 +38,25 @@ void myBarrier_wait(barrier_t *barrier)
 
 void myBarrier_decreaseSize(barrier_t *barrier)
 {
-	int i = 0;
-
+	int i;
 	pthread_mutex_lock(&barrier->mutex);
-	barrier->maxSize = barrier->maxSize - 1;
-	// unlock others if current size is 0..
+
+	barrier->maxSize = barrier->maxSize - 1; // correct
 
 	if(barrier->currentSize > barrier->maxSize)
 	{
-//		print("always here? xcept 1\n");
-
 		barrier->currentSize = barrier->maxSize;
 	}
-	else
-	{
-		barrier->currentSize = barrier->currentSize - 1;
-	}
+
+
+	barrier->currentSize = barrier->currentSize - 1;
+
+	// unlock others if current size is 0..
+
+
 
 	if(barrier->currentSize == 0)
 	{
-		print("one and only\n");
-
 		for(i = 0 ; i < barrier->maxSize ; i++)
 		{
 			sem_post(&(barrier->sema));

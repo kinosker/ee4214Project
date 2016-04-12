@@ -667,7 +667,7 @@ void updateGameStatus (XTft *InstancePtr, int buttonPressed)
 				GAME_END_Y, COLOR_RED);
 		tft_drawRect(InstancePtr, GAME_START_X, GAME_START_Y, GAME_END_X,
 				GAME_END_Y, COLOR_BLACK);
-		tft_writeString(InstancePtr, GAME_START_X + 37, GAME_START_Y + 5, "PAUSE",COLOR_BLACK, COLOR_RED);
+		tft_writeString(InstancePtr, GAME_START_X + 35, GAME_START_Y - 5, "PAUSE",COLOR_BLACK, COLOR_RED);
 	}
 	else
 	{

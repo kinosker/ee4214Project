@@ -151,6 +151,7 @@ void main_prog(void *arg) {
 	tft_updateSpeed(&TFT_Instance, INIT_BALLSPEED);
 	tft_updateBricksLeft(&TFT_Instance, TOTAL_BRICKS);
 	tft_updateScore(&TFT_Instance, INIT_SCORE);
+	updateGameStatus(&TFT_Instance, 1);
 
 	for(iterator = 0 ; iterator < MAX_BRICKS_THREAD ; iterator++)
 	{
