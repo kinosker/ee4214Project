@@ -114,7 +114,7 @@ int myBoundaryChecker_CheckOuter(int ball_X, int ball_Y) //speed????? angle???
 	}
 	else if(outerBottomBoundary( side_ball_Y_Bottom ))
 	{ // bottom boundary
-//		xil_printf("PSY!? ball_X = %d , ball_Y = %d\n", (side_ball_Y_Bottom), ball_Y);
+		xil_printf("PSY!? ball_X = %d , ball_Y = %d\n", (side_ball_Y_Bottom), ball_Y);
 		return HIT_OUTER_BOX_BTM;		// return 99
 	}
 	else

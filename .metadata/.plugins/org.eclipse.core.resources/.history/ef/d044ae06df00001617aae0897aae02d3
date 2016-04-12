@@ -476,13 +476,11 @@ void* thread_func_controller()
 		{
 			leftOverTime_ms = FPS_MS - (endTime_ms - startTime_ms);
 		}
-		if(leftOverTime_ms > 40 || leftOverTime_ms < 0)
+		if(leftOverTime_ms > 40)
 		{
 			xil_printf("leftOverTime : %d\n", leftOverTime_ms);
 			leftOverTime_ms = 1;
 		}
-//		xil_printf("leftOverTime : %d\n", leftOverTime_ms);
-
 		sleep(leftOverTime_ms);
 		// sleep(10);
 
