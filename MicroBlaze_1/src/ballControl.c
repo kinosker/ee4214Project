@@ -220,7 +220,7 @@ int myBallControl_ReboundAngle(int sideHit, ball_msg currentLocation)
 		//xil_printf("Inside rebound angle is %d\n", currentLocation.dir);
 		if(currentLocation.dir % 90 == 0)
 		{
-			xil_printf("90 deg\n");
+//			xil_printf("90 deg\n");
 			// if flying vertical or horizontally perfectly... should rebounce 180 deg instead of 90 deg
 			//xil_printf("reflect 90 but 180 is %d\n\n\n", currentLocation.dir);
 			return ((currentLocation.dir + 180) % 360);

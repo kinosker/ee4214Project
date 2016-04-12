@@ -12,19 +12,19 @@
 
 
 int outerLeftBoundary(int side_ball_X) {
-	return side_ball_X <= OUTER_COL_START_X + 2;
+	return side_ball_X <= (OUTER_COL_START_X + 2);
 }
 
 int outerRightBoundary(int side_ball_X) {
-	return side_ball_X >= OUTER_COL_END_X - 2;
+	return side_ball_X >= (OUTER_COL_END_X - 2);
 }
 
 int outerTopBoundary(int side_ball_Y) {
-	return side_ball_Y <= OUTER_COL_START_Y + 2;
+	return side_ball_Y <= (OUTER_COL_START_Y + 2);
 }
 
 int outerBottomBoundary(int side_ball_Y) {
-	return side_ball_Y >= OUTER_COL_END_Y - 2;
+	return side_ball_Y > (OUTER_COL_END_Y - 2);
 }
 
 int outerTopLeftCorner(int side_ball_X, int side_ball_Y) {
@@ -112,8 +112,9 @@ int myBoundaryChecker_CheckOuter(int ball_X, int ball_Y) //speed????? angle???
 			return HIT_OUTER_BOX_TOP; // return 10
 		}
 	}
-	else if(outerBottomBoundary(side_ball_Y_Bottom))
+	else if(outerBottomBoundary( side_ball_Y_Bottom ))
 	{ // bottom boundary
+		xil_printf("PSY!? ball_X = %d , ball_Y = %d\n", (side_ball_Y_Bottom), ball_Y);
 		return HIT_OUTER_BOX_BTM;		// return 99
 	}
 	else
@@ -269,7 +270,7 @@ int myBoundaryChecker_checkHitBrick(int ball_X, int ball_Y, int myBoundary_Start
 			// NOTE : Why cannot be ball inside brick and near..?
 			// NOTE : How do u confirm!?!? => Small steps algorithm... 
 
-			xil_printf("Hit Corner\n");
+//			xil_printf("Hit Corner\n");
 
 			ret = HIT_INNER_CORNER; // return 11
 		}
@@ -603,8 +604,8 @@ int myBoundaryChecker_checkHitBar(int ball_X, int ball_Y, int myBoundary_Start_X
 			// ball is both at x and y boundary... using square box check..
 			// use distance to check if it's really hitting bar..
 
-			closest_X = myBoundaryChecker_getClosestX( ball_X,  myBoundary_Start_X-2,  myBoundary_End_X+2);
-			closest_Y = myBoundary_Start_Y-2; // using start Y only...
+			closest_X = myBoundaryChecker_getClosestX( ball_X,  myBoundary_Start_X,  myBoundary_End_X);
+			closest_Y = myBoundary_Start_Y; // using start Y only...
 
 
 			dist_X =  abs(ball_X - closest_X);
@@ -633,7 +634,7 @@ int myBoundaryChecker_checkHitBar(int ball_X, int ball_Y, int myBoundary_Start_X
 				{
 					// N REGION : from end of S- to end of N region
 
-					return HIT_BAR_N; // return 11
+					return HIT_BAR_N; // return 10
 
 
 				}

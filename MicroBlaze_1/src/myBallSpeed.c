@@ -40,6 +40,11 @@ void myBallControl_updateAutoSpeed(int score)
 {
 	static int prev_score = 0;
 
+	if(score == 0)
+	{
+		prev_score = 0;
+	}
+
 	if ((score != prev_score) && (score % 10 == 0))
 	{
 		myBallControl_updateBallSpeed(BALL_AUTO_SPEED_INCREMENT);

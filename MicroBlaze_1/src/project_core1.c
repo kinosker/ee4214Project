@@ -387,7 +387,7 @@ void* thread_func_controller()
 		{
 			XMbox_ReadBlocking(&Mbox, &bar_recv, sizeof(bar_msg));
 
-//			print("receive bar msg\n");
+//			xil_printf("1. bar start x,y : %d,%d bar end x,y : %d,%d\n", bar_recv.start_x, bar_recv.start_y,bar_recv.end_x, bar_recv.end_y);
 		}
 
 		init = 0;
@@ -693,6 +693,8 @@ void* thread_func_ball()
 			print ("Error in receiving message from bricks thread");
 		}
 
+//		xil_printf("2. bar start x,y : %d,%d bar end x,y : %d,%d\n", bar_recv.start_x, bar_recv.start_y,bar_recv.end_x, bar_recv.end_y);
+
 		//    xil_printf("bar msg receive\n");
 
 
@@ -779,10 +781,18 @@ void* thread_func_ball()
 					bar_recv.start_y, bar_recv.end_x, bar_recv.end_y);
 
 
+
 			outerBoxHit = myBoundaryChecker_CheckOuter((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y);
 
 
-			global_sideHit = (barHit | outerBoxHit);
+			if(barHit)
+			{
+				global_sideHit = barHit;
+			}
+			else if (outerBoxHit)
+			{
+				global_sideHit = outerBoxHit;
+			}
 
 
 			if(global_sideHit)
@@ -807,18 +817,18 @@ void* thread_func_ball()
 		if(global_bounceHit)
 		{
 
-			//xil_printf("BALL HIT BIG STEP, dir : %d, location :  %d,%d\n", global_ballBounceCheck.dir, (int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y);
+//			xil_printf("BALL HIT BIG STEP, dir : %d, location :  %d,%d, SH is %d \n", global_ballBounceCheck.dir, (int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y, global_sideHit);
 
 
 			// move back by 1 step..
 			global_ballBounceCheck = myBallControl_moveBall_step_backward(ballSpeed_step, global_ballBounceCheck);
 
 
-			//xil_printf("BALL HIT -1 Stp, dir : %d, location :  %d,%d\n", global_ballBounceCheck.dir, (int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y);
+//			xil_printf("BALL HIT -1 Stp, dir : %d, location :  %d,%d\n", global_ballBounceCheck.dir, (int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y);
 			// reset bounceHit back to 0... so can find when it is the perfect hit
 
 			global_bounceHit = 0;
-
+			global_sideHit = 0;
 
 			// forward (small step iteration to just nice..) to find when it just nice hit the brick/boundary
 			numberOfSteps = myBallControl_getForwardSteps( ballSpeed_step, ball_send.dir) + 1;
@@ -835,7 +845,7 @@ void* thread_func_ball()
 
 				global_ballBounceCheck = myBallControl_moveBall_forward(ballSpeed_forward, global_ballBounceCheck);
 
-				//				xil_printf("Small step : ball = %d,%d, ballSpeed : %d\n" , (int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y, ballSpeed_forward);
+//				xil_printf("Small step : ball = %d,%d\n" , (int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y);
 
 
 				/****************** 4. Check bounce hit for each steps  ****************/
@@ -877,7 +887,14 @@ void* thread_func_ball()
 				outerBoxHit = myBoundaryChecker_CheckOuter((int)global_ballBounceCheck.x, (int)global_ballBounceCheck.y);
 
 
-				global_sideHit = (barHit | outerBoxHit);
+				if(barHit)
+				{
+					global_sideHit = barHit;
+				}
+				else if (outerBoxHit)
+				{
+					global_sideHit = outerBoxHit;
+				}
 
 
 				if(global_sideHit)
@@ -905,6 +922,8 @@ void* thread_func_ball()
 
 			if(global_sideHit == HIT_OUTER_BOX_BTM)
 			{
+//				xil_printf("lose SH = %d\n", global_sideHit);
+
 				global_status = LOSE_STATUS;
 			}
 			else
@@ -912,7 +931,8 @@ void* thread_func_ball()
 
 
 				ball_send.dir = myBallControl_ReboundAngle(global_sideHit, ball_send);
-				//xil_printf("new direction of ball = %d\n", ball_send.dir);
+
+
 
 				// set rebound speed.
 				//xil_printf("Setting boundary hit : %d \n", global_sideHit);
